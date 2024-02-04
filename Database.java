@@ -86,7 +86,7 @@ public class Database {
         KVPair<String, Rectangle> removedPair = list.remove(name);
 
         if (removedPair != null) {
-            System.out.println("Removed: " + removedPair.getValue().toString());
+            System.out.println("Removed: " + name);
         }
         else {
             System.out.println("Rectangle with name '" + name + "' not found.");

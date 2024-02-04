@@ -88,7 +88,7 @@ public class DatabaseJunitTests {
 
         System.setOut(System.out);
 
-        String expectedOutput = "Removed: (1, 1, 3, 4)";
+        String expectedOutput = "Removed: Rect3";
 
         assertEquals(expectedOutput.trim().replace("\r", ""), outContent
             .toString().trim().replace("\r", ""));
