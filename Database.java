@@ -38,6 +38,7 @@ public class Database {
      */
     public Database() {
         list = new SkipList<String, Rectangle>();
+        itr1 = list.iterator(); // Initialize itr1
     }
 
 
@@ -56,7 +57,7 @@ public class Database {
         // that
         Rectangle rectangle = pair.getValue();
         
-        if (rectangle.getxCoordinate() < 0 || rectangle.getyCoordinate() < 0 || rectangle.getWidth() < 0 || rectangle.getHeight() < 0) {
+        if (rectangle.getWidth() < 0 || rectangle.getHeight() < 0) {
            // System.out.println("Invalid rectangle with negative coordinates. Insertion failed.");
             return;
         }
@@ -160,23 +161,30 @@ public class Database {
     public void intersections() {
         System.out.println("Intersecting rectangles:");
 
-        // Use the extra iterator for the second loop
-        for (KVPair<String, Rectangle> pair1 : list) {
-            Iterator<KVPair<String, Rectangle>> itr2 = list.iterator();
+        // Use the iterator directly instead of itr1
+        Iterator<KVPair<String, Rectangle>> iterator = list.iterator();
 
-            while (itr2.hasNext()) {
-                KVPair<String, Rectangle> pair2 = itr2.next();
+        while (iterator.hasNext()) {
+            KVPair<String, Rectangle> pair1 = iterator.next();
+
+            // Use a separate iterator for the second loop
+            Iterator<KVPair<String, Rectangle>> iterator2 = list.iterator();
+
+            while (iterator2.hasNext()) {
+                KVPair<String, Rectangle> pair2 = iterator2.next();
 
                 if (!pair1.getKey().equals(pair2.getKey())) {
                     if (pair1.getValue().intersect(pair2.getValue())) {
                         System.out.println(pair1.getValue().toString()
-                            + " intersects with " + pair2.getValue()
+                                + " intersects with " + pair2.getValue()
                                 .toString());
                     }
+                    //(3, 3, 5, 5) intersects with (0, 0, 5, 5)
                 }
             }
         }
     }
+
 
 
     /**
