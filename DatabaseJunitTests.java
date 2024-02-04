@@ -121,17 +121,17 @@ public class DatabaseJunitTests {
      */
     @Test
     public void testRegionSearchInsideRegion() {
-        Database database = new Database();
+        Database database1 = new Database();
 
         // Insert rectangles inside the specified region
-        database.insert(new KVPair<>("Rect1", new Rectangle(2, 2, 3, 3)));  // Inside
-        database.insert(new KVPair<>("Rect2", new Rectangle(5, 5, 2, 2)));  // Inside
+        database1.insert(new KVPair<>("Rect1", new Rectangle(2, 2, 3, 3)));  // Inside
+        database1.insert(new KVPair<>("Rect2", new Rectangle(5, 5, 2, 2)));  // Inside
 
         ByteArrayOutputStream outContent = new ByteArrayOutputStream();
         System.setOut(new PrintStream(outContent));
 
         // Perform region search
-        database.regionsearch(1, 1, 6, 6);
+        database1.regionsearch(1, 1, 6, 6);
 
         String expectedOutput = "Rectangles in the region (1, 1, 6, 6):\n" +
                                 "(2, 2, 3, 3)\n" +
@@ -146,17 +146,17 @@ public class DatabaseJunitTests {
      */
     @Test
     public void testRegionSearchOutsideRegion() {
-        Database database = new Database();
+        Database database2 = new Database();
 
         // Insert rectangles outside the specified region
-        database.insert(new KVPair<>("Rect1", new Rectangle(8, 8, 3, 3)));  // Outside
-        database.insert(new KVPair<>("Rect2", new Rectangle(0, 0, 1, 1)));  // Outside
+        database2.insert(new KVPair<>("Rect1", new Rectangle(8, 8, 3, 3)));  // Outside
+        database2.insert(new KVPair<>("Rect2", new Rectangle(0, 0, 1, 1)));  // Outside
 
         ByteArrayOutputStream outContent = new ByteArrayOutputStream();
         System.setOut(new PrintStream(outContent));
 
         // Perform region search
-        database.regionsearch(1, 1, 6, 6);
+        database2.regionsearch(1, 1, 6, 6);
 
         String expectedOutput = "Rectangles in the region (1, 1, 6, 6):\n";
 
@@ -169,7 +169,7 @@ public class DatabaseJunitTests {
      */
     @Test
     public void testIntersectionValid() { 
-        Database database = new Database();
+        Database database3 = new Database();
 
         // Create rectangles that intersect
         Rectangle rectangle1 = new Rectangle(0, 0, 5, 5);
@@ -182,10 +182,10 @@ public class DatabaseJunitTests {
         KVPair<String, Rectangle> pair1 = new KVPair<>("rect1", rectangle1);
         KVPair<String, Rectangle> pair2 = new KVPair<>("rect2", rectangle2);
 
-        database.insert(pair1);
-        database.insert(pair2);
+        database3.insert(pair1);
+        database3.insert(pair2);
         
-        database.intersections();
+        database3.intersections();
         
         System.setOut(System.out);
         
@@ -206,7 +206,7 @@ public class DatabaseJunitTests {
      */
     @Test
     public void testIntersectionInvalid() { 
-        Database database = new Database();
+        Database database4 = new Database();
 
         // Create rectangles that intersect
         Rectangle rectangle1 = new Rectangle(0, 0, 5, 5);
@@ -219,10 +219,10 @@ public class DatabaseJunitTests {
         KVPair<String, Rectangle> pair1 = new KVPair<>("rect1", rectangle1);
         KVPair<String, Rectangle> pair2 = new KVPair<>("rect2", rectangle2);
 
-        database.insert(pair1);
-        database.insert(pair2);
+        database4.insert(pair1);
+        database4.insert(pair2);
         
-        database.intersections();
+        database4.intersections();
         
         System.setOut(System.out);
         
@@ -284,7 +284,7 @@ public class DatabaseJunitTests {
         System.setOut(System.out);
 
         String expectedOutput = "SkipList dump:\n" +
-                "Node has depth 0, Value null\n" + "SkipList size is: 0";
+                "Node has depth 1, Value null\n" + "SkipList size is: 0";
 
         assertEquals(expectedOutput.trim().replace("\r", ""), outContent
                 .toString().trim().replace("\r", ""));
@@ -319,7 +319,7 @@ public class DatabaseJunitTests {
      */
     @Test
     public void testNonIntersectingRectangles() {
-        Database database = new Database();
+        Database database5 = new Database();
 
         // Create rectangles that don't intersect
         Rectangle rectangle1 = new Rectangle(0, 0, 2, 2);
@@ -332,10 +332,10 @@ public class DatabaseJunitTests {
         KVPair<String, Rectangle> pair1 = new KVPair<>("rect1", rectangle1);
         KVPair<String, Rectangle> pair2 = new KVPair<>("rect2", rectangle2);
 
-        database.insert(pair1);
-        database.insert(pair2);
+        database5.insert(pair1);
+        database5.insert(pair2);
 
-        database.intersections();
+        database5.intersections();
 
         System.setOut(System.out);
 

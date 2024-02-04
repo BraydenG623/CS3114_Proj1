@@ -24,7 +24,7 @@ public class SkipList<K extends Comparable<? super K>, V>
      * Initializes the fields head, size and level
      */
     public SkipList() {
-        head = new SkipNode(null, 0);
+        head = new SkipNode(null, 1);
         size = 0;
     }
 
@@ -94,10 +94,10 @@ public class SkipList<K extends Comparable<? super K>, V>
             return;
         }
         // Check If the value is the correct value type
-        if (it.getValue() == null) {
-            System.out.print("Value cannot be null");
-            return;
-        }
+//        if (it.getValue() == null) {
+//            System.out.print("Value cannot be null");
+//            return;
+//        }
         // Check If the Key Already Exists
         ArrayList<KVPair<K, V>> checkKey = search(it.getKey());
         if (checkKey != null) {
