@@ -49,11 +49,11 @@ public class DatabaseJunitTests {
     }
 
     /**
-     * Test for inserting invalid rectangle
+     * Test for inserting valid rectangle
      * with negative coordinates.
      */
     @Test
-    public void testInsertInvalidRectangle() {
+    public void testInsertNegCordRectangle() {
         Rectangle rectangle = new Rectangle(-1, 1, 3, 4);
         KVPair<String, Rectangle> pair = new KVPair<>("Rect2", rectangle);
 
@@ -117,20 +117,51 @@ public class DatabaseJunitTests {
     }
 
     /**
-     * Testing Region Search.
+     * Testing regionsearch with rectangles inside the specified region
      */
     @Test
-    public void testRegionSearch() {
-        Rectangle rectangle1 = new Rectangle(1, 1, 3, 4);
-        Rectangle rectangle2 = new Rectangle(5, 5, 2, 2);
-        KVPair<String, Rectangle> pair1 = new KVPair<>("Rect5", rectangle1);
-        KVPair<String, Rectangle> pair2 = new KVPair<>("Rect6", rectangle2);
+    public void testRegionSearchInsideRegion() {
+        Database database = new Database();
 
-        database.insert(pair1);
-        database.insert(pair2);
+        // Insert rectangles inside the specified region
+        database.insert(new KVPair<>("Rect1", new Rectangle(2, 2, 3, 3)));  // Inside
+        database.insert(new KVPair<>("Rect2", new Rectangle(5, 5, 2, 2)));  // Inside
 
-        // Assuming regionsearch prints to console, so no need to assert
-        database.regionsearch(0, 0, 6, 6);
+        ByteArrayOutputStream outContent = new ByteArrayOutputStream();
+        System.setOut(new PrintStream(outContent));
+
+        // Perform region search
+        database.regionsearch(1, 1, 6, 6);
+
+        String expectedOutput = "Rectangles in the region (1, 1, 6, 6):\n" +
+                                "(2, 2, 3, 3)\n" +
+                                "(5, 5, 2, 2)\n";
+
+        assertEquals(expectedOutput.trim().replace("\r", ""), outContent
+                .toString().trim().replace("\r", ""));
+    }
+
+    /**
+     * Testing regionsearch with rectangles outside the specified region
+     */
+    @Test
+    public void testRegionSearchOutsideRegion() {
+        Database database = new Database();
+
+        // Insert rectangles outside the specified region
+        database.insert(new KVPair<>("Rect1", new Rectangle(8, 8, 3, 3)));  // Outside
+        database.insert(new KVPair<>("Rect2", new Rectangle(0, 0, 1, 1)));  // Outside
+
+        ByteArrayOutputStream outContent = new ByteArrayOutputStream();
+        System.setOut(new PrintStream(outContent));
+
+        // Perform region search
+        database.regionsearch(1, 1, 6, 6);
+
+        String expectedOutput = "Rectangles in the region (1, 1, 6, 6):\n";
+
+        assertEquals(expectedOutput.trim().replace("\r", ""), outContent
+                .toString().trim().replace("\r", ""));
     }
     
     /**
@@ -168,6 +199,8 @@ public class DatabaseJunitTests {
     }
     
     
+    
+    
     /**
      * Testing invalid intersection
      */
@@ -201,5 +234,117 @@ public class DatabaseJunitTests {
         assertNotEquals(expectedOutput.trim().replace("\r", ""), outContent
             .toString().trim().replace("\r", ""));
     }
+    
+    /**
+     * Test for removing a non-existent rectangle by name.
+     */
+    @Test
+    public void testRemoveNonExistentByName() {
+        ByteArrayOutputStream outContent = new ByteArrayOutputStream();
+        System.setOut(new PrintStream(outContent));
+
+        database.remove("NonExistentRect");
+
+        System.setOut(System.out);
+
+        String expectedOutput = "Rectangle with name 'NonExistentRect' not found.";
+
+        assertEquals(expectedOutput.trim().replace("\r", ""), outContent
+                .toString().trim().replace("\r", ""));
+    }
+    
+    /**
+     * Test for removing a non-existent rectangle by coordinates.
+     */
+    @Test
+    public void testRemoveNonExistentByCoordinates() {
+        ByteArrayOutputStream outContent = new ByteArrayOutputStream();
+        System.setOut(new PrintStream(outContent));
+
+        database.remove(1, 1, 3, 4);
+
+        System.setOut(System.out);
+
+        String expectedOutput = "Rectangle with coordinates (1, 1, 3, 4) not found.";
+
+        assertEquals(expectedOutput.trim().replace("\r", ""), outContent
+                .toString().trim().replace("\r", ""));
+    }
+    
+    /**
+     * Test for dumping an empty skip list.
+     */
+    @Test
+    public void testDumpEmptySkipList() {
+        ByteArrayOutputStream outContent = new ByteArrayOutputStream();
+        System.setOut(new PrintStream(outContent));
+
+        database.dump();
+
+        System.setOut(System.out);
+
+        String expectedOutput = "SkipList dump:\n" +
+                "Node has depth 0, Value null\n" + "SkipList size is: 0";
+
+        assertEquals(expectedOutput.trim().replace("\r", ""), outContent
+                .toString().trim().replace("\r", ""));
+    }
+    
+    /**
+     * Test for dumping a skip list with multiple nodes.
+     */
+    @Test
+    public void testDumpSkipListWithNodes() {
+        Rectangle rectangle1 = new Rectangle(1, 1, 3, 4);
+        Rectangle rectangle2 = new Rectangle(5, 5, 2, 2);
+
+        KVPair<String, Rectangle> pair1 = new KVPair<>("Rect1", rectangle1);
+        KVPair<String, Rectangle> pair2 = new KVPair<>("Rect2", rectangle2);
+
+        ByteArrayOutputStream outContent = new ByteArrayOutputStream();
+        System.setOut(new PrintStream(outContent));
+
+        database.insert(pair1);
+        database.insert(pair2);
+
+        database.dump();
+
+        System.setOut(System.out);
+
+        assertNotEquals(null,outContent.toString());
+    }
+    
+    /**
+     * Test for the case where two rectangles don't intersect.
+     */
+    @Test
+    public void testNonIntersectingRectangles() {
+        Database database = new Database();
+
+        // Create rectangles that don't intersect
+        Rectangle rectangle1 = new Rectangle(0, 0, 2, 2);
+        Rectangle rectangle2 = new Rectangle(3, 3, 2, 2);
+
+        ByteArrayOutputStream outContent = new ByteArrayOutputStream();
+        System.setOut(new PrintStream(outContent));
+
+        // Insert rectangles into the database
+        KVPair<String, Rectangle> pair1 = new KVPair<>("rect1", rectangle1);
+        KVPair<String, Rectangle> pair2 = new KVPair<>("rect2", rectangle2);
+
+        database.insert(pair1);
+        database.insert(pair2);
+
+        database.intersections();
+
+        System.setOut(System.out);
+
+        // Define the expected output
+        String expectedOutput = "Intersecting rectangles:\n";
+
+        assertEquals(expectedOutput.trim().replace("\r", ""), outContent
+                .toString().trim().replace("\r", ""));
+    }
+
 
 }
