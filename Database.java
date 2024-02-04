@@ -55,13 +55,20 @@ public class Database {
         // writing the correct message to the console from
         // that
         Rectangle rectangle = pair.getValue();
+        
+        if (rectangle.getxCoordinate() < 0 || rectangle.getyCoordinate() < 0 || rectangle.getWidth() < 0 || rectangle.getHeight() < 0) {
+           // System.out.println("Invalid rectangle with negative coordinates. Insertion failed.");
+            return;
+        }
 
         if (!rectangle.isInvalid()) {
             list.insert(pair);
-            System.out.println("Inserted: " + rectangle.toString());
+           // System.out.println("Inserted: " + rectangle.toString());
+            return;
         }
         else {
-            System.out.println("Invalid rectangle. Insertion failed.");
+           // System.out.println("Invalid rectangle. Insertion failed.");
+            return;
         }
 
     }
@@ -153,8 +160,13 @@ public class Database {
     public void intersections() {
         System.out.println("Intersecting rectangles:");
 
+        // Use the extra iterator for the second loop
         for (KVPair<String, Rectangle> pair1 : list) {
-            for (KVPair<String, Rectangle> pair2 : list) {
+            Iterator<KVPair<String, Rectangle>> itr2 = list.iterator();
+
+            while (itr2.hasNext()) {
+                KVPair<String, Rectangle> pair2 = itr2.next();
+
                 if (!pair1.getKey().equals(pair2.getKey())) {
                     if (pair1.getValue().intersect(pair2.getValue())) {
                         System.out.println(pair1.getValue().toString()
