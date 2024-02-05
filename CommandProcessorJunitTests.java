@@ -71,14 +71,15 @@ public class CommandProcessorJunitTests {
         processor.processor(commandLine1);
         String commandLine2 = "remove rectName";
         processor.processor(commandLine2);
-        assertOutputEquals("Rectangle inserted: (rectName, 10, 20, 30, 40)\nRemoved: rectName\n");
+        assertOutputEquals("Rectangle inserted: (rectName, 10, 20, 30, 40)\n"
+            + "Rectangle removed: (rectName, 10, 20, 30, 40)\n");
     }
 
     @Test
     public void testRemoveByNameInvalid() {
         String commandLine = "remove unknownName";
         processor.processor(commandLine);
-        assertOutputEquals("Rectangle with name 'unknownName' not found.\n");
+        assertOutputEquals("Rectangle not removed: unknownName\n");
     }
 
     @Test

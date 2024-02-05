@@ -151,6 +151,7 @@ public class Rectangle {
             ", " + this.width + ", " + 
             this.height + ")";
     }
+    
 
 
     /**
@@ -158,11 +159,10 @@ public class Rectangle {
      * @return true if the rectangle's parameters are invalid, false otherwise.
      */
     public boolean isInvalid() {
-        //Check if the rectangles' width or height is not positive
-        //or if the rectangle extends beyond a 1024x1024 boundary
-        return (this.width <= 0 || this.height <= 0 || 
-            this.xCoordinate + this.width > 1024 || 
-            this.yCoordinate + this.height > 1024); 
-            
+        // Check if the rectangle's width or height is not positive
+        // or if the rectangle extends beyond a 1024x1024 boundary
+        return (width <= 0 || height <= 0 ||
+                xCoordinate < 0 || yCoordinate < 0 ||
+                xCoordinate + width > 1024 || yCoordinate + height > 1024);
     }
 }

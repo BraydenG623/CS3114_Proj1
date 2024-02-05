@@ -678,7 +678,7 @@ public class RectangleJunitTests {
     @Test
     public void testIsInvalidWithNegativeCoordinatesShouldBeTrue() {
         Rectangle negativeCoordinatesRect = new Rectangle(-10, -10, 20, 20);
-        assertFalse("Rectangle with negative coordinates should be valid",
+        assertTrue("Rectangle with negative coordinates should be valid",
             negativeCoordinatesRect.isInvalid());
     }
 
@@ -743,7 +743,7 @@ public class RectangleJunitTests {
     public void testIsInvalidWidthNegativeButWithinBoundary() {
         Rectangle rectWidthNegativeWithinBoundary = new Rectangle(-5, 10, 15,
             10);
-        assertFalse(
+        assertTrue(
             "Rectangle negative xCoord but in boundary isn't be invalid",
             rectWidthNegativeWithinBoundary.isInvalid());
     }
@@ -758,7 +758,7 @@ public class RectangleJunitTests {
     public void testIsInvalidHeightNegativeButWithinBoundary() {
         Rectangle rectHeightNegativeWithinBoundary = new Rectangle(10, -5, 10,
             15);
-        assertFalse(
+        assertTrue(
             "Rectangle negative yCoord but in bound isn't invalid",
             rectHeightNegativeWithinBoundary.isInvalid());
     }

@@ -25,27 +25,74 @@ public class DatabaseJunitTests {
         database = new Database();
     }
 
+    @Test
+    public void testinsertreject() {
+        Rectangle rectangle = new Rectangle(1, 1, 3, 4);
+        Rectangle rectangle2 = new Rectangle(-1, -2, 6, 6);
+        KVPair<String, Rectangle> pair = new KVPair<>("Rect1", rectangle);
+        KVPair<String, Rectangle> pair2 = new KVPair<>("Rect2", rectangle2);
+        ByteArrayOutputStream outContent = new ByteArrayOutputStream();
+        System.setOut(new PrintStream(outContent));
+
+        database.insert(pair);
+        database.insert(pair2);
+        
+        System.setOut(System.out);
+        
+        assertEquals("Rectangle inserted: (Rect1, 1, 1, 3, 4)\r\n"
+            + "Rectangle rejected: (Rect2, -1, -2, 6, 6)\r\n", outContent.toString());
+    }
     /**
      * Test for inserting a valid rectangle.
      */
     @Test
     public void testInsertValidRectangle() {
         Rectangle rectangle = new Rectangle(1, 1, 3, 4);
+        Rectangle rectangle2 = new Rectangle(5, 2, 6, 6);
         KVPair<String, Rectangle> pair = new KVPair<>("Rect1", rectangle);
-        
+        KVPair<String, Rectangle> pair2 = new KVPair<>("Rect2", rectangle2);
         ByteArrayOutputStream outContent = new ByteArrayOutputStream();
         System.setOut(new PrintStream(outContent));
 
         database.insert(pair);
+        database.insert(pair2);
         database.dump();
         
         System.setOut(System.out);
 
         String expectedOutput = "SkipList dump:\n"
-            + "Node has depth 0, Value null\n" + "SkipList size is: 0";
+            + "Node has depth 1, Value null\n" + "SkipList size is: 0";
 
-        assertNotEquals(expectedOutput.trim().replace("\r", ""), outContent
-            .toString().trim().replace("\r", ""));
+        assertNotEquals(expectedOutput, outContent.toString());
+        
+    }
+    
+    @Test
+    public void testBigInsert() {
+        Database database = new Database();
+        
+        // Insert five rejected rectangles
+        for (int i = 0; i < 5; i++) {
+            Rectangle rejectedRectangle = new Rectangle(i, i, -60, -50);
+            KVPair<String, Rectangle> rejectedPair = new KVPair<>("RejectedRect" + i, rejectedRectangle);
+            database.insert(rejectedPair);
+        }
+
+        // Insert 100 rectangles
+        for (int i = 0; i < 100; i++) {
+            Rectangle rectangle = new Rectangle(i, i, i + 2, i + 4);
+            KVPair<String, Rectangle> pair = new KVPair<>("Rect" + i, rectangle);
+            database.insert(pair);
+        }
+        
+        ByteArrayOutputStream outContent = new ByteArrayOutputStream();
+        System.setOut(new PrintStream(outContent));
+
+        database.dump();
+        
+        System.setOut(System.out);
+        
+ 
     }
 
     /**
@@ -79,16 +126,18 @@ public class DatabaseJunitTests {
     public void testRemoveByName() {
         Rectangle rectangle = new Rectangle(1, 1, 3, 4);
         KVPair<String, Rectangle> pair = new KVPair<>("Rect3", rectangle);
+       
+
+        database.insert(pair);
         
         ByteArrayOutputStream outContent = new ByteArrayOutputStream();
         System.setOut(new PrintStream(outContent));
-
-        database.insert(pair);
+        
         database.remove("Rect3");
 
         System.setOut(System.out);
 
-        String expectedOutput = "Removed: Rect3";
+        String expectedOutput = "Rectangle removed: (Rect3, 1, 1, 3, 4)";
 
         assertEquals(expectedOutput.trim().replace("\r", ""), outContent
             .toString().trim().replace("\r", ""));
@@ -102,10 +151,12 @@ public class DatabaseJunitTests {
         Rectangle rectangle = new Rectangle(1, 1, 3, 4);
         KVPair<String, Rectangle> pair = new KVPair<>("Rect4", rectangle);
         
-        ByteArrayOutputStream outContent = new ByteArrayOutputStream();
-        System.setOut(new PrintStream(outContent));
 
         database.insert(pair);
+        
+        ByteArrayOutputStream outContent = new ByteArrayOutputStream();
+        System.setOut(new PrintStream(outContent));
+        
         database.remove(1, 1, 3, 4);
 
         System.setOut(System.out);
@@ -175,8 +226,7 @@ public class DatabaseJunitTests {
         Rectangle rectangle1 = new Rectangle(0, 0, 5, 5);
         Rectangle rectangle2 = new Rectangle(3, 3, 5, 5);
 
-        ByteArrayOutputStream outContent = new ByteArrayOutputStream();
-        System.setOut(new PrintStream(outContent));
+
         
         // Insert rectangles into the database
         KVPair<String, Rectangle> pair1 = new KVPair<>("rect1", rectangle1);
@@ -185,14 +235,17 @@ public class DatabaseJunitTests {
         database3.insert(pair1);
         database3.insert(pair2);
         
+        ByteArrayOutputStream outContent = new ByteArrayOutputStream();
+        System.setOut(new PrintStream(outContent));
+        
         database3.intersections();
         
         System.setOut(System.out);
         
         // Define the expected output
-        String expectedOutput = "Intersecting rectangles:\n" +
-                "(0, 0, 5, 5) intersects with (3, 3, 5, 5)\n" +
-                "(3, 3, 5, 5) intersects with (0, 0, 5, 5)\n";
+        String expectedOutput = "Intersection pairs:\n" +
+                "(rect1, 0, 0, 5, 5) | (rect2, 3, 3, 5, 5)\n" +
+                "(rect2, 3, 3, 5, 5) | (rect1, 0, 0, 5, 5)\n";
 
         assertEquals(expectedOutput.trim().replace("\r", ""), outContent
             .toString().trim().replace("\r", ""));
@@ -247,7 +300,7 @@ public class DatabaseJunitTests {
 
         System.setOut(System.out);
 
-        String expectedOutput = "Rectangle with name 'NonExistentRect' not found.";
+        String expectedOutput = "Rectangle not removed: NonExistentRect";
 
         assertEquals(expectedOutput.trim().replace("\r", ""), outContent
                 .toString().trim().replace("\r", ""));
@@ -284,7 +337,7 @@ public class DatabaseJunitTests {
         System.setOut(System.out);
 
         String expectedOutput = "SkipList dump:\n" +
-                "Node has depth 1, Value null\n" + "SkipList size is: 0";
+                "Node with depth 1, value null\n" + "SkipList size is: 0";
 
         assertEquals(expectedOutput.trim().replace("\r", ""), outContent
                 .toString().trim().replace("\r", ""));
@@ -325,8 +378,7 @@ public class DatabaseJunitTests {
         Rectangle rectangle1 = new Rectangle(0, 0, 2, 2);
         Rectangle rectangle2 = new Rectangle(3, 3, 2, 2);
 
-        ByteArrayOutputStream outContent = new ByteArrayOutputStream();
-        System.setOut(new PrintStream(outContent));
+
 
         // Insert rectangles into the database
         KVPair<String, Rectangle> pair1 = new KVPair<>("rect1", rectangle1);
@@ -334,13 +386,16 @@ public class DatabaseJunitTests {
 
         database5.insert(pair1);
         database5.insert(pair2);
+        
+        ByteArrayOutputStream outContent = new ByteArrayOutputStream();
+        System.setOut(new PrintStream(outContent));
 
         database5.intersections();
 
         System.setOut(System.out);
 
         // Define the expected output
-        String expectedOutput = "Intersecting rectangles:\n";
+        String expectedOutput = "Intersection pairs:\n";
 
         assertEquals(expectedOutput.trim().replace("\r", ""), outContent
                 .toString().trim().replace("\r", ""));

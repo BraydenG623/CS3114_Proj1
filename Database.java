@@ -30,6 +30,7 @@ public class Database {
     // This is an Iterator object over the SkipList to loop through it from
     // outside the class.
     // You will need to define an extra Iterator for the intersections method.
+    @SuppressWarnings("unused")
     private Iterator<KVPair<String, Rectangle>> itr1;
 
     /**
@@ -41,7 +42,18 @@ public class Database {
         itr1 = list.iterator(); // Initialize itr1
     }
 
+    private String formatValue(KVPair<String, Rectangle> element) {
+        String key = element.getKey().toString();
+        String value = element.getValue().toString();
 
+        // Check if value has parentheses at the beginning and end
+        if (value.startsWith("(") && value.endsWith(")")) {
+            // Remove parentheses
+            value = value.substring(1, value.length() - 1);
+        }
+
+        return "(" + key + ", " + value + ")";
+    }
     /**
      * Inserts the KVPair in the SkipList if the rectangle has valid coordinates
      * and dimensions, that is that the coordinates are non-negative and that
@@ -57,18 +69,14 @@ public class Database {
         // that
         Rectangle rectangle = pair.getValue();
         
-        if (rectangle.getWidth() < 0 || rectangle.getHeight() < 0) {
-           // System.out.println("Invalid rectangle with negative coordinates. Insertion failed.");
-            return;
-        }
 
         if (!rectangle.isInvalid()) {
             list.insert(pair);
-           // System.out.println("Inserted: " + rectangle.toString());
+            System.out.println("Rectangle inserted: "+ formatValue(pair));
             return;
         }
         else {
-           // System.out.println("Invalid rectangle. Insertion failed.");
+            System.out.println("Rectangle rejected: "+ formatValue(pair));
             return;
         }
 
@@ -86,10 +94,10 @@ public class Database {
         KVPair<String, Rectangle> removedPair = list.remove(name);
 
         if (removedPair != null) {
-            System.out.println("Removed: " + name);
+            System.out.println("Rectangle removed: " + formatValue(removedPair));
         }
         else {
-            System.out.println("Rectangle with name '" + name + "' not found.");
+            System.out.println("Rectangle not removed: " + name);
         }
 
     }
@@ -159,7 +167,7 @@ public class Database {
      * Rectangles.
      */
     public void intersections() {
-        System.out.println("Intersecting rectangles:");
+        System.out.println("Intersection pairs:");
 
         // Use the iterator directly instead of itr1
         Iterator<KVPair<String, Rectangle>> iterator = list.iterator();
@@ -175,11 +183,9 @@ public class Database {
 
                 if (!pair1.getKey().equals(pair2.getKey())) {
                     if (pair1.getValue().intersect(pair2.getValue())) {
-                        System.out.println(pair1.getValue().toString()
-                                + " intersects with " + pair2.getValue()
-                                .toString());
-                    }
-                    //(3, 3, 5, 5) intersects with (0, 0, 5, 5)
+                        System.out.println(formatValue(pair1)
+                                + " | " + formatValue(pair2));
+                    }                   
                 }
             }
         }
