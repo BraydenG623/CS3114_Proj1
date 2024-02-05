@@ -70,20 +70,8 @@ public class CommandProcessor {
 
                 // Now construct the rectangle object
                 Rectangle rect = new Rectangle(x, y, w, h);
-
-                if (!rect.isInvalid()) {
-                    // Rectangle is valid so we can put it into the Database
-                    KVPair<String, Rectangle> pair = new KVPair<>(name, rect);
-                    data.insert(pair);
-                    System.out.println("Rectangle inserted: (" + name + ", " + x
-                        + ", " + y + ", " + w + ", " + h + ")");
-                }
-                else {
-                    // Rectangle is invalid, do not insert
-                    System.out.println("Rectangle rejected: (" + name + ", " + x
-                        + ", " + y + ", " + w + ", " + h
-                        + ") - Rectangle has invalid properties.");
-                }
+                KVPair<String, Rectangle> pair = new KVPair<>(name, rect);
+                data.insert(pair);
 
             }
             else {
