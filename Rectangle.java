@@ -151,7 +151,6 @@ public class Rectangle {
             ", " + this.width + ", " + 
             this.height + ")";
     }
-    
 
 
     /**
@@ -160,9 +159,16 @@ public class Rectangle {
      */
     public boolean isInvalid() {
         // Check if the rectangle's width or height is not positive
-        // or if the rectangle extends beyond a 1024x1024 boundary
-        return (width <= 0 || height <= 0 ||
-                xCoordinate < 0 || yCoordinate < 0 ||
-                xCoordinate + width > 1024 || yCoordinate + height > 1024);
+        boolean hasInvalidDimensions = this.width <= 0 || this.height <= 0;
+        
+        // Check if the rectangle's starting coordinates are negative
+        boolean hasNegativeCoordinates = this.xCoordinate < 0 || this.yCoordinate < 0;
+        
+        // Check if the rectangle extends beyond the 1024x1024 world box
+        boolean isOutsideWorldBox = this.xCoordinate + this.width > 1024 || this.yCoordinate + this.height > 1024;
+        
+        // A rectangle is invalid if any of the above conditions are true
+        return hasInvalidDimensions || hasNegativeCoordinates || isOutsideWorldBox;
     }
+
 }

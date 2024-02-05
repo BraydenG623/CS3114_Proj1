@@ -39,21 +39,9 @@ public class Database {
      */
     public Database() {
         list = new SkipList<String, Rectangle>();
-        itr1 = list.iterator(); // Initialize itr1
     }
 
-    private String formatValue(KVPair<String, Rectangle> element) {
-        String key = element.getKey().toString();
-        String value = element.getValue().toString();
 
-        // Check if value has parentheses at the beginning and end
-        if (value.startsWith("(") && value.endsWith(")")) {
-            // Remove parentheses
-            value = value.substring(1, value.length() - 1);
-        }
-
-        return "(" + key + ", " + value + ")";
-    }
     /**
      * Inserts the KVPair in the SkipList if the rectangle has valid coordinates
      * and dimensions, that is that the coordinates are non-negative and that
@@ -64,22 +52,18 @@ public class Database {
      *            the KVPair to be inserted
      */
     public void insert(KVPair<String, Rectangle> pair) {
-        // Delegates the decision mostly to SkipList, only
-        // writing the correct message to the console from
-        // that
-        Rectangle rectangle = pair.getValue();
-        
-
-        if (!rectangle.isInvalid()) {
-            list.insert(pair);
-            System.out.println("Rectangle inserted: "+ formatValue(pair));
-            return;
+        Rectangle rect = pair.getValue();
+        if (rect.isInvalid()) {
+            System.out.println("Rectangle rejected: (" + pair.getKey() + ", "
+                + rect.getxCoordinate() + ", " + rect.getyCoordinate() + ", "
+                + rect.getWidth() + ", " + rect.getHeight() + ")");
         }
         else {
-            System.out.println("Rectangle rejected: "+ formatValue(pair));
-            return;
+            list.insert(pair);
+            System.out.println("Rectangle inserted: (" + pair.getKey() + ", "
+                + rect.getxCoordinate() + ", " + rect.getyCoordinate() + ", "
+                + rect.getWidth() + ", " + rect.getHeight() + ")");
         }
-
     }
 
 
@@ -91,15 +75,16 @@ public class Database {
      *            the name of the rectangle to be removed
      */
     public void remove(String name) {
-        KVPair<String, Rectangle> removedPair = list.remove(name);
-
-        if (removedPair != null) {
-            System.out.println("Rectangle removed: " + formatValue(removedPair));
+        KVPair<String, Rectangle> removed = list.remove(name);
+        if (removed != null) {
+            Rectangle rect = removed.getValue();
+            System.out.println("Rectangle removed: (" + removed.getKey() + ", "
+                + rect.getxCoordinate() + ", " + rect.getyCoordinate() + ", "
+                + rect.getWidth() + ", " + rect.getHeight() + ")");
         }
         else {
             System.out.println("Rectangle not removed: " + name);
         }
-
     }
 
 
@@ -117,16 +102,15 @@ public class Database {
      *            height of the rectangle to be removed
      */
     public void remove(int x, int y, int w, int h) {
-        Rectangle searchRectangle = new Rectangle(x, y, w, h);
-        KVPair<String, Rectangle> removedPair = list.removeByValue(
-            searchRectangle);
-
-        if (removedPair != null) {
-            System.out.println("Removed: " + removedPair.getValue().toString());
+        Rectangle searchRect = new Rectangle(x, y, w, h);
+        KVPair<String, Rectangle> removed = list.removeByValue(searchRect);
+        if (removed != null) {
+            System.out.println("Rectangle removed: (" + removed.getKey() + ", "
+                + x + ", " + y + ", " + w + ", " + h + ")");
         }
         else {
-            System.out.println("Rectangle with coordinates (" + x + ", " + y
-                + ", " + w + ", " + h + ") not found.");
+            System.out.println("Rectangle not found: (" + x + ", " + y + ", "
+                + w + ", " + h + ")");
         }
     }
 
@@ -147,15 +131,39 @@ public class Database {
      *            height of the region
      */
     public void regionsearch(int x, int y, int w, int h) {
-        System.out.println("Rectangles in the region (" + x + ", " + y + ", "
-            + w + ", " + h + "):");
+        // Create a query rectangle with the given region.
+        Rectangle searchRect = new Rectangle(x, y, w, h);
 
+        // Check if the search rectangle is valid.
+        if (w <= 0 || h <= 0) {
+            System.out.println("Rectangle rejected: (" + x + ", " + y + ", " + w
+                + ", " + h + ")");
+            return;
+        }
+
+        System.out.println("Rectangles intersecting region (" + x + ", " + y
+            + ", " + w + ", " + h + "):");
+        //boolean found = false;
+
+        // Iterate through all rectangles in the skip list.
         for (KVPair<String, Rectangle> pair : list) {
-            Rectangle rectangle = pair.getValue();
-            if (rectangle.intersect(new Rectangle(x, y, w, h))) {
-                System.out.println(rectangle.toString());
+            Rectangle rect = pair.getValue();
+            // Check if the current rectangle intersects with the search
+            // rectangle.
+            if (rect.intersect(searchRect)) {
+                // Print the rectangle that intersects with the search region.
+                System.out.println("(" + pair.getKey() + ", " + rect
+                    .getxCoordinate() + ", " + rect.getyCoordinate() + ", "
+                    + rect.getWidth() + ", " + rect.getHeight() + ")");
+                //found = true;
             }
         }
+
+        // If no rectangles intersect the search region, print a message
+        // accordingly.
+//        if (!found) {
+//            System.out.println("No rectangles intersect the search region.");
+//        }
     }
 
 
@@ -169,28 +177,47 @@ public class Database {
     public void intersections() {
         System.out.println("Intersection pairs:");
 
-        // Use the iterator directly instead of itr1
-        Iterator<KVPair<String, Rectangle>> iterator = list.iterator();
+        // boolean foundIntersection = false;
+        // Initialize the first iterator (itr1) to traverse the skip list.
+        Iterator<KVPair<String, Rectangle>> itr1New = list.iterator();
 
-        while (iterator.hasNext()) {
-            KVPair<String, Rectangle> pair1 = iterator.next();
+        while (itr1New.hasNext()) {
+            KVPair<String, Rectangle> pair1 = itr1New.next();
+            Rectangle rect1 = pair1.getValue();
 
-            // Use a separate iterator for the second loop
-            Iterator<KVPair<String, Rectangle>> iterator2 = list.iterator();
+            // Create a new iterator for the nested loop to ensure every pair is
+            // compared.
+            Iterator<KVPair<String, Rectangle>> itr2 = list.iterator();
 
-            while (iterator2.hasNext()) {
-                KVPair<String, Rectangle> pair2 = iterator2.next();
+            while (itr2.hasNext()) {
+                KVPair<String, Rectangle> pair2 = itr2.next();
 
-                if (!pair1.getKey().equals(pair2.getKey())) {
-                    if (pair1.getValue().intersect(pair2.getValue())) {
-                        System.out.println(formatValue(pair1)
-                                + " | " + formatValue(pair2));
-                    }                   
+                // Avoid comparing the same rectangle with itself.
+                if (pair1 != pair2) {
+                    Rectangle rect2 = pair2.getValue();
+
+                    // Check if rectangles intersect using the intersect method.
+                    if (rect1.intersect(rect2)) {
+                        // foundIntersection = true;
+                        // Print the intersecting pair with rectangle names and
+                        // dimensions.
+                        System.out.println("(" + pair1.getKey() + ", " + rect1
+                            .getxCoordinate() + ", " + rect1.getyCoordinate()
+                            + ", " + rect1.getWidth() + ", " + rect1.getHeight()
+                            + " | " + pair2.getKey() + ", " + rect2
+                                .getxCoordinate() + ", " + rect2
+                                    .getyCoordinate() + ", " + rect2.getWidth()
+                            + ", " + rect2.getHeight() + ")");
+                    }
                 }
             }
         }
-    }
 
+        // If no intersections were found, print a message accordingly.
+// if (!foundIntersection) {
+// System.out.println("No intersections found.");
+// }
+    }
 
 
     /**
@@ -201,16 +228,27 @@ public class Database {
      *            name of the Rectangle to be searched for
      */
     public void search(String name) {
-        ArrayList<KVPair<String, Rectangle>> result = list.search(name);
+        // Use the skip list's search method to find rectangles with the given
+        // name.
+        ArrayList<KVPair<String, Rectangle>> foundRectangles = list.search(
+            name);
 
-        if (result != null) {
-            System.out.println("Rectangles with name '" + name + "':");
-            for (KVPair<String, Rectangle> pair : result) {
-                System.out.println(pair.getValue().toString());
+        if (foundRectangles != null && !foundRectangles.isEmpty()) {
+            // Rectangles with the specified name are found, print them.
+            System.out.println("Rectangles found:");
+            for (KVPair<String, Rectangle> pair : foundRectangles) {
+                Rectangle rectangle = pair.getValue();
+                // Print the rectangle's name and its details using the getter
+                // methods.
+                System.out.println("(" + pair.getKey() + ", " + rectangle
+                    .getxCoordinate() + ", " + rectangle.getyCoordinate() + ", "
+                    + rectangle.getWidth() + ", " + rectangle.getHeight()
+                    + ")");
             }
         }
         else {
-            System.out.println("No rectangles with name '" + name + "' found.");
+            // No rectangles found with the specified name.
+            System.out.println("Rectangle not found: " + "(" + name + ")");
         }
     }
 
