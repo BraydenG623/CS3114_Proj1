@@ -82,26 +82,25 @@ public class SkipListTest {
 // assertEquals(0, skipList.size());
 // }
 
-
-//    /**
-//     * Tests that the same key cannot be inserted twice.
-//     */
-//    @Test
-//    public void testInsertWithExistingKey() {
-//        KVPair<Integer, String> pair1 = new KVPair<>(5, "Value1");
-//        KVPair<Integer, String> pair2 = new KVPair<>(5, "Value2");
+// /**
+// * Tests that the same key cannot be inserted twice.
+// */
+// @Test
+// public void testInsertWithExistingKey() {
+// KVPair<Integer, String> pair1 = new KVPair<>(5, "Value1");
+// KVPair<Integer, String> pair2 = new KVPair<>(5, "Value2");
 //
-//        ByteArrayOutputStream outContent = new ByteArrayOutputStream();
-//        System.setOut(new PrintStream(outContent));
+// ByteArrayOutputStream outContent = new ByteArrayOutputStream();
+// System.setOut(new PrintStream(outContent));
 //
-//        skipList.insert(pair1);
-//        skipList.insert(pair2);
+// skipList.insert(pair1);
+// skipList.insert(pair2);
 //
-//        System.setOut(System.out);
+// System.setOut(System.out);
 //
-//        assertEquals("Key Already Exists", outContent.toString());
-//        assertEquals(1, skipList.size());
-//    }
+// assertEquals("Key Already Exists", outContent.toString());
+// assertEquals(1, skipList.size());
+// }
 
 
     /**
@@ -165,25 +164,24 @@ public class SkipListTest {
             .toString().trim().replace("\r", ""));
     }
 
-
-//    /**
-//     * Tests a valid remove by value instance.
-//     */
-//    @Test
-//    public void testRemoveByValValid() {
-//        KVPair<Integer, String> pair1 = new KVPair<>(5, "Value1");
-//        KVPair<Integer, String> pair2 = new KVPair<>(10, "Value2");
-//        KVPair<Integer, String> pair3 = new KVPair<>(15, "Value3");
+// /**
+// * Tests a valid remove by value instance.
+// */
+// @Test
+// public void testRemoveByValValid() {
+// KVPair<Integer, String> pair1 = new KVPair<>(5, "Value1");
+// KVPair<Integer, String> pair2 = new KVPair<>(10, "Value2");
+// KVPair<Integer, String> pair3 = new KVPair<>(15, "Value3");
 //
-//        skipList.insert(pair1);
-//        skipList.insert(pair2);
-//        skipList.insert(pair3);
+// skipList.insert(pair1);
+// skipList.insert(pair2);
+// skipList.insert(pair3);
 //
-//        KVPair<Integer, String> result = skipList.removeByValue("Value1");
+// KVPair<Integer, String> result = skipList.removeByValue("Value1");
 //
-//        assertEquals(result, pair1);
-//        assertEquals(2, skipList.size());
-//    }
+// assertEquals(result, pair1);
+// assertEquals(2, skipList.size());
+// }
 
 
     /**
@@ -360,7 +358,8 @@ public class SkipListTest {
                             skipList.search(randomKey);
 
                         if (searchResult != null) {
-                            for (KVPair<Integer, String> resultPair : searchResult) {
+                            for (KVPair<Integer, String> 
+                            resultPair : searchResult) {
                                 assertEquals(resultPair.getKey(), Integer
                                     .valueOf(randomKey));
                                 assertEquals(resultPair.getValue(), "Value"
@@ -476,26 +475,25 @@ public class SkipListTest {
         assertEquals(3, skipListStr.size());
     }
 
-
     /**
      * Tests valid remove by value with
      * Integer-type keys.
      */
-//    @Test
-//    public void testValidRemoveIntVal() {
-//        KVPair<String, Integer> pair1 = new KVPair<>("apple", 1);
-//        KVPair<String, Integer> pair2 = new KVPair<>("banana", 2);
-//        KVPair<String, Integer> pair3 = new KVPair<>("orange", 3);
+// @Test
+// public void testValidRemoveIntVal() {
+// KVPair<String, Integer> pair1 = new KVPair<>("apple", 1);
+// KVPair<String, Integer> pair2 = new KVPair<>("banana", 2);
+// KVPair<String, Integer> pair3 = new KVPair<>("orange", 3);
 //
-//        skipListStr.insert(pair1);
-//        skipListStr.insert(pair2);
-//        skipListStr.insert(pair3);
+// skipListStr.insert(pair1);
+// skipListStr.insert(pair2);
+// skipListStr.insert(pair3);
 //
-//        KVPair<String, Integer> result = skipListStr.removeByValue(1);
+// KVPair<String, Integer> result = skipListStr.removeByValue(1);
 //
-//        assertEquals(result, pair1);
-//        assertEquals(2, skipListStr.size());
-//    }
+// assertEquals(result, pair1);
+// assertEquals(2, skipListStr.size());
+// }
 
 
     /**

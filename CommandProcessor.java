@@ -19,7 +19,7 @@ public class CommandProcessor {
      * exist, so the only constructor takes a database class object to feed
      * commands to.
      * 
-     * @param dataIn
+     *
      *            the database object to manipulate
      */
     public CommandProcessor() {
@@ -43,6 +43,14 @@ public class CommandProcessor {
      *            a single line from the text file
      */
     public void processor(String line) {
+        // Check if the line is empty or consists only of whitespace
+//        if (line.trim().isEmpty()) {
+//            // If the line is empty or whitespace, 
+//            //return early without processing
+//            //System.out.println("Invalid line");
+//            return;
+//        }
+        
         // converts the string of the line into an
         // array of its space (" ") delimited elements
         String[] arr = line.split("\\s{1,}");

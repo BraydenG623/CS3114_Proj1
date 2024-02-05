@@ -41,7 +41,7 @@ public class SkipListProject {
      *            argument.
      */
     public static void main(String[] args) {
-
+        
         // the file containing the commands
         File file = null;
 

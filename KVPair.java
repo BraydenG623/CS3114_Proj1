@@ -14,9 +14,9 @@
  */
 
 //public class KVPair<K, V> implements Comparable<KVPair<K, V>> {
-	//Another Implementation choice is to require K to implement Comparable not KVPair
-	public class KVPair<K extends Comparable<? super K>, V> {
-
+//Another Implementation choice is to require 
+//K to implement Comparable not KVPair
+public class KVPair<K extends Comparable<? super K>, V> {
     // the object to be a key
     private K key;
     // the object to be the value at the key

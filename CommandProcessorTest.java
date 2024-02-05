@@ -6,6 +6,14 @@ import java.io.PrintStream;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue; // Make sure this line is included
 
+/**
+ * Tests for the CommandProcessor class.
+ * Ensures that the processor correctly 
+ * handles various command inputs.
+ * 
+ * @author Brayden Gardner
+ * @version 1.0
+ */
 public class CommandProcessorTest {
     private final ByteArrayOutputStream outContent =
         new ByteArrayOutputStream();
@@ -13,6 +21,11 @@ public class CommandProcessorTest {
 
     private CommandProcessor processor;
 
+    /**
+     * Sets up the test environment before each test.
+     * Redirects the system output to capture the console output for
+     * verification.
+     */
     @Before
     public void setUp() {
         System.setOut(new PrintStream(outContent));
@@ -22,12 +35,21 @@ public class CommandProcessorTest {
     }
 
 
+    /**
+     * Restores the system output after each test.
+     */
     @After
     public void restoreStreams() {
         System.setOut(originalOut);
     }
 
 
+    /**
+     * Test the insertion of a rectangle
+     *  with valid parameters.
+     * Expected to print the confirmation 
+     * message for the rectangle insertion.
+     */
     @Test
     public void testInsertWithValidInput() {
         String commandLine = "insert rect1 10 20 30 40";
@@ -47,6 +69,13 @@ public class CommandProcessorTest {
     }
 
 
+    /**
+     * Test the insertion of a rectangle 
+     * with invalid parameters.
+     * Expected to print an error message 
+     * indicating the rejection of the
+     * rectangle.
+     */
     @Test
     public void testInsertWithInvalidInput() {
         String commandLine = "insert rect1 -10 -20 0 40";
@@ -62,6 +91,13 @@ public class CommandProcessorTest {
     }
 
 
+    /**
+     * Test the removal of a rectangle by 
+     * its name when the rectangle exists.
+     * Expected to print messages 
+     * confirming the insertion and subsequent
+     * removal of the rectangle.
+     */
     @Test
     public void testRemoveByNameValid() {
         String commandLine1 = "insert rectName 10 20 30 40";
@@ -73,6 +109,12 @@ public class CommandProcessorTest {
     }
 
 
+    /**
+     * Test the removal of a rectangle by a name that does not exist in the
+     * database.
+     * Expected to print an error message indicating that the rectangle was not
+     * removed.
+     */
     @Test
     public void testRemoveByNameInvalid() {
         String commandLine = "remove unknownName";
@@ -81,17 +123,31 @@ public class CommandProcessorTest {
     }
 
 
+    /**
+     * Test the removal of a rectangle by its coordinates when the rectangle
+     * exists.
+     * Expected to print messages confirming the insertion and subsequent
+     * removal of the rectangle.
+     */
     @Test
     public void testRemoveByCoordinatesValid() {
         String commandLine1 = "insert rectName 10 20 30 40";
         processor.processor(commandLine1);
         String commandLine2 = "remove 10 20 30 40";
         processor.processor(commandLine2);
-        assertOutputEquals(
-            "Rectangle inserted: (rectName, 10, 20, 30, 40)\nRectangle removed: (rectName, 10, 20, 30, 40)\n");
+        assertOutputEquals("Rectangle inserted:"
+            + " (rectName, 10, 20, 30, 40)\nRectangle removed:"
+            + " (rectName, 10, 20, 30, 40)\n");
     }
 
 
+    /**
+     * Test the region search for rectangles 
+     * that intersect with a specified
+     * region.
+     * Expected to print messages confirming the insertion of the rectangle and
+     * the results of the region search.
+     */
     @Test
     public void testRegionSearchValid() {
         String commandLine1 = "insert rectName 5 5 10 10";
@@ -104,6 +160,11 @@ public class CommandProcessorTest {
     }
 
 
+    /**
+     * Test the search for rectangles by a valid name.
+     * Expected to print messages confirming
+     * the insertion of the rectangle and the results of the search.
+     */
     @Test
     public void testSearchValid() {
         String commandLine1 = "insert rectName 0 0 5 5";
@@ -115,6 +176,10 @@ public class CommandProcessorTest {
     }
 
 
+    /**
+     * Test the dump functionality of the database.
+     * Expected to print the state of the database.
+     */
     @Test
     public void testDump() {
         String commandLine = "dump";
@@ -123,6 +188,12 @@ public class CommandProcessorTest {
     }
 
 
+    /**
+     * Test the intersections functionality by checking
+     * for intersections between multiple rectangles.
+     * Expected to print the pairs of rectangles
+     * that intersect with each other.
+     */
     @Test
     public void testIntersectionFromEx() {
         String cmd1 = "insert r1 10 10 5 5";
@@ -153,6 +224,16 @@ public class CommandProcessorTest {
     }
 
 
+    /**
+     * Asserts that the captured output from the System.out exactly matches the
+     * expected string.
+     * This method normalizes newline characters before comparison to handle
+     * differences
+     * between operating systems.
+     * 
+     * @param expected
+     *            The expected string to compare against the captured output.
+     */
     private void assertOutputEquals(String expected) {
         assertEquals(normalizeNewlines(expected), normalizeNewlines(outContent
             .toString()));
@@ -160,6 +241,16 @@ public class CommandProcessorTest {
     }
 
 
+    /**
+     * Asserts that the captured output from the System.out starts with the
+     * expected string.
+     * This method is useful for testing that the beginning of a message is
+     * correct when the
+     * entire output is either too long or contains variable content.
+     * 
+     * @param expectedStart
+     *            The expected start string of the captured output.
+     */
     private void assertOutputStartsWith(String expectedStart) {
         String actual = normalizeNewlines(outContent.toString());
         assertTrue("Expected to start with: " + expectedStart + ", but was: "
@@ -168,6 +259,22 @@ public class CommandProcessorTest {
     }
 
 
+    /**
+     * Normalizes newline characters within a
+     *  given input string to a consistent
+     * format (\n).
+     * This method ensures consistent 
+     * assertions across different operating
+     * systems
+     * that may use \r\n (Windows) or \r 
+     * (old macOS) as newline characters.
+     * 
+     * @param input
+     *            The input string with 
+     *            potential mixed newline characters.
+     * @return The normalized string with 
+     * consistent newline characters (\n).
+     */
     private String normalizeNewlines(String input) {
         return input.replace("\r\n", "\n").replace("\r", "\n");
     }
