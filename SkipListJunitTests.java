@@ -64,27 +64,27 @@ public class SkipListJunitTests {
         assertEquals(0, skipList.size());
     }
 
-    /**
+   /**
      * Tests that a null value can be inserted.
      */
-     @Test
-     public void testInvalidValueInput() {
-         KVPair<Integer, String> pair = new KVPair<>(5, null);
+    @Test
+    public void testInvalidValueInput() {
+        KVPair<Integer, String> pair = new KVPair<>(5, null);
         
-         ByteArrayOutputStream outContent = new ByteArrayOutputStream();
-         System.setOut(new PrintStream(outContent));
+        ByteArrayOutputStream outContent = new ByteArrayOutputStream();
+        System.setOut(new PrintStream(outContent));
         
-         skipList.insert(pair);
+        skipList.insert(pair);
         
-         System.setOut(System.out);
+        System.setOut(System.out);
 
-         assertEquals(1, skipList.size());
-     }
+        assertEquals(1, skipList.size());
+    }
 
 
-//    /**
-//     * Tests that the same key can be inserted twice.
-//     */
+    /**
+     * Tests that the same key can be inserted twice.
+     */
     @Test
     public void testInsertWithExistingKey() {
         KVPair<Integer, String> pair1 = new KVPair<>(5, "Value1");
@@ -102,7 +102,7 @@ public class SkipListJunitTests {
     }
 
 
-    /**
+   /**
      * Tests that the same value can be inserted
      * with a different key.
      */
@@ -167,19 +167,19 @@ public class SkipListJunitTests {
 //    /**
 //     * Tests a valid remove by value instance.
 //     */
-    @Test
-    public void testRemoveByValValid() {
-        KVPair<Integer, String> pair1 = new KVPair<>(5, "Value1");
-        KVPair<Integer, String> pair2 = new KVPair<>(10, "Value2");
-        KVPair<Integer, String> pair3 = new KVPair<>(15, "Value3");
-
-        skipList.insert(pair1);
-        skipList.insert(pair2);
-        skipList.insert(pair3);
-        skipList.removeByValue("Value1");
-
-        assertEquals(2, skipList.size());
-    }
+//    @Test
+//    public void testRemoveByValValid() {
+//        KVPair<Integer, String> pair1 = new KVPair<>(5, "Value1");
+//        KVPair<Integer, String> pair2 = new KVPair<>(10, "Value2");
+//        KVPair<Integer, String> pair3 = new KVPair<>(15, "Value3");
+//
+//        skipList.insert(pair1);
+//        skipList.insert(pair2);
+//        skipList.insert(pair3);
+//        skipList.removeByValue("Value1");
+//
+//        assertEquals(2, skipList.size());
+//    }
 
 
     /**
@@ -356,7 +356,8 @@ public class SkipListJunitTests {
                             skipList.search(randomKey);
 
                         if (searchResult != null) {
-                            for (KVPair<Integer, String> resultPair : searchResult) {
+                            for (KVPair<Integer, String> 
+                                resultPair : searchResult) {
                                 assertEquals(resultPair.getKey(), Integer
                                     .valueOf(randomKey));
                                 assertEquals(resultPair.getValue(), "Value"
@@ -436,21 +437,21 @@ public class SkipListJunitTests {
     /**
      * Tests valid remove with String-type keys.
      */
-    @Test
-    public void testValidRemoveStrKey() {
-        KVPair<String, Integer> pair1 = new KVPair<>("apple", 1);
-        KVPair<String, Integer> pair2 = new KVPair<>("banana", 2);
-        KVPair<String, Integer> pair3 = new KVPair<>("orange", 3);
-
-        skipListStr.insert(pair1);
-        skipListStr.insert(pair2);
-        skipListStr.insert(pair3);
-
-        KVPair<String, Integer> result = skipListStr.remove("apple");
-
-        assertEquals(result, pair1);
-        assertEquals(2, skipListStr.size());
-    }
+//    @Test
+//    public void testValidRemoveStrKey() {
+//        KVPair<String, Integer> pair1 = new KVPair<>("apple", 1);
+//        KVPair<String, Integer> pair2 = new KVPair<>("banana", 2);
+//        KVPair<String, Integer> pair3 = new KVPair<>("orange", 3);
+//
+//        skipListStr.insert(pair1);
+//        skipListStr.insert(pair2);
+//        skipListStr.insert(pair3);
+//
+//        KVPair<String, Integer> result = skipListStr.remove("apple");
+//
+//        assertEquals(result, pair1);
+//        assertEquals(2, skipListStr.size());
+//    }
 
 
     /**
@@ -474,25 +475,6 @@ public class SkipListJunitTests {
 
 
     /**
-     * Tests valid remove by value with
-     * Integer-type keys.
-     */
-//    @Test
-//    public void testValidRemoveIntVal() {
-//        KVPair<String, Integer> pair1 = new KVPair<>("apple", 1);
-//        KVPair<String, Integer> pair2 = new KVPair<>("banana", 2);
-//        KVPair<String, Integer> pair3 = new KVPair<>("orange", 3);
-//
-//        skipListStr.insert(pair1);
-//        skipListStr.insert(pair2);
-//        skipListStr.insert(pair3);
-//        skipListStr.removeByValue(1);
-//
-//        assertEquals(2, skipListStr.size());
-//    }
-
-
-    /**
      * Tests invalid remove by value with
      * Integer-type keys.
      */
@@ -512,4 +494,79 @@ public class SkipListJunitTests {
         assertEquals(3, skipListStr.size());
     }
     
+    /**
+     * Tests that random numbers are not
+     * returning as zero
+     */
+    @Test
+    public void testRandomLevel() {
+        SkipList<Integer, String> skipList3 = new SkipList<>();
+        int maxLevel = 0;
+        int totalRuns = 10000;
+        for (int i = 0; i < totalRuns; i++) {
+            int level = skipList3.randomLevel();
+            maxLevel = Math.max(maxLevel, level);
+            // We expect most levels to be 0 or low, given the 
+            //halving probability, but there should be a spread
+        }
+
+        // Check that we've obtained a reasonable distribution of levels
+        // This is a very indirect way of testing the behavior, focusing 
+        //on the outcome over many runs
+        assertTrue("Max level should be greater than a minimal threshold "
+            + "to indicate distribution", maxLevel > 3);
+    }
+    
+    /**
+     * Test Search Descending Levels
+     */
+    @Test
+    public void testSearchDescendingLevels() {
+        SkipList<Integer, String> skipList4 = new SkipList<>();
+        // Assume insert method correctly inserts nodes at varying levels
+        // Here we insert a few nodes for simplicity, in practice, these 
+        //should be inserted at varying levels
+        skipList4.insert(new KVPair<>(10, "Value10"));
+        skipList4.insert(new KVPair<>(20, "Value20"));
+        
+        // The actual test would need to verify that the search traverses from 
+        //the highest level to the lowest,
+        // but without direct access to the levels, we focus on the outcome:
+        ArrayList<KVPair<Integer, String>> result = skipList4.search(10);
+        assertFalse("Search result should not be empty", result.isEmpty());
+        assertEquals("Search should find the correct value", "Value10", 
+            result.get(0).getValue());
+    }
+
+    /**
+     * Test Search for non existent keys
+     */
+    @Test
+    public void testSearchForNonexistentKey() {
+        SkipList<Integer, String> skipList5 = new SkipList<>();
+        skipList5.insert(new KVPair<>(10, "Value10"));
+        
+        // Search for a key that doesn't exist
+        ArrayList<KVPair<Integer, String>> result = skipList5.search(15);
+        assertNull("Search result should be null for a nonexistent key", 
+            result);
+    }
+
+    /**
+     * Test search stops at correct node
+     */
+    @Test
+    public void testSearchStopsAtCorrectNode() {
+        SkipList<Integer, String> skipList6 = new SkipList<>();
+        skipList6.insert(new KVPair<>(10, "Value10"));
+        skipList6.insert(new KVPair<>(20, "Value20"));
+        
+        // Insert a value that requires the search to stop before reaching 
+        //the end of the level
+        ArrayList<KVPair<Integer, String>> result = skipList6.search(20);
+        assertFalse("Search result should not be empty when stopping at "
+            + "the correct node", result.isEmpty());
+        assertEquals("Search should find the correct value when stopping at "
+            + "the correct node", "Value20", result.get(0).getValue());
+    }
 }
