@@ -8,7 +8,7 @@ import static org.junit.Assert.assertTrue; // Make sure this line is included
 
 /**
  * Tests for the CommandProcessor class.
- * Ensures that the processor correctly 
+ * Ensures that the processor correctly
  * handles various command inputs.
  * 
  * @author Brayden Gardner
@@ -46,8 +46,8 @@ public class CommandProcessorTest {
 
     /**
      * Test the insertion of a rectangle
-     *  with valid parameters.
-     * Expected to print the confirmation 
+     * with valid parameters.
+     * Expected to print the confirmation
      * message for the rectangle insertion.
      */
     @Test
@@ -70,9 +70,9 @@ public class CommandProcessorTest {
 
 
     /**
-     * Test the insertion of a rectangle 
+     * Test the insertion of a rectangle
      * with invalid parameters.
-     * Expected to print an error message 
+     * Expected to print an error message
      * indicating the rejection of the
      * rectangle.
      */
@@ -92,9 +92,9 @@ public class CommandProcessorTest {
 
 
     /**
-     * Test the removal of a rectangle by 
+     * Test the removal of a rectangle by
      * its name when the rectangle exists.
-     * Expected to print messages 
+     * Expected to print messages
      * confirming the insertion and subsequent
      * removal of the rectangle.
      */
@@ -142,7 +142,7 @@ public class CommandProcessorTest {
 
 
     /**
-     * Test the region search for rectangles 
+     * Test the region search for rectangles
      * that intersect with a specified
      * region.
      * Expected to print messages confirming the insertion of the rectangle and
@@ -261,22 +261,68 @@ public class CommandProcessorTest {
 
     /**
      * Normalizes newline characters within a
-     *  given input string to a consistent
+     * given input string to a consistent
      * format (\n).
-     * This method ensures consistent 
+     * This method ensures consistent
      * assertions across different operating
      * systems
-     * that may use \r\n (Windows) or \r 
+     * that may use \r\n (Windows) or \r
      * (old macOS) as newline characters.
      * 
      * @param input
-     *            The input string with 
+     *            The input string with
      *            potential mixed newline characters.
-     * @return The normalized string with 
-     * consistent newline characters (\n).
+     * @return The normalized string with
+     *         consistent newline characters (\n).
      */
     private String normalizeNewlines(String input) {
         return input.replace("\r\n", "\n").replace("\r", "\n");
+    }
+
+
+    /**
+     * Test the 'dump' command processing.
+     * This test simulates the 'dump' command and verifies the expected output,
+     * assuming that the database starts empty and the dump command
+     * outputs the state of the database accordingly.
+     */
+    @Test
+    public void testDumpCommand() {
+        String commandLine = "dump";
+
+        processor.processor(commandLine);
+
+        // Assuming the dump command outputs "SkipList dump:" followed by
+        // the state of the database. Adjust the expected output based on
+        // your actual dump method's implementation.
+        String expectedOutputStart = "SkipList dump:";
+
+        assertTrue("Expected output to start with 'SkipList dump:'", outContent
+            .toString().trim().startsWith(expectedOutputStart));
+    }
+
+
+    /**
+     * Test processing of a typo in the 'dump' command that results in it being
+     * unrecognized.
+     * This test simulates a typo or incorrect command similar to 'dump' and
+     * verifies that the output matches the expected result for an unrecognized
+     * command.
+     */
+    @Test
+    public void testDumpCommandTypo() {
+        // Simulate a typo in the 'dump' command
+        String typoCommand = "dumpp";
+
+        // Process the typo command
+        processor.processor(typoCommand);
+
+        // Verify that the output indicates the command is unrecognized
+        String expectedOutput = "Unrecognized command.";
+        assertEquals(
+            "Expected 'Unrecognized command.' output for typo "
+            + "in 'dump' command",
+            expectedOutput.trim(), outContent.toString().trim());
     }
 
 }

@@ -65,8 +65,7 @@ public class DatabaseTest {
         // Insert five rejected rectangles
         for (int i = 0; i < 5; i++) {
             Rectangle rejectedRectangle = new Rectangle(i, i, -60, -50);
-            KVPair<String, Rectangle> rejectedPair = 
-                new KVPair<>("RejectedRect"
+            KVPair<String, Rectangle> rejectedPair = new KVPair<>("RejectedRect"
                 + i, rejectedRectangle);
             database1.insert(rejectedPair);
         }
@@ -170,9 +169,9 @@ public class DatabaseTest {
         Database database1 = new Database();
 
         // Insert rectangles inside the specified region
-        database1.insert(new KVPair<>("Rect1", 
+        database1.insert(new KVPair<>("Rect1",
             new Rectangle(2, 2, 3, 3))); // Inside
-        database1.insert(new KVPair<>("Rect2", 
+        database1.insert(new KVPair<>("Rect2",
             new Rectangle(5, 5, 2, 2))); // Inside
 
         ByteArrayOutputStream outContent = new ByteArrayOutputStream();
@@ -182,8 +181,8 @@ public class DatabaseTest {
         database1.regionsearch(1, 1, 6, 6);
 
         String expectedOutput = "Rectangles intersecting region "
-            + "(1, 1, 6, 6):\n"
-            + "(Rect1, 2, 2, 3, 3)\n" + "(Rect2, 5, 5, 2, 2)\n";
+            + "(1, 1, 6, 6):\n" + "(Rect1, 2, 2, 3, 3)\n"
+            + "(Rect2, 5, 5, 2, 2)\n";
 
         assertEquals(expectedOutput.trim().replace("\r", ""), outContent
             .toString().trim().replace("\r", ""));
@@ -198,9 +197,9 @@ public class DatabaseTest {
         Database database2 = new Database();
 
         // Insert rectangles outside the specified region
-        database2.insert(new KVPair<>("Rect1", 
+        database2.insert(new KVPair<>("Rect1",
             new Rectangle(8, 8, 3, 3))); // Outside
-        database2.insert(new KVPair<>("Rect2", 
+        database2.insert(new KVPair<>("Rect2",
             new Rectangle(0, 0, 1, 1))); // Outside
 
         ByteArrayOutputStream outContent = new ByteArrayOutputStream();
@@ -400,6 +399,167 @@ public class DatabaseTest {
 
         assertEquals(expectedOutput.trim().replace("\r", ""), outContent
             .toString().trim().replace("\r", ""));
+    }
+
+
+    /**
+     * Tests the regionsearch method with a valid region.
+     * Ensures that the method processes the search when both width and height
+     * are greater than 0.
+     */
+    @Test
+    public void testRegionSearchWithValidRegion() {
+        // Setup necessary mocking or stubbing if the Database class depends on
+        // other components
+
+        // Assuming System.out.println is called within the method, we capture
+        // the output.
+        ByteArrayOutputStream outContent = new ByteArrayOutputStream();
+        System.setOut(new PrintStream(outContent));
+
+        // Execute the method with valid width and height
+        database.regionsearch(10, 10, 5, 5);
+
+        // Verify that the rejection message is not printed
+        assertFalse("Valid region should not be rejected.", outContent
+            .toString().contains("Rectangle rejected:"));
+
+        // Reset the System.out to its original stream
+        System.setOut(System.out);
+    }
+
+
+    /**
+     * Tests the regionsearch method with an invalid region where width and
+     * height are less than or equal to zero.
+     * Ensures that the method rejects the search region and prints an
+     * appropriate message.
+     */
+    @Test
+    public void testRegionSearchWithInvalidRegion() {
+        // Setup necessary mocking or stubbing if the Database class depends on
+        // other components
+
+        // Assuming System.out.println is called within the method, we capture
+        // the output.
+        ByteArrayOutputStream outContent = new ByteArrayOutputStream();
+        System.setOut(new PrintStream(outContent));
+
+        // Execute the method with invalid width and height
+        database.regionsearch(10, 10, -1, -1);
+
+        // Verify that a rejection message is printed
+        assertTrue("Invalid region should be rejected.", outContent.toString()
+            .contains("Rectangle rejected:"));
+
+        // Reset the System.out to its original stream
+        System.setOut(System.out);
+    }
+
+
+    /**
+     * Tests the regionsearch method with an invalid region where width and
+     * height are less than or equal to zero.
+     * Ensures that the method rejects the search region and prints an
+     * appropriate message.
+     */
+    @Test
+    public void testRegionSearchWithInvalidRegion2() {
+        // Setup necessary mocking or stubbing if the Database class depends on
+        // other components
+
+        // Assuming System.out.println is called within the method, we capture
+        // the output.
+        ByteArrayOutputStream outContent = new ByteArrayOutputStream();
+        System.setOut(new PrintStream(outContent));
+
+        // Execute the method with invalid width and height
+        database.regionsearch(10, 10, -1, 2);
+
+        // Verify that a rejection message is printed
+        assertTrue("Invalid region should be rejected.", outContent.toString()
+            .contains("Rectangle rejected:"));
+
+        // Reset the System.out to its original stream
+        System.setOut(System.out);
+    }
+
+
+    /**
+     * Tests the regionsearch method with an invalid region where width and
+     * height are less than or equal to zero.
+     * Ensures that the method rejects the search region and prints an
+     * appropriate message.
+     */
+    @Test
+    public void testRegionSearchWithInvalidRegion3() {
+        // Setup necessary mocking or stubbing if the Database class depends on
+        // other components
+
+        // Assuming System.out.println is called within the method, we capture
+        // the output.
+        ByteArrayOutputStream outContent = new ByteArrayOutputStream();
+        System.setOut(new PrintStream(outContent));
+
+        // Execute the method with invalid width and height
+        database.regionsearch(10, 10, 2, -1);
+
+        // Verify that a rejection message is printed
+        assertTrue("Invalid region should be rejected.", outContent.toString()
+            .contains("Rectangle rejected:"));
+
+        // Reset the System.out to its original stream
+        System.setOut(System.out);
+    }
+
+
+    /**
+     * Tests that the search method outputs the correct information when
+     * rectangles
+     * with the specified name exist within the database.
+     */
+    @Test
+    public void testSearchWithNameFound() {
+        // Insert rectangles into the database for testing
+        database.insert(new KVPair<>("TestRect1", new Rectangle(0, 0, 10, 10)));
+        database.insert(new KVPair<>("TestRect2", new Rectangle(10, 10, 20,
+            20)));
+        database.insert(new KVPair<>("TestRect1", new Rectangle(20, 20, 30,
+            30)));
+
+        ByteArrayOutputStream outContent = new ByteArrayOutputStream();
+        System.setOut(new PrintStream(outContent));
+        // Search for rectangles with a specific name
+        database.search("TestRect1");
+
+        // Check if the output contains the expected rectangles
+        String output = outContent.toString();
+        assertTrue("Expected to find rectangles with name 'TestRect1'", output
+            .contains("TestRect1"));
+    }
+
+
+    /**
+     * Tests that the search method outputs the correct message when no
+     * rectangles
+     * with the specified name exist within the database.
+     */
+    @Test
+    public void testSearchWithNameNotFound() {
+        // Insert a rectangle into the database for testing
+        database.insert(new KVPair<>("AnotherRect", new Rectangle(0, 0, 10,
+            10)));
+
+        ByteArrayOutputStream outContent = new ByteArrayOutputStream();
+        System.setOut(new PrintStream(outContent));
+        // Search for a rectangle with a specific name that does not exist
+        database.search("NonexistentRect");
+
+        // Check if the output contains the expected message
+        String output = outContent.toString();
+        assertTrue(
+            "Expected to not find rectangles with name 'NonexistentRect'",
+            output.contains("Rectangle not found"));
     }
 
 }
