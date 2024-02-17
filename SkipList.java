@@ -2,6 +2,7 @@ import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.Random;
+import student.TestableRandom;
 
 /**
  * This class implements SkipList data structure and contains an inner SkipNode
@@ -35,14 +36,21 @@ public class SkipList<K extends Comparable<? super K>, V>
      * 
      * @return a random level number
      */
+    // New TesttableRandom
     int randomLevel() {
-        int lev;
-        Random value = new Random();
-        for (lev = 0; Math.abs(value.nextInt()) % 2 == 0; lev++) {
-            // Do nothing
-        }
-        return lev; // returns a random level
+        Random random = new TestableRandom();
+        return random.nextInt(64); // returns a random level
     }
+
+    // Old Function
+// int randomLevel() {
+// int lev;
+// Random value = new Random();
+// for (lev = 0; Math.abs(value.nextInt()) % 2 == 0; lev++) {
+// // Do nothing
+// }
+// return lev; // returns a random level
+// }
 
 
     /**
@@ -168,7 +176,8 @@ public class SkipList<K extends Comparable<? super K>, V>
      * Increases the number of levels in head so that no element has more
      * indices than the head.
      * 
-     * @param newLevel the number of levels to be added to head
+     * @param newLevel
+     *            the number of levels to be added to head
      */
     public void adjustHead(int newLevel) {
         SkipNode newHead = new SkipNode(null, newLevel);
@@ -244,79 +253,72 @@ public class SkipList<K extends Comparable<? super K>, V>
 
 
     /**
-     * Removes a KVPair with the specified value.
+     * * Removes a KVPair with the specified value.
      * 
      * @param val
      *            the value of the KVPair to be removed
      * @return returns true if the removal was successful
      */
-    @SuppressWarnings("unchecked")
     public KVPair<K, V> removeByValue(V val) {
-        // boolean found = false;
-        SkipNode[] update = (SkipNode[])Array.newInstance(SkipNode.class,
-            head.level + 1);
+        KVPair<K, V> found = findFirstPairByValue(val);
+        // Check if the current node is the node to be removed.
+        if (found != null) {
+            // Retrieve the key associated with the specified value.
+            K key = found.getKey();
+
+            // Call the remove function with the retrieved key.
+            return remove(key);
+        }
+        else {
+            // If no node with the given value was found, return null.
+            return null;
+        }
+    }
+
+
+    /**
+     * * Finds the first key where V val is found
+     * 
+     * @param val
+     *            the value of the KVPair to be removed
+     * @return null if not found and pair if found
+     */
+    public KVPair<K, V> findFirstPairByValue(V val) {
+        // Start from the head of the skip list.
         SkipNode current = head;
 
-        // Start from the highest level and move down
-        for (int i = head.level; i >= 0; i--) {
-            // Move forward in the current level 
-            //while the next node's value is
-            // not the one we're looking for
-            while (current.forward[i] != null && !current.forward[i].pair
-                .getValue().equals(val)) {
-                current = current.forward[i];
+        // Iterate through the entire skip list.
+        while (current != null) {
+            // Check if the current node's pair has the specified value.
+            if (current.pair != null && 
+                current.pair.getValue().equals(val)) {
+                // Return the key-value pair.
+                return current.pair;
             }
-            // Record the current position as 
-            //it may need to update its forward
-            // reference
-            update[i] = current;
+            // Move to the next node.
+            current = current.forward[0];
         }
 
-        // Proceed to the next node which might be the node to remove
-        current = current.forward[0];
-
-        // Check if the node actually contains the 
-        //value we're looking for
-        if (current != null && current.pair.getValue().equals(val)) {
-            // Node with the value found, update the forward references to
-            // bypass it
-            for (int i = 0; i <= head.level; i++) {
-                if (update[i].forward[i] != current) {
-                    break; // Stop if we've moved past the level at which the
-                           // node exists
-                }
-                update[i].forward[i] = current.forward[i]; // Bypass the removed
-                                                           // node
-            }
-            size--; // Decrement the size of the skip list
-            // found = true; // Mark as found
-            return current.pair; // Return the removed pair
-        }
-
-        // If the value was not found, return null
-// if (!found) {
-// System.out.println("Value not found: " + val);
-// }
+        // If no node with the given value was found, return null.
         return null;
     }
 
 
     /**
-     * Prints out the SkipList in a human 
+     * Prints out the SkipList in a human
      * readable format to the console.
      */
     public void dump() {
         System.out.println("SkipList dump:");
         // If the first node after head (at the base level)
-        //is null, it means
+        // is null, it means
         // there are no elements in the list.
         if (head.forward[0] == null) {
-            System.out.printf("Node has depth %d, Value null\n",
-                head.level);
+            System.out.printf("Node has depth %d, Value null\n", head.level);
         }
         else {
-            // If there are nodes, start from 
-            //the head and print each node's
+            // If there are nodes, start from
+            // the head and print each node's
             // details.
             SkipNode current = head;
             while (current != null) {
@@ -332,7 +334,7 @@ public class SkipList<K extends Comparable<? super K>, V>
     }
 
     /**
-     * This class implements a SkipNode for 
+     * This class implements a SkipNode for
      * the SkipList data structure.
      * 
      * @author CS Staff
@@ -349,7 +351,7 @@ public class SkipList<K extends Comparable<? super K>, V>
         private int level;
 
         /**
-         * Initializes the fields with the 
+         * Initializes the fields with the
          * required KVPair and the number of
          * levels from the random level method in the SkipList.
          * 

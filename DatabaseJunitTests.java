@@ -170,10 +170,10 @@ public class DatabaseJunitTests {
         Database database1 = new Database();
 
         // Insert rectangles inside the specified region
-        database1.insert(new KVPair<>("Rect1", new 
-            Rectangle(2, 2, 3, 3))); // Inside
-        database1.insert(new KVPair<>("Rect2", new 
-            Rectangle(5, 5, 2, 2))); // Inside
+        database1.insert(new KVPair<>("Rect1", 
+            new Rectangle(2, 2, 3, 3))); // Inside
+        database1.insert(new KVPair<>("Rect2", 
+            new Rectangle(5, 5, 2, 2))); // Inside
 
         ByteArrayOutputStream outContent = new ByteArrayOutputStream();
         System.setOut(new PrintStream(outContent));
@@ -198,10 +198,10 @@ public class DatabaseJunitTests {
         Database database2 = new Database();
 
         // Insert rectangles outside the specified region
-        database2.insert(new KVPair<>("Rect1", new 
-            Rectangle(8, 8, 3, 3))); // Outside
-        database2.insert(new KVPair<>("Rect2", new 
-            Rectangle(0, 0, 1, 1))); // Outside
+        database2.insert(new KVPair<>("Rect1", 
+            new Rectangle(8, 8, 3, 3))); // Outside
+        database2.insert(new KVPair<>("Rect2", 
+            new Rectangle(0, 0, 1, 1))); // Outside
 
         ByteArrayOutputStream outContent = new ByteArrayOutputStream();
         System.setOut(new PrintStream(outContent));
@@ -561,6 +561,140 @@ public class DatabaseJunitTests {
         assertTrue(
             "Expected to not find rectangles with name 'NonexistentRect'",
             output.contains("Rectangle not found"));
+    }
+
+
+    /**
+     * Test remove by name that doesn't exist
+     */
+    @Test
+    public void testRemoveNameNot() {
+        database.insert(new KVPair<>("AnotherRect", new Rectangle(0, 0, 10,
+            10)));
+
+        ByteArrayOutputStream outContent = new ByteArrayOutputStream();
+        System.setOut(new PrintStream(outContent));
+
+        database.remove("NoRect");
+
+        String output = outContent.toString();
+        assertTrue("Expected not to remove rectangle with name 'NoRect'", output
+            .contains("Rectangle not removed:"));
+    }
+
+
+    /**
+     * Test remove invalid rectangle
+     */
+    @Test
+    public void testRemoveInvalid() {
+        database.insert(new KVPair<>("AnotherRect", new Rectangle(0, 0, 10,
+            10)));
+
+        ByteArrayOutputStream outContent = new ByteArrayOutputStream();
+        System.setOut(new PrintStream(outContent));
+
+        database.remove(0, 0, -5, 10);
+
+        String output = outContent.toString();
+        assertTrue("Expected not to fail removing invalid width", output
+            .contains("Rectangle rejected:"));
+    }
+
+
+    /**
+     * Test big remove by value
+     */
+    @Test
+    public void testBigRemoveVal() {
+        // Insert some rectangles
+        insertRectangles();
+        // Attempt to remove 25 rectangles successfully
+        
+        for (int i = 1; i < 26; i++) {
+            database.remove(i, i, i, i);
+        }
+
+        // Attempt to remove 9 rectangles unsuccessfully
+        for (int i = 120; i < 129; i++) {
+            database.remove(i, i, i, i);
+        }
+
+        // Dump the SkipList and check if the size information is present
+        String dumpOutput = captureDumpOutput();
+        assertTrue(dumpOutput.contains("SkipList size is: 75"));
+    }
+
+
+    /**
+     * Test big remove by key
+     */
+    @Test
+    public void testBigRemoveKey() {
+        // Insert some rectangles
+        insertRectangles();
+        // Attempt to remove 25 rectangles successfully
+        for (int i = 1; i < 26; i++) {
+            String name = "Rectangle" + i;
+            database.remove(name);
+        }
+
+        // Attempt to remove 9 rectangles unsuccessfully
+        for (int i = 120; i < 129; i++) {
+            String name = "Rectangle" + i;
+            database.remove(name);
+        }
+
+        // Dump the SkipList and check if the size information is present
+        String dumpOutput = captureDumpOutput();
+        assertTrue(dumpOutput.contains("SkipList size is: 75"));
+    }
+
+
+    /*
+     * Helper method to insert rectangles
+     */
+    private void insertRectangles() {
+        for (int i = 1; i < 101; i++) {
+            String name = "Rectangle" + i;
+            Rectangle rectangle = new Rectangle(i, i, i, i);
+            database.insert(new KVPair<>(name, rectangle));
+        }
+    }
+
+
+    /*
+     * Helper method to create array list
+     * of rectangles for bigRemoveByValue()
+     */
+    private ArrayList<Rectangle> insertRectanglesArray() {
+        ArrayList<Rectangle> rectangles = new ArrayList<>();
+        for (int i = 1; i < 101; i++) {
+            String name = "Rectangle" + i;
+            Rectangle rectangle = new Rectangle(i, i, i, i);
+            rectangles.add(rectangle);
+            database.insert(new KVPair<>(name, rectangle));
+        }
+        return rectangles;
+    }
+    
+    /*
+     * Helper method to capture output of dump()
+     */
+    private String captureDumpOutput() {
+        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+        PrintStream printStream = new PrintStream(outputStream);
+        PrintStream oldOut = System.out;
+        System.setOut(printStream);
+
+        // Call dump() method
+        database.dump();
+
+        // Reset System.out
+        System.out.flush();
+        System.setOut(oldOut);
+
+        return outputStream.toString();
     }
 
 }

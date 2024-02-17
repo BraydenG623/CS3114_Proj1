@@ -115,6 +115,10 @@ public class CommandProcessor {
                 data.remove(x, y, w, h);
 
             }
+            else {
+                System.out.println("Incorrect number of "
+                    + "arguments for remove command.");
+            }
 
         }
         else if (command.equals("regionsearch")) {

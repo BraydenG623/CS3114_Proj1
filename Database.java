@@ -27,6 +27,7 @@ public class Database {
     // see the KVPair class for more information
     private SkipList<String, Rectangle> list;
 
+
     // This is an Iterator object over the SkipList to loop through it from
     // outside the class.
     // You will need to define an extra Iterator for the intersections method.
@@ -75,15 +76,16 @@ public class Database {
      *            the name of the rectangle to be removed
      */
     public void remove(String name) {
-        KVPair<String, Rectangle> removed = list.remove(name);
-        if (removed != null) {
-            Rectangle rect = removed.getValue();
-            System.out.println("Rectangle removed: (" + removed.getKey() + ", "
-                + rect.getxCoordinate() + ", " + rect.getyCoordinate() + ", "
-                + rect.getWidth() + ", " + rect.getHeight() + ")");
+        KVPair<String, Rectangle> found = list.remove(name);
+        if (found == null) {
+            System.out.println("Rectangle not removed: " + name);
+            return;
         }
         else {
-            System.out.println("Rectangle not removed: " + name);
+            Rectangle rect = found.getValue();
+            System.out.println("Rectangle removed: (" + found.getKey() + ", "
+                + rect.getxCoordinate() + ", " + rect.getyCoordinate() + ", "
+                + rect.getWidth() + ", " + rect.getHeight() + ")");
         }
     }
 
@@ -103,14 +105,21 @@ public class Database {
      */
     public void remove(int x, int y, int w, int h) {
         Rectangle searchRect = new Rectangle(x, y, w, h);
+        if (searchRect.isInvalid()) {
+            System.out.println("Rectangle rejected: (" + searchRect
+                .getxCoordinate() + ", " + searchRect.getyCoordinate() + ", "
+                + searchRect.getWidth() + ", " + searchRect.getHeight() + ")");
+            return;
+        }
         KVPair<String, Rectangle> removed = list.removeByValue(searchRect);
         if (removed != null) {
             System.out.println("Rectangle removed: (" + removed.getKey() + ", "
                 + x + ", " + y + ", " + w + ", " + h + ")");
         }
-        else {
+        else if (removed == null) {
             System.out.println("Rectangle not found: (" + x + ", " + y + ", "
                 + w + ", " + h + ")");
+            return;
         }
     }
 
@@ -143,7 +152,7 @@ public class Database {
 
         System.out.println("Rectangles intersecting region (" + x + ", " + y
             + ", " + w + ", " + h + "):");
-        //boolean found = false;
+        // boolean found = false;
 
         // Iterate through all rectangles in the skip list.
         for (KVPair<String, Rectangle> pair : list) {
@@ -155,15 +164,9 @@ public class Database {
                 System.out.println("(" + pair.getKey() + ", " + rect
                     .getxCoordinate() + ", " + rect.getyCoordinate() + ", "
                     + rect.getWidth() + ", " + rect.getHeight() + ")");
-                //found = true;
+                // found = true;
             }
         }
-
-        // If no rectangles intersect the search region, print a message
-        // accordingly.
-//        if (!found) {
-//            System.out.println("No rectangles intersect the search region.");
-//        }
     }
 
 

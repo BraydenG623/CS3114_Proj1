@@ -433,25 +433,6 @@ public class SkipListJunitTests {
         assertNotEquals(null, outContent.toString().trim());
     }
 
-    /**
-     * Tests valid remove with String-type keys.
-     */
-// @Test
-// public void testValidRemoveStrKey() {
-// KVPair<String, Integer> pair1 = new KVPair<>("apple", 1);
-// KVPair<String, Integer> pair2 = new KVPair<>("banana", 2);
-// KVPair<String, Integer> pair3 = new KVPair<>("orange", 3);
-//
-// skipListStr.insert(pair1);
-// skipListStr.insert(pair2);
-// skipListStr.insert(pair3);
-//
-// KVPair<String, Integer> result = skipListStr.remove("apple");
-//
-// assertEquals(result, pair1);
-// assertEquals(2, skipListStr.size());
-// }
-
 
     /**
      * Tests invalid remove with String-type keys.
@@ -800,5 +781,8 @@ public class SkipListJunitTests {
             "Size should not change when removing a non-existent value",
             initialSize, skipListStr.size());
     }
+    
+    
+    
 
 }
