@@ -7,10 +7,8 @@ import java.util.Map;
 import java.util.Random;
 import student.TestableRandom;
 
-
-
 /**
- * Implements the Flyweight pattern for empty nodes 
+ * Implements the Flyweight pattern for empty nodes
  * in a QuadTree structure.
  * Uses a singleton instance to represent all empty nodes.
  * 
@@ -20,19 +18,20 @@ import student.TestableRandom;
  */
 @SuppressWarnings("unused")
 public class EmptyNode implements QuadNode {
-    
+
     private int x1, y1, x2, y2; // Spatial bounds
 
-    
     @Override
     public int[] getBounds() {
-        return new int[]{x1, y1, x2, y2};
+        return new int[] { x1, y1, x2, y2 };
     }
+
     private static EmptyNode flyweight = null;
 
     private EmptyNode() {
         // Private constructor to prevent outside instantiation
     }
+
 
     public static EmptyNode getInstance() {
         if (flyweight == null) {
@@ -41,41 +40,59 @@ public class EmptyNode implements QuadNode {
         return flyweight;
     }
 
+
     @Override
-    public QuadNode insert(String name, int x, int y, int x1, int x2, int y1, int y2) {
+    public QuadNode insert(
+        String name,
+        int x,
+        int y,
+        int x1,
+        int x2,
+        int y1,
+        int y2) {
         // Transform into a LeafNode and insert the point
         LeafNode newLeaf = new LeafNode(x1, x2, y1, y2);
         return newLeaf.insert(name, x, y, x1, x2, y1, y2);
     }
 
-    
-    
+
     @Override
     public QuadNode remove(String name, int x1, int x2, int y1, int y2) {
-        //TODO: Implement:
+        // TODO: Implement:
         return this;
     }
-    
+
+
     @Override
     public QuadNode remove(int x, int y, int x1, int x2, int y1, int y2) {
-        
+
         return this;
     }
-    
-    @Override 
+
+
+    @Override
     public QuadNode search(String name) {
-        //Always return null for empty nodes
-        
+        // Always return null for empty nodes
+
         return null;
     }
 
 
     @Override
-    public List<Point> regionsearch(int x, int y, int width, int height, int x1, int x2, int y1, int y2) {
+    public List<Point> regionsearch(
+        int x,
+        int y,
+        int width,
+        int height,
+        int x1,
+        int x2,
+        int y1,
+        int y2) {
         // No points in an empty node
-        
+
         return Collections.emptyList();
     }
+
 
     @Override
     public boolean isLeaf() {
@@ -83,14 +100,19 @@ public class EmptyNode implements QuadNode {
         return false;
     }
 
+
     @Override
     public List<Point> duplicates() {
         // No duplicates in an empty node
         return null;
     }
-    
+
+
     @Override
     public void dump(int level) {
-        
+        QuadTree.incrementNodeCount(); // Increment for the empty node.
+        System.out.println("Node at " + x1 + ", " + y1 + ", "
+            + (x2 - x1) + ": Empty");
     }
+
 }

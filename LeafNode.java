@@ -160,6 +160,7 @@ public class LeafNode implements QuadNode {
 
     @Override
     public void dump(int level) {
+        QuadTree.incrementNodeCount(); // Increment for the leaf node itself.
         // Print the node information with proper indentation
         System.out.println("Node at " + x1 + ", " + y1 + ", "
             + (x2 - x1) + ":" );

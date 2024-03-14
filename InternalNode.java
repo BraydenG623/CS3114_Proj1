@@ -25,7 +25,7 @@ public class InternalNode implements QuadNode {
 
     // Additional property to track the level of this node.
     // It's used to determine the indentation when printing.
-//    private int level;
+// private int level;
 
     @Override
     public int[] getBounds() {
@@ -50,46 +50,54 @@ public class InternalNode implements QuadNode {
         se = EmptyNode.getInstance();
     }
 
-
     // Helper method to insert a point into a child, handling empty nodes and
     // leaf nodes
-//    private QuadNode insertIntoChild(
-//        QuadNode child,
-//        String name,
-//        int x,
-//        int y,
-//        int x1,
-//        int y1,
-//        int x2,
-//        int y2) {
-//        if (child instanceof EmptyNode) {
-//            // If the child is an empty node, replace it with a new leaf node
-//            LeafNode newLeaf = new LeafNode(x1, y1, x2, y2);
-//            return newLeaf.insert(name, x, y, x1, x2, y1, y2);
-//        }
-//        else {
-//            // If the child is not empty, continue insertion recursively
-//            return child.insert(name, x, y, x1, x2, y1, y2);
-//        }
-//    }
+// private QuadNode insertIntoChild(
+// QuadNode child,
+// String name,
+// int x,
+// int y,
+// int x1,
+// int y1,
+// int x2,
+// int y2) {
+// if (child instanceof EmptyNode) {
+// // If the child is an empty node, replace it with a new leaf node
+// LeafNode newLeaf = new LeafNode(x1, y1, x2, y2);
+// return newLeaf.insert(name, x, y, x1, x2, y1, y2);
+// }
+// else {
+// // If the child is not empty, continue insertion recursively
+// return child.insert(name, x, y, x1, x2, y1, y2);
+// }
+// }
 //
-//    // Inside the InternalNode class
+// // Inside the InternalNode class
 
 
     // Helper method to insert a point into a child, handling empty nodes and
     // leaf nodes
- // Inside InternalNode.java
-    private QuadNode insertIntoChild(QuadNode child, String name, int x, int y, int x1, int y1, int x2, int y2) {
+    // Inside InternalNode.java
+    private QuadNode insertIntoChild(
+        QuadNode child,
+        String name,
+        int x,
+        int y,
+        int x1,
+        int y1,
+        int x2,
+        int y2) {
         if (child instanceof EmptyNode) {
-            // If the child is an empty node, replace it with a new leaf node without passing level
+            // If the child is an empty node, replace it with a new leaf node
+            // without passing level
             LeafNode newLeaf = new LeafNode(x1, y1, x2, y2);
             return newLeaf.insert(name, x, y, x1, y1, x2, y2);
-        } else {
+        }
+        else {
             // If the child is not empty, continue insertion recursively
             return child.insert(name, x, y, x1, y1, x2, y2);
         }
     }
-
 
 
     @Override
@@ -267,28 +275,74 @@ public class InternalNode implements QuadNode {
     }
 
 
+//    @Override
+//    public void dump(int level) {
+//        // Calculate midpoints for the current node's bounds
+//        int midX = x1 + (x2 - x1) / 2;
+//        int midY = y1 + (y2 - y1) / 2;
+//
+//        printWithIndentation("Node at " + x1 + ", " + y1 + ", " + (x2 - x1)
+//            + ": Internal", level);
+//
+//        // Check each child and print its bounds or "Empty" before calling dump
+//        if (nw instanceof EmptyNode) {
+//            printWithIndentation("Node at " + x1 + ", " + y1 + ", " + (midX
+//                - x1) + ": Empty", level + 1);
+//        }
+//        else {
+//            nw.dump(level + 1);
+//        }
+//
+//        if (ne instanceof EmptyNode) {
+//            printWithIndentation("Node at " + midX + ", " + y1 + ", " + (x2
+//                - midX) + ": Empty", level + 1);
+//        }
+//        else {
+//            ne.dump(level + 1);
+//        }
+//
+//        if (sw instanceof EmptyNode) {
+//            printWithIndentation("Node at " + x1 + ", " + midY + ", " + (midX
+//                - x1) + ": Empty", level + 1);
+//        }
+//        else {
+//            sw.dump(level + 1);
+//        }
+//
+//        if (se instanceof EmptyNode) {
+//            printWithIndentation("Node at " + midX + ", " + midY + ", " + (x2
+//                - midX) + ": Empty", level + 1);
+//        }
+//        else {
+//            se.dump(level + 1);
+//        }
+//    }
+//
+//
+//    private void printWithIndentation(String text, int level) {
+//        for (int i = 0; i < level; i++) {
+//            System.out.print("  "); // 2 spaces for each level of indentation
+//        }
+//        System.out.println(text);
+//    }
+    
     @Override
     public void dump(int level) {
-        // Calculate the side length of this node's area, which is the same for width and height
-        int sideLength = x2 - x1;
-
-        // Print the current node's information with proper indentation
-        printWithIndentation("Node at " + x1 + ", " + y1 + ", " + sideLength + ": Internal", level);
-
-        // Recursively call dump on each child with increased level for indentation
+        QuadTree.incrementNodeCount(); // Increment for the internal node itself.
+        printWithIndentation("Node at " + x1 + ", " + y1 + ", " + (x2 - x1) + ": Internal", level);
         nw.dump(level + 1);
         ne.dump(level + 1);
         sw.dump(level + 1);
         se.dump(level + 1);
     }
 
+
     private void printWithIndentation(String text, int level) {
         for (int i = 0; i < level; i++) {
-            System.out.print("  "); // 2 spaces for each level of indentation
+            System.out.print("  ");
         }
         System.out.println(text);
     }
-
 
 
 }

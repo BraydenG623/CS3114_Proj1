@@ -26,6 +26,10 @@ public class QuadTree {
     
     //
     private static final int X2 = 1024, Y2 = 1024; 
+    
+    
+    private static int nodeCount = 0; // Track the count of nodes printed
+
 
     public QuadTree() {
         // Initially, the tree is empty.
@@ -53,9 +57,17 @@ public class QuadTree {
         }
     }
     
+    public static void incrementNodeCount() {
+        nodeCount++;
+    }
+    
     public void dump() {
         System.out.println("QuadTree dump:");
-        root.dump(0); // Start the dump from the root with level 0
+        nodeCount = 0; // Reset count before dumping
+        if (root != null) {
+            root.dump(0);
+        }
+        System.out.println(nodeCount + " quadtree nodes printed");
     }
 
 }
