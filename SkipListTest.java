@@ -16,7 +16,6 @@ import org.junit.Test;
  * @version 1.0
  * @since 2024-02-03
  */
-
 public class SkipListTest {
 
     private SkipList<Integer, String> skipList;

@@ -192,9 +192,8 @@ public class RectangleJunitTests {
         Rectangle rectEx = new Rectangle(11, 0, 5, 5);
         Rectangle r2 = new Rectangle(5, 0, 5, 5); // starts exactly where rectEx
                                                   // ends
-        assertFalse(
-            "r2 shouldn't meet when starts where rectEx ends X",
-            rectEx.intersect(r2));
+        assertFalse("r2 shouldn't meet when starts where rectEx ends X", rectEx
+            .intersect(r2));
 
         r2 = new Rectangle(4, 0, 5, 5); // overlaps rectEx by 1 on X-axis
         assertFalse("r2 should not intersect when it overlaps rectEx on X-axis",
@@ -211,13 +210,12 @@ public class RectangleJunitTests {
         Rectangle rectEx = new Rectangle(0, 11, 5, 5);
         Rectangle r2 = new Rectangle(0, 5, 5, 5); // starts exactly where rectEx
                                                   // ends
-        assertFalse(
-            "r2 shouldn't meet when starts where rectEx ends Y",
-            rectEx.intersect(r2));
+        assertFalse("r2 shouldn't meet when starts where rectEx ends Y", rectEx
+            .intersect(r2));
 
         r2 = new Rectangle(0, 4, 5, 5); // overlaps rectEx by 1 on Y-axis
-        assertFalse("r2 shouldn't intersect upon overlaps rectEx on Y",
-            rectEx.intersect(r2));
+        assertFalse("r2 shouldn't intersect upon overlaps rectEx on Y", rectEx
+            .intersect(r2));
     }
 
     //////////////////
@@ -636,7 +634,6 @@ public class RectangleJunitTests {
     // Continue with JavaDoc comments for the remaining test methods in a
     // similar manner.
 
-
     /**
      * Verifies that a rectangle with zero width is considered invalid.
      */
@@ -690,8 +687,7 @@ public class RectangleJunitTests {
     @Test
     public void testIsInvalidWidthBeyondBoundary() {
         Rectangle rectWidthBeyondBoundary = new Rectangle(1020, 10, 10, 10);
-        assertTrue(
-            "Rectangle width extending past 1024 is invalid",
+        assertTrue("Rectangle width extending past 1024 is invalid",
             rectWidthBeyondBoundary.isInvalid());
     }
 
@@ -703,8 +699,7 @@ public class RectangleJunitTests {
     @Test
     public void testIsInvalidHeightBeyondBoundary() {
         Rectangle rectHeightBeyondBoundary = new Rectangle(10, 1020, 10, 10);
-        assertTrue(
-            "Rectangle height extending past 1024 is invalid",
+        assertTrue("Rectangle height extending past 1024 is invalid",
             rectHeightBeyondBoundary.isInvalid());
     }
 
@@ -716,8 +711,7 @@ public class RectangleJunitTests {
     @Test
     public void testIsInvalidWidthExactlyBoundary() {
         Rectangle rectWidthExactlyBoundary = new Rectangle(1024, 10, 0, 10);
-        assertTrue(
-            "Rectangle start at the boundary on width should be invalid",
+        assertTrue("Rectangle start at the boundary on width should be invalid",
             rectWidthExactlyBoundary.isInvalid());
     }
 
@@ -758,8 +752,7 @@ public class RectangleJunitTests {
     public void testIsInvalidHeightNegativeButWithinBoundary() {
         Rectangle rectHeightNegativeWithinBoundary = new Rectangle(10, -5, 10,
             15);
-        assertTrue(
-            "Rectangle negative yCoord but in bound isn't invalid",
+        assertTrue("Rectangle negative yCoord but in bound isn't invalid",
             rectHeightNegativeWithinBoundary.isInvalid());
     }
 
@@ -798,8 +791,7 @@ public class RectangleJunitTests {
     public void testIsInvalidCompletelyWithinBoundary() {
         Rectangle rectCompletelyWithinBoundary = new Rectangle(500, 500, 100,
             100);
-        assertFalse(
-            "Rectangle fully within the 1024 shouldn't be invalid",
+        assertFalse("Rectangle fully within the 1024 shouldn't be invalid",
             rectCompletelyWithinBoundary.isInvalid());
     }
 

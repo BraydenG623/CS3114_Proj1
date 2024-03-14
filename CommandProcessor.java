@@ -20,7 +20,7 @@ public class CommandProcessor {
      * commands to.
      * 
      *
-     *            the database object to manipulate
+     * the database object to manipulate
      */
     public CommandProcessor() {
         data = new Database();
@@ -44,13 +44,13 @@ public class CommandProcessor {
      */
     public void processor(String line) {
         // Check if the line is empty or consists only of whitespace
-//        if (line.trim().isEmpty()) {
-//            // If the line is empty or whitespace, 
-//            //return early without processing
-//            //System.out.println("Invalid line");
-//            return;
-//        }
-        
+// if (line.trim().isEmpty()) {
+// // If the line is empty or whitespace,
+// //return early without processing
+// //System.out.println("Invalid line");
+// return;
+// }
+
         // converts the string of the line into an
         // array of its space (" ") delimited elements
         String[] arr = line.split("\\s{1,}");

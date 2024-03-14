@@ -25,8 +25,8 @@ public class Database {
     // a string for the name of the rectangle and then
     // a rectangle object, these are stored in a KVPair,
     // see the KVPair class for more information
+    
     private SkipList<String, Rectangle> list;
-
 
     // This is an Iterator object over the SkipList to loop through it from
     // outside the class.
@@ -216,10 +216,6 @@ public class Database {
             }
         }
 
-        // If no intersections were found, print a message accordingly.
-// if (!foundIntersection) {
-// System.out.println("No intersections found.");
-// }
     }
 
 

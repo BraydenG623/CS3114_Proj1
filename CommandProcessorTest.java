@@ -324,5 +324,91 @@ public class CommandProcessorTest {
             + "in 'dump' command",
             expectedOutput.trim(), outContent.toString().trim());
     }
+    
+    
+    /**
+     * Test arr.length not 6 for insert
+     */
+    @Test
+    public void testInvalidInsert() {
+        String command = "insert rect 0 0 10";
+        processor.processor(command);
+       
+        assertTrue("Expected insert failure message", outContent.toString()
+            .contains("Incorrect number of arguments for insert command."));
+    }
+    
+    /**
+     * Test wrong inputs for remove
+     */
+    @Test
+    public void testInvalidRemove() {
+        String command = "insert rect 0 0 10 10";
+        String command2 = "remove 0 0 10";
+        processor.processor(command);
+        processor.processor(command2);
+       
+        assertTrue("Expected remove failure message", outContent.toString()
+            .contains("Incorrect number of arguments for remove command."));
+    }
+    
+    /**
+     * Test arr.length not 6 for insert
+     */
+    @Test
+    public void testInvalidRegionSearch() {
+        String command = "regionsearch 0 0 10";
+        processor.processor(command);
+       
+        assertTrue("Expected region search failure message", 
+            outContent.toString()
+            .contains("Invalid command format for regionsearch."));
+    }
+    
+    /**
+     * Test arr.length not 6 for insert
+     */
+    @Test
+    public void testInvalidSearch() {
+        String command = "insert rect 0 0 10 10";
+        String command2 = "search";
+        processor.processor(command);
+        processor.processor(command2);
+        
+        assertTrue("Expected search failure message", outContent.toString()
+            .contains("Search command requires a name parameter."));
+    }
+    
+    /**
+     * Test arr.length not 6 for insert
+     */
+    @Test
+    public void testInvalidDump() {
+        String command = "insert rect 0 0 10 10";
+        String command2 = "dumpp";
+        processor.processor(command);
+        processor.processor(command2);
+        
+        assertTrue("Expected dump failure message", outContent.toString()
+            .contains("Unrecognized command."));
+    }
+
+    /**
+     * Captures and returns console output during the test.
+     * This is a placeholder for an actual method to capture console output.
+     * 
+     * @return The console output as a String.
+     */
+    @SuppressWarnings("unused")
+    private String captureOutput() {
+        // Implement capturing of System.out here
+        return "Assume this string is captured output from System.out";
+    }
+
+
+
+
+
+
 
 }

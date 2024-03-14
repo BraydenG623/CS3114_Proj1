@@ -19,18 +19,44 @@ import student.TestableRandom;
  */
 @SuppressWarnings("unused")
 public class QuadTree {
+    private QuadNode root;
+    // World size defined as constants
+    //Top left corner : x1, y1 (0,0)
+    private static final int X1 = 0, Y1 = 0;
+    
+    //
+    private static final int X2 = 1024, Y2 = 1024; 
 
-    QuadNode root = EmptyNode.getInstance();
-   
-    //World size
-    final int WIDTH = 1024;
-    final int HEIGHT = 1024;
-
-    public void insert(Point point) {
-        root = root.insert(point);
+    public QuadTree() {
+        // Initially, the tree is empty.
+        this.root = EmptyNode.getInstance();
     }
 
-    public void remove(Point point) {
-        root = root.remove(point);
+    public void insert(String name, int x, int y) {
+        // On the first insert, replace the root with a leafnode with world bounds, if necessary.
+        if (root instanceof EmptyNode) {
+            root = new LeafNode(X1, Y1, X2, Y2); // Adjust this line to match your constructor or factory pattern
+        }
+        // Now, insert the point into the tree, passing down the world bounds
+        root = root.insert(name, x, y, X1, Y1, X2, Y2);
     }
+
+    public void remove(String name) {
+        if (!(root instanceof EmptyNode)) {
+            root = root.remove(name, X1, Y1, X2, Y2);
+        }
+    }
+
+    public void remove(int x, int y) {
+        if (!(root instanceof EmptyNode)) {
+            root = root.remove(x, y, X1, Y1, X2, Y2);
+        }
+    }
+    
+    public void dump() {
+        System.out.println("QuadTree dump:");
+        root.dump(0); // Start the dump from the root with level 0
+    }
+
 }
+
