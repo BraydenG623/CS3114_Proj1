@@ -20,79 +20,90 @@ import student.TestableRandom;
 public class LeafNode implements QuadNode {
     List<Point> points = new ArrayList<>();
 
-    private int x1, y1, x2, y2; // Spatial bounds
+    private int x, y; // Top-left corner of this node
+    private int size; // Size of the side of the square
 
-    // Constructor to set bounds
-    public LeafNode(int x1, int y1, int x2, int y2) {
-        this.x1 = x1;
-        this.y1 = y1;
-        this.x2 = x2;
-        this.y2 = y2;
+    // Adjusted constructor to set bounds using a single size parameter
+    public LeafNode(int x, int y, int size) {
+        this.x = x;
+        this.y = y;
+        this.size = size;
     }
 
 
-    @Override
-    public int[] getBounds() {
-        return new int[] { x1, y1, x2, y2 };
-    }
-
-
-    // Helper function to check for decompotion rule on distinct points
-    private boolean containsDistinctCoordinates() {
-        Set<String> uniqueCoordinates = new HashSet<>();
-        for (Point point : points) {
-            // Convert coordinates to a unique string representation
-            String coord = point.getX() + "," + point.getY();
-            uniqueCoordinates.add(coord);
+    // Helper function to check if all points in the leaf node are the same
+    private boolean areAllPointsSame() {
+        if (points.isEmpty()) {
+            return true;
         }
-        // If the set size is equal to the list size, all coordinates are unique
-        return uniqueCoordinates.size() < points.size();
+        Point firstPoint = points.get(0);
+        for (Point point : points) {
+            if (!point.equals(firstPoint)) {
+                return false;
+            }
+        }
+        return true;
     }
-
-    // Inside LeafNode class
 
 
     private QuadNode splitAndRedistribute() {
-        InternalNode internalNode = new InternalNode(x1, y1, x2, y2);
-        for (Point point : points) {
-            internalNode.insert(point.getName(), point.getX(), point.getY(), x1,
-                x2, y1, y2);
+        // Only split if there are more than three points and they are not all
+        // at the same coordinates
+        if (points.size() > 3 && !areAllPointsAtSameCoordinates()) {
+            InternalNode parent = new InternalNode(x, y, size);
+            for (Point point : points) {
+                parent.insert(point.getName(), point.getX(), point.getY(), size
+                    / 2);
+            }
+            points.clear(); // Clear points as they have been redistributed
+            return parent;
         }
-        points.clear();
-        return internalNode;
+        else {
+            return this; // No split required
+        }
+    }
+
+
+    // Check if all points in this node have the same coordinates
+    private boolean areAllPointsAtSameCoordinates() {
+        if (points.size() < 2) {
+            return true; // Zero or one point always satisfies the condition
+                         // trivially
+        }
+        Point firstPoint = points.get(0);
+        for (Point point : points.subList(1, points.size())) {
+            if (!point.equals(firstPoint)) {
+                return false;
+            }
+        }
+        return true;
     }
 
 
     @Override
-    public QuadNode insert(
-        String name,
-        int x,
-        int y,
-        int x1,
-        int x2,
-        int y1,
-        int y2) {
-        Point newPoint = new Point(name, x, y);
+    public QuadNode insert(String name, int pointX, int pointY, int size) {
+        Point newPoint = new Point(name, pointX, pointY);
         points.add(newPoint);
 
-        if (points.size() > 3 && containsDistinctCoordinates()) {
+        // Check the conditions for splitting
+        if (points.size() > 3 && !areAllPointsSame()) {
             return splitAndRedistribute();
         }
         else {
-            return this;
+            return this; // No split needed
         }
     }
 
 
     @Override
-    public QuadNode remove(String name, int x1, int x2, int y1, int y2) {
+    public QuadNode remove(String name, int size) {
         // TODO: Implement:
         return this;
     }
 
 
     @Override
-    public QuadNode remove(int x, int y, int x1, int x2, int y1, int y2) {
+    public QuadNode remove(int x, int y, int size) {
 
         return this;
     }
@@ -110,7 +121,7 @@ public class LeafNode implements QuadNode {
                 // If it does, return this point
 
                 // First create a new leafNode
-                LeafNode resultNode = new LeafNode(x1, y1, x2, y2);
+                LeafNode resultNode = new LeafNode(x, y, size);
 
                 resultNode.points.add(point);
                 return resultNode;
@@ -124,19 +135,16 @@ public class LeafNode implements QuadNode {
 
     @Override
     public List<Point> regionsearch(
-        int x,
-        int y,
+        int searchX,
+        int searchY,
         int width,
         int height,
-        int x1,
-        int x2,
-        int y1,
-        int y2) {
-        // TODO: Implement:
+        int size) {
         List<Point> foundPoints = new ArrayList<>();
         for (Point point : points) {
-            if (point.getX() >= x && point.getX() <= x + width && point
-                .getY() >= y && point.getY() <= y + height) {
+            if (point.getX() >= searchX && point.getX() <= searchX + width
+                && point.getY() >= searchY && point.getY() <= searchY
+                    + height) {
                 foundPoints.add(point);
             }
         }
@@ -159,18 +167,26 @@ public class LeafNode implements QuadNode {
 
 
     @Override
-    public void dump(int level) {
-        QuadTree.incrementNodeCount(); // Increment for the leaf node itself.
-        // Print the node information with proper indentation
-        System.out.println("Node at " + x1 + ", " + y1 + ", "
-            + (x2 - x1) + ":" );
-
-        // Loop through each point in the leaf node and print on separate lines
-        // with indentation
+    public int dump(int level) {
+        // This node itself counts as one
+        int nodeCount = 1;
+        printWithIndentation("Node at " + x + ", " + y + ", " + size + ":",
+            level);
         for (Point point : points) {
-            System.out.println("(" + point.getName() + ", "
-                + point.getX() + ", " + point.getY() + ")");
+            // Points are printed at the same level as the node description
+            printWithIndentation("(" + point.getName() + ", " + point.getX()
+                + ", " + point.getY() + ")", level);
         }
+        return nodeCount; // Return count of this node
+    }
+
+
+    private void printWithIndentation(String message, int level) {
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < level; i++) {
+            sb.append("  "); // Append two spaces per level for indentation
+        }
+        System.out.println(sb.toString() + message);
     }
 
 }

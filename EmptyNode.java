@@ -19,12 +19,8 @@ import student.TestableRandom;
 @SuppressWarnings("unused")
 public class EmptyNode implements QuadNode {
 
-    private int x1, y1, x2, y2; // Spatial bounds
 
-    @Override
-    public int[] getBounds() {
-        return new int[] { x1, y1, x2, y2 };
-    }
+
 
     private static EmptyNode flyweight = null;
 
@@ -42,29 +38,23 @@ public class EmptyNode implements QuadNode {
 
 
     @Override
-    public QuadNode insert(
-        String name,
-        int x,
-        int y,
-        int x1,
-        int x2,
-        int y1,
-        int y2) {
-        // Transform into a LeafNode and insert the point
-        LeafNode newLeaf = new LeafNode(x1, x2, y1, y2);
-        return newLeaf.insert(name, x, y, x1, x2, y1, y2);
+    public QuadNode insert(String name, int x, int y, int size) {
+        // Create a new LeafNode covering the same region and insert the point
+        LeafNode newLeaf = new LeafNode(x, y, size);
+        return newLeaf.insert(name, x, y, size);
     }
 
 
+
     @Override
-    public QuadNode remove(String name, int x1, int x2, int y1, int y2) {
+    public QuadNode remove(String name, int size) {
         // TODO: Implement:
         return this;
     }
 
 
     @Override
-    public QuadNode remove(int x, int y, int x1, int x2, int y1, int y2) {
+    public QuadNode remove(int x, int y, int size) {
 
         return this;
     }
@@ -79,17 +69,8 @@ public class EmptyNode implements QuadNode {
 
 
     @Override
-    public List<Point> regionsearch(
-        int x,
-        int y,
-        int width,
-        int height,
-        int x1,
-        int x2,
-        int y1,
-        int y2) {
-        // No points in an empty node
-
+    public List<Point> regionsearch(int x, int y, int width, int height, int size) {
+        // Empty node has no points, return an empty list
         return Collections.emptyList();
     }
 
@@ -108,11 +89,24 @@ public class EmptyNode implements QuadNode {
     }
 
 
+    private void printWithIndentation(String text, int level) {
+        for (int i = 0; i < level; i++) {
+            System.out.print("  ");
+        }
+        System.out.println(text);
+    }
+
+
+
+
     @Override
-    public void dump(int level) {
-        QuadTree.incrementNodeCount(); // Increment for the empty node.
-        System.out.println("Node at " + x1 + ", " + y1 + ", "
-            + (x2 - x1) + ": Empty");
+    public int dump(int level) {
+        // Indentation based on the level
+        String indentation = "  ".repeat(level);
+        System.out.println(indentation + "Empty");
+
+        // Returns 1 since it's counting the current node
+        return 1;
     }
 
 }

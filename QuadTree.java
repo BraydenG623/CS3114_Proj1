@@ -6,12 +6,9 @@ import java.util.Map;
 import java.util.Random;
 import student.TestableRandom;
 
-
 /**
- * Represents the QuadTree structure for organizing points 
- * in a two-dimensional space.
- * Supports operations such as insert, remove, regionSearch, 
- * and duplicates.
+ * Represents the QuadTree structure for organizing points in a two-dimensional space.
+ * Supports operations such as insert, remove, regionSearch, and duplicates.
  * 
  * @author Brayden Gardner, Ryan Kluttz
  * @version 1.0
@@ -20,55 +17,35 @@ import student.TestableRandom;
 @SuppressWarnings("unused")
 public class QuadTree {
     private QuadNode root;
-    // World size defined as constants
-    //Top left corner : x1, y1 (0,0)
-    private static final int X1 = 0, Y1 = 0;
-    
-    //
-    private static final int X2 = 1024, Y2 = 1024; 
-    
-    
-    private static int nodeCount = 0; // Track the count of nodes printed
-
+    // The dimension of the world space
+    private static final int WORLD_SIZE = 1024; // Assuming a square world
 
     public QuadTree() {
-        // Initially, the tree is empty.
+        // Initially, the tree is empty, so we create a flyweight for the root.
         this.root = EmptyNode.getInstance();
     }
 
     public void insert(String name, int x, int y) {
-        // On the first insert, replace the root with a leafnode with world bounds, if necessary.
-        if (root instanceof EmptyNode) {
-            root = new LeafNode(X1, Y1, X2, Y2); // Adjust this line to match your constructor or factory pattern
-        }
-        // Now, insert the point into the tree, passing down the world bounds
-        root = root.insert(name, x, y, X1, Y1, X2, Y2);
+        // The entire world space is represented in the root.
+        // The size is passed to handle splits accurately.
+        this.root = root.insert(name, x, y, WORLD_SIZE);
     }
 
     public void remove(String name) {
-        if (!(root instanceof EmptyNode)) {
-            root = root.remove(name, X1, Y1, X2, Y2);
-        }
+        // Size is passed to properly find and remove the point by name.
+        this.root = root.remove(name, WORLD_SIZE);
     }
 
     public void remove(int x, int y) {
-        if (!(root instanceof EmptyNode)) {
-            root = root.remove(x, y, X1, Y1, X2, Y2);
-        }
-    }
-    
-    public static void incrementNodeCount() {
-        nodeCount++;
+        // Size is passed to accurately locate and remove the point by coordinates.
+        this.root = root.remove(x, y, WORLD_SIZE);
     }
     
     public void dump() {
         System.out.println("QuadTree dump:");
-        nodeCount = 0; // Reset count before dumping
-        if (root != null) {
-            root.dump(0);
-        }
+        int nodeCount = root.dump(0); // Dump the tree starting from the root at level 0
         System.out.println(nodeCount + " quadtree nodes printed");
     }
 
+    // Other QuadTree methods (like regionSearch, search, duplicates) can be added here following a similar pattern.
 }
-
