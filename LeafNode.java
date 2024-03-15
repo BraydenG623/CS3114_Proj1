@@ -33,63 +33,55 @@ public class LeafNode implements QuadNode {
 
     // Helper function to check if all points in the leaf node are the same
     private boolean areAllPointsSame() {
-        if (points.isEmpty()) {
-            return true;
+        if (points.isEmpty() || points.size() == 1) {
+            return true; // An empty node or a node with a single point implicitly satisfies the condition
         }
-        Point firstPoint = points.get(0);
+        Point first = points.get(0);
         for (Point point : points) {
-            if (!point.equals(firstPoint)) {
-                return false;
+            if (!point.equals(first)) {
+                return false; // Found points with different coordinates
             }
         }
-        return true;
+        return true; // All points have the same coordinates
     }
 
 
     private QuadNode splitAndRedistribute() {
-        // Only split if there are more than three points and they are not all
-        // at the same coordinates
-        if (points.size() > 3 && !areAllPointsAtSameCoordinates()) {
-            InternalNode parent = new InternalNode(x, y, size);
-            for (Point point : points) {
-                parent.insert(point.getName(), point.getX(), point.getY(), size
-                    / 2);
-            }
-            points.clear(); // Clear points as they have been redistributed
-            return parent;
+        InternalNode parent = new InternalNode(x, y, size);
+        for (Point point : points) {
+            parent.insert(point.getName(), point.getX(), point.getY(), size);
         }
-        else {
-            return this; // No split required
-        }
+        return parent;
     }
 
-
-    // Check if all points in this node have the same coordinates
-    private boolean areAllPointsAtSameCoordinates() {
-        if (points.size() < 2) {
-            return true; // Zero or one point always satisfies the condition
-                         // trivially
-        }
-        Point firstPoint = points.get(0);
-        for (Point point : points.subList(1, points.size())) {
-            if (!point.equals(firstPoint)) {
-                return false;
-            }
-        }
-        return true;
-    }
+//
+//    // Check if all points in this node have the same coordinates
+//    private boolean areAllPointsAtSameCoordinates() {
+//        if (points.size() < 2) {
+//            return true; // Zero or one point always satisfies the condition
+//                         // trivially
+//        }
+//        Point firstPoint = points.get(0);
+//        for (Point point : points.subList(1, points.size())) {
+//            if (!point.equals(firstPoint)) {
+//                return false;
+//            }
+//        }
+//        return true;
+//    }
 
 
     @Override
     public QuadNode insert(String name, int pointX, int pointY, int size) {
         Point newPoint = new Point(name, pointX, pointY);
-        points.add(newPoint);
+        
 
         // Check the conditions for splitting
         if (points.size() > 3 && !areAllPointsSame()) {
             return splitAndRedistribute();
         }
         else {
+            points.add(newPoint);
             return this; // No split needed
         }
     }
