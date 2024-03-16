@@ -63,7 +63,7 @@ public class CommandProcessor {
             // Calls insert
 
             // Make sure there is enough arguments for the insert command
-            if (arr.length == 6) {
+            if (arr.length == 4) {
 
                 // Grabs the name of the rectangle etc
                 String name = arr[1];
@@ -71,14 +71,14 @@ public class CommandProcessor {
                 // Extract the rest of the parameters
                 int x = Integer.parseInt(arr[2].trim());
                 int y = Integer.parseInt(arr[3].trim());
-                int w = Integer.parseInt(arr[4].trim());
-                int h = Integer.parseInt(arr[5].trim());
+// int w = Integer.parseInt(arr[4].trim());
+// int h = Integer.parseInt(arr[5].trim());
 
                 // Check the rectangle to make sure it has valid w and h
 
                 // Now construct the rectangle object
-                Rectangle rect = new Rectangle(x, y, w, h);
-                KVPair<String, Point> pair = new KVPair<>(name, rect);
+                PointInt point = new PointInt(x, y);
+                KVPair<String, PointInt> pair = new KVPair<>(name, point);
                 data.insert(pair);
 
             }
@@ -103,16 +103,14 @@ public class CommandProcessor {
                 data.remove(name);
 
             }
-            else if (numParam == 4) {
+            else if (numParam == 2) {
                 // Calls remove by coordinate, converting string
                 // integers into their Integer equivalent minus whitespace
 
                 int x = Integer.parseInt(arr[1].trim());
                 int y = Integer.parseInt(arr[2].trim());
-                int w = Integer.parseInt(arr[3].trim());
-                int h = Integer.parseInt(arr[4].trim());
 
-                data.remove(x, y, w, h);
+                data.remove(x, y);
 
             }
             else {
@@ -140,8 +138,8 @@ public class CommandProcessor {
                     else {
                         // If width or height are not valid, print an error
                         // message
-                        System.out.println("Rectangle rejected: (" + x + ", "
-                            + y + ", " + w + ", " + h + ")");
+                        System.out.println("Region rejected: (" + x + ", " + y
+                            + ", " + w + ", " + h + ")");
                     }
                 }
                 catch (NumberFormatException e) {
@@ -155,12 +153,12 @@ public class CommandProcessor {
             }
 
         }
-        else if (command.equals("intersections")) {
+        else if (command.equals("duplicates")) {
             // calls the intersections method, no parameters to be passed
             // (see the intersections JavaDoc in the Database class for more
             // information)
 
-            data.intersections();
+            data.duplicates();
 
         }
         else if (command.equals("search")) {

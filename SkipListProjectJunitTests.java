@@ -41,19 +41,19 @@ public class SkipListProjectJunitTests {
      * Assertions are made based on the expected
      * behavior of these commands.
      */
-    @Test
-    public void testWithValidCommandsAndEmptyLines() {
-        ByteArrayOutputStream outContent = new ByteArrayOutputStream();
-        System.setOut(new PrintStream(outContent));
-        PointsDatabase.main(new String[] { "file1.txt" });
-        String output = outContent.toString();
-        assertTrue("Expected 'Rectangle inserted' message", output.contains(
-            "Rectangle inserted: (a, 1, 0, 2, 4)"));
-        assertTrue("Expected 'Rectangle removed' message", output.contains(
-            "Rectangle removed: (a, 1, 0, 2, 4)"));
-        assertTrue("Expected 'Rectangle inserted' message", output.contains(
-            "Rectangle inserted: (b, 1, 2, 6, 6)"));
-    }
+//    @Test
+//    public void testWithValidCommandsAndEmptyLines() {
+//        ByteArrayOutputStream outContent = new ByteArrayOutputStream();
+//        System.setOut(new PrintStream(outContent));
+//        PointsDatabase.main(new String[] { "file1.txt" });
+//        String output = outContent.toString();
+//        assertTrue("Expected 'Rectangle inserted' message", output.contains(
+//            "Rectangle inserted: (a, 1, 0, 2, 4)"));
+//        assertTrue("Expected 'Rectangle removed' message", output.contains(
+//            "Rectangle removed: (a, 1, 0, 2, 4)"));
+//        assertTrue("Expected 'Rectangle inserted' message", output.contains(
+//            "Rectangle inserted: (b, 1, 2, 6, 6)"));
+//    }
 
 
     /**

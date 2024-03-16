@@ -1,7 +1,6 @@
 import java.util.ArrayList;
 import java.util.Iterator;
 
-
 /**
  * This class is responsible for interfacing between the command processor and
  * the SkipList. The responsibility of this class is to further interpret
@@ -26,7 +25,7 @@ public class Database {
     // a string for the name of the rectangle and then
     // a rectangle object, these are stored in a KVPair,
     // see the KVPair class for more information
-    
+
     private SkipList<String, PointInt> list;
     private QuadTree quadTree;
 
@@ -56,16 +55,19 @@ public class Database {
      *            the KVPair to be inserted
      */
     public void insert(KVPair<String, PointInt> pair) {
-        PointInt point = new PointInt(pair.getValue().getX(),pair.getValue().getY());
-        String name = pair.getKey();        
-        if(point.getX() < 0 || point.getY() < 0 || point.getX() > 1024 || point.getY() > 1024) {
-            System.out.println("Point rejected: (" + name + ", " + point.getX() + ", " + point.getX() + ")");
-        } else {
-            quadTree.insert(name,point.getX(),point.getY());
+        PointInt point = new PointInt(pair.getValue().getX(), pair.getValue()
+            .getY());
+        String name = pair.getKey();
+        if (point.getX() < 0 || point.getY() < 0 || point.getX() > 1024 || point
+            .getY() > 1024) {
+            System.out.println("Point rejected: (" + name + ", " + point.getX()
+                + ", " + point.getY() + ")");
+        }
+        else {
+            quadTree.insert(name, point.getX(), point.getY());
             list.insert(pair);
         }
     }
-
 
 
     /**
@@ -87,7 +89,6 @@ public class Database {
     }
 
 
-
     /**
      * Removes a rectangle with the specified coordinates if available. If not
      * an error message is printed to the console.
@@ -98,19 +99,16 @@ public class Database {
      *            x-coordinate of the rectangle to be removed
      */
     public void remove(int x, int y) {
-        PointInt point = new PointInt(x,y);
-        quadTree.remove(x, y);
-        list.removeByValue(point);
-//        KVPair<String, PointInt> removed = list.removeByValue(point);
-//        if (removed != null) {
-//            quadTree.remove(x, y);
-//        }
-//        else if (removed == null) {
-//            System.out.println("Point not found: (" + x + ", " + y + ")");
-//            return;
-//        }
+        PointInt point = new PointInt(x, y);
+        KVPair<String, PointInt> removed = list.removeByValue(point);
+        if (removed != null) {
+            quadTree.remove(x, y);
+        }
+        else if (removed == null) {
+            System.out.println("Point not found: (" + x + ", " + y + ")");
+            return;
+        }
     }
-
 
 
     /**
@@ -130,14 +128,13 @@ public class Database {
      */
     public void regionsearch(int x, int y, int w, int h) {
         // Create a query rectangle with the given region.
-        if(w < 0 || h <0) {
-          System.out.println("Region invalid: (" + x + ", " + y + ", " + w
-              + ", " + h + ")");
-          return;
+        if (w < 0 || h < 0) {
+            System.out.println("Region invalid: (" + x + ", " + y + ", " + w
+                + ", " + h + ")");
+            return;
         }
         quadTree.regionsearch(x, y, w, h);
     }
-
 
 
     /**
@@ -156,7 +153,8 @@ public class Database {
             // Rectangles with the specified name are found, print them.
             System.out.println("Found");
             for (KVPair<String, PointInt> pair : found) {
-                PointInt point = new PointInt(pair.getValue().getX(),pair.getValue().getY());
+                PointInt point = new PointInt(pair.getValue().getX(), pair
+                    .getValue().getY());
                 // Print the rectangle's name and its details using the getter
                 // methods.
                 System.out.println("(" + pair.getKey() + ", " + (int)point
@@ -168,8 +166,6 @@ public class Database {
             System.out.println("Point not found: " + name);
         }
     }
-    
-
 
 
     /**
@@ -181,7 +177,8 @@ public class Database {
         list.dump();
         quadTree.dump();
     }
-    
+
+
     /*
      * 
      */
