@@ -1,188 +1,3 @@
-// import java.lang.reflect.Array;
-// import java.util.ArrayList;
-// import java.util.Iterator;
-// import java.util.List;
-// import java.util.Map;
-// import java.util.HashSet;
-// import java.util.Set;
-// import java.util.Random;
-// import student.TestableRandom;
-//
-/// **
-// * Represents a leaf node in a QuadTree structure,
-// * which stores points directly.
-// *
-// * @author Brayden Gardner, Ryan Kluttz
-// * @version 1.0
-// * @since 2024-02-25
-// */
-// @SuppressWarnings("unused")
-// public class LeafNode implements QuadNode {
-// List<Point> points = new ArrayList<>();
-//
-// private int x1, y1, x2, y2; // Spatial bounds
-//
-// // Constructor to set bounds
-// public LeafNode(int x1, int y1, int x2, int y2) {
-// this.x1 = x1;
-// this.y1 = y1;
-// this.x2 = x2;
-// this.y2 = y2;
-// }
-//
-//
-// @Override
-// public int[] getBounds() {
-// return new int[] { x1, y1, x2, y2 };
-// }
-//
-//
-// // Helper function to check if all points in the leaf node are the same
-// private boolean areAllPointsSame() {
-// if (points.isEmpty()) {
-// return true;
-// }
-// Point firstPoint = points.get(0);
-// for (Point point : points) {
-// if (!point.equals(firstPoint)) {
-// return false;
-// }
-// }
-// return true;
-// }
-//
-// @Override
-// public QuadNode insert(String name, int x, int y, int x1, int y1, int x2, int
-// y2) {
-// // System.out.println("Inserting into LeafNode at bounds: " + x1 + ", " + y1
-// + ", " + x2 + ", " + y2);
-// Point newPoint = new Point(name, x, y);
-//
-// if (points.size() >= 3 && !areAllPointsSame()) {
-// // System.out.println("Splitting LeafNode at bounds: " + x1 + ", " + y1 + ",
-// " + x2 + ", " + y2);
-// QuadNode newNode = splitAndRedistribute();
-// return newNode.insert(name, x, y, x1, y1, x2, y2);
-// } else {
-// //System.out.println("Point inserted: (" + name + ", " + x + ", " + y + ")");
-// points.add(newPoint);
-// return this;
-// }
-// }
-//
-// private QuadNode splitAndRedistribute() {
-// // System.out.println("Redistributing points in LeafNode at bounds: " + x1 +
-// ", " + y1 + ", " + x2 + ", " + y2);
-// InternalNode internalNode = new InternalNode(x1, y1, x2, y2);
-// for (Point point : points) {
-// internalNode.insert(point.getName(), point.getX(), point.getY(), x1, y1, x2,
-// y2);
-// }
-// points.clear();
-// return internalNode;
-// }
-//
-//
-// @Override
-// public QuadNode remove(String name, int x1, int x2, int y1, int y2) {
-// // TODO: Implement:
-// return this;
-// }
-//
-//
-// @Override
-// public QuadNode remove(int x, int y, int x1, int x2, int y1, int y2) {
-//
-// return this;
-// }
-//
-//
-// @Override
-// public QuadNode search(String name) {
-// // LeafNode means we are at the point so we just need to check
-// // the 3 possiblw points in this node to see if the name
-// // matches what we are looking for
-//
-// for (Point point : points) {
-// // Check if the point matches
-// if (point.getName().equals(name)) {
-// // If it does, return this point
-//
-// // First create a new leafNode
-// LeafNode resultNode = new LeafNode(x1, y1, x2, y2);
-//
-// resultNode.points.add(point);
-// return resultNode;
-// }
-// }
-//
-// // Return null if the point is not found
-// return null;
-// }
-//
-//
-// @Override
-// public List<Point> regionsearch(
-// int x,
-// int y,
-// int width,
-// int height,
-// int x1,
-// int x2,
-// int y1,
-// int y2) {
-// // TODO: Implement:
-// List<Point> foundPoints = new ArrayList<>();
-// for (Point point : points) {
-// if (point.getX() >= x && point.getX() <= x + width && point
-// .getY() >= y && point.getY() <= y + height) {
-// foundPoints.add(point);
-// }
-// }
-// return foundPoints;
-// }
-//
-//
-// @Override
-// public boolean isLeaf() {
-// // TODO: Implement:
-// return true;
-// }
-//
-//
-// @Override
-// public List<Point> duplicates() {
-// // TODO: Implement:
-// return null;
-// }
-//
-//
-// @Override
-// public void dump(int level) {
-// QuadTree.incrementNodeCount(); // Increment for the leaf node itself.
-// printWithIndentation("Node at " + x1 + ", " + y1 + ", " + (x2 - x1) + ":",
-// level);
-//
-// if (points.isEmpty()) {
-// printWithIndentation("Empty", level + 1);
-// } else {
-// for (Point point : points) {
-// printWithIndentation("(" + point.getName() + ", " + point.getX() + ", " +
-// point.getY() + ")", level);
-// }
-// }
-// }
-//
-// private void printWithIndentation(String text, int level) {
-// for (int i = 0; i < level; i++) {
-// System.out.print(" ");
-// }
-// System.out.println(text);
-// }
-//
-//
-// }
-
 import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -246,9 +61,12 @@ public class LeafNode implements QuadNode {
     }
 
 
-
     @Override
-    public QuadNode insert(String name, int pointX, int pointY, ArrayList<Integer> param) {
+    public QuadNode insert(
+        String name,
+        int pointX,
+        int pointY,
+        ArrayList<Integer> param) {
         Point newPoint = new Point(name, pointX, pointY);
         points.add(newPoint);
         // Check the conditions for splitting
@@ -270,7 +88,7 @@ public class LeafNode implements QuadNode {
     public QuadNode remove(String name, int size) {
         for (Point point : points) {
             if (point.getName().equals(name)) {
-                remove(point.getX(),point.getY(),size);
+                remove(point.getX(), point.getY(), size);
                 return this;
             }
         }
@@ -278,30 +96,31 @@ public class LeafNode implements QuadNode {
     }
 
 
-
     @Override
     public QuadNode remove(int x, int y, int size) {
-        String name = getName(x,y);
+        String name = getName(x, y);
         boolean removed = points.removeIf(p -> p.getX() == x && p.getY() == y);
-        if(removed) {
-            System.out.println("Point removed: (" + name + ", " + x + ", " + y + ")");
+        if (removed) {
+            System.out.println("Point removed: (" + name + ", " + x + ", " + y
+                + ")");
         }
-       
-        // After removal, this node itself is returned since the leaf node does not decide on merges.
-        // The decision to merge is up to the parent internal node after the removal operation.
+
+        // After removal, this node itself is returned since the leaf node does
+        // not decide on merges.
+        // The decision to merge is up to the parent internal node after the
+        // removal operation.
         return this;
     }
-    
-    
-    
+
+
     public String getName(int x, int y) {
         for (Point point : points) {
-            if (point.getX()== x && point.getY() == y ) {
+            if (point.getX() == x && point.getY() == y) {
                 return point.getName();
             }
         }
         return null;
-        
+
     }
 
 
@@ -312,15 +131,24 @@ public class LeafNode implements QuadNode {
         int width,
         int height,
         int size) {
+        // Increment node count for visiting this leaf node
+        QuadTree.incRegionSearchNC();
+
         List<Point> foundPoints = new ArrayList<>();
+        // Iterate through each point in this leaf node
         for (Point point : points) {
-            if (point.getX() >= searchX && point.getX() <= searchX + width
-                && point.getY() >= searchY && point.getY() <= searchY
+            // Check if the point is within the search region
+            if (point.getX() > searchX && point.getX() < searchX + width
+                && point.getY() > searchY && point.getY() < searchY
                     + height) {
-                System.out.println("Point found: (" + point.getName() + ", " + point.getX() + ", " + point.getY() + ")");
+                // If the point is within the region, add it to the list of
+                // found points
+                System.out.println("Point found: (" + point.getName() + ", "
+                    + point.getX() + ", " + point.getY() + ")");
                 foundPoints.add(point);
             }
         }
+        // Return the list of points found within the search region
         return foundPoints;
     }
 
