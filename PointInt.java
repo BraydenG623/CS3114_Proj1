@@ -15,12 +15,10 @@ import student.TestableRandom;
  * @since 2024-02-25
  */
 @SuppressWarnings("unused")
-public class Point {
-    String name;
+public class PointInt {
     int x, y;
 
-    public Point(String name, int x, int y) {
-        this.name = name;
+    public PointInt( int x, int y) {
         this.x = x;
         this.y = y;
     }
@@ -28,13 +26,6 @@ public class Point {
     
 
    //TODO: Implement the getters/setters later
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
 
     public int getX() {
         return x;
@@ -50,5 +41,9 @@ public class Point {
 
     public void setY(int y) {
         this.y = y;
+    }
+    
+    public String toString() {
+        return (this.x + ", " + this.y);
     }
 }

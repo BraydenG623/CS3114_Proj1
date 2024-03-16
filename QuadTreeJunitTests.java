@@ -120,8 +120,32 @@ public class QuadTreeJunitTests {
             "Point found: (r1, 10, 10)\n" +
             "Point found: (r3, 7, 7)\n" +
             "7 quadtree nodes visited\n";
-        assertEquals(expectedOutput, outContent.toString());
+        assertEquals(expectedOutput.trim().replace("\r", ""), outContent.toString().trim().replace("\r", ""));
     
+    }
+    
+    /*
+     * Test duplicates for empty node
+     */
+    @Test
+    public void testEmptyNodeDuplicates() {
+        quadTree.insert("r1", 10, 10);
+        quadTree.insert("r2", 15, 15);
+        quadTree.insert("r3", 7, 7);
+        quadTree.insert("r4", 20, 25);
+        quadTree.insert("big", 10, 10);
+        quadTree.duplicates();
+            
+            
+        String expectedOutput = 
+            "Point inserted: (r1, 10, 10)\n" +
+            "Point inserted: (r2, 15, 15)\n" +
+            "Point inserted: (r3, 7, 7)\n" +
+            "Point inserted: (r4, 20, 25)\n" +
+            "Point inserted: (big, 10, 10)\n" +
+            "Duplicate points:\n" +
+            "(10, 10)\n";
+        assertEquals(expectedOutput.trim().replace("\r", ""), outContent.toString().trim().replace("\r", ""));
     }
     
 

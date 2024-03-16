@@ -96,14 +96,6 @@ public class Rectangle {
         return !(toTheLeft || above);
     }
 
-//    public boolean intersect(Rectangle r2) {
-//        //Check both x and y coordinates added with their width and height 
-//        return !(this.xCoordinate + this.width <= r2.xCoordinate || 
-//                 r2.xCoordinate + r2.width <= this.xCoordinate || 
-//                 this.yCoordinate + this.height <= r2.yCoordinate || 
-//                 r2.yCoordinate + r2.height <= this.yCoordinate);
-//    }
-
 
     /**
      * Checks, if the invoking rectangle has the same coordinates as rec.

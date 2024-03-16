@@ -78,7 +78,7 @@ public class CommandProcessor {
 
                 // Now construct the rectangle object
                 Rectangle rect = new Rectangle(x, y, w, h);
-                KVPair<String, Rectangle> pair = new KVPair<>(name, rect);
+                KVPair<String, Point> pair = new KVPair<>(name, rect);
                 data.insert(pair);
 
             }

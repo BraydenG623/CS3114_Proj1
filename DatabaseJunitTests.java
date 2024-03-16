@@ -3,6 +3,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.Iterator;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -19,727 +20,168 @@ import org.junit.Test;
 @SuppressWarnings("unused")
 public class DatabaseJunitTests {
 
+    private final ByteArrayOutputStream outContent = new ByteArrayOutputStream();
+    private final PrintStream originalOut = System.out;
     private Database database;
 
-    /**
-     * Sets up testing
-     */
     @Before
     public void setUp() {
+        System.setOut(new PrintStream(outContent));
         database = new Database();
     }
 
-
-    /**
-     * Test for inserting a valid rectangle.
-     */
-    @Test
-    public void testInsertValidRectangle() {
-        Rectangle rectangle = new Rectangle(1, 1, 3, 4);
-        Rectangle rectangle2 = new Rectangle(5, 2, 6, 6);
-        KVPair<String, Rectangle> pair = 
-            new KVPair<>("Rect1", rectangle);
-        KVPair<String, Rectangle> pair2 = 
-            new KVPair<>("Rect2", rectangle2);
-        ByteArrayOutputStream outContent = 
-            new ByteArrayOutputStream();
-        System.setOut(new PrintStream(outContent));
-
-        database.insert(pair);
-        database.insert(pair2);
-        database.dump();
-
-        System.setOut(System.out);
-
-        String expectedOutput = "SkipList dump:\n"
-            + "Node has depth 1, Value null\n" + "SkipList size is: 0";
-
-        assertNotEquals(expectedOutput, outContent.toString());
-
+    @After
+    public void restoreStreams() {
+        System.setOut(originalOut);
     }
 
-
-    /**
-     * Tests the bigInsert function
-     */
     @Test
-    public void testBigInsert() {
-        Database database1 = new Database();
-
-        // Insert five rejected rectangles
-        for (int i = 0; i < 5; i++) {
-            Rectangle rejectedRectangle = new Rectangle(i, i, -60, -50);
-            KVPair<String, Rectangle> rejectedPair = 
-                new KVPair<>("RejectedRect"
-                + i, rejectedRectangle);
-            database1.insert(rejectedPair);
-        }
-
-        // Insert 100 rectangles
-        for (int i = 0; i < 100; i++) {
-            Rectangle rectangle = new Rectangle(i, i, i + 2, i + 4);
-            KVPair<String, Rectangle> pair = 
-                new KVPair<>("Rect" + i,
-                rectangle);
-            database1.insert(pair);
-        }
-
-        ByteArrayOutputStream outContent = 
-            new ByteArrayOutputStream();
-        System.setOut(new PrintStream(outContent));
-
-        database1.dump();
-
-        System.setOut(System.out);
-
+    public void testInsertValidPoint() {
+        database.insert(new KVPair<>("r1", new PointInt(10, 10)));
+        String expectedOutput = "Point inserted: (r1, 10, 10)\n";
+        assertEquals(expectedOutput.trim().replace("\r", "").trim().replace("\r", ""), outContent.toString().trim().replace("\r", "").trim().replace("\r", ""));
     }
 
-
-    /**
-     * Test for inserting valid rectangle
-     * with negative coordinates.
-     */
     @Test
-    public void testInsertNegCordRectangle() {
-        Rectangle rectangle = new Rectangle(-1, 1, 3, 4);
-        KVPair<String, Rectangle> pair = 
-            new KVPair<>("Rect2", rectangle);
-
-        ByteArrayOutputStream outContent = 
-            new ByteArrayOutputStream();
-        System.setOut(new PrintStream(outContent));
-
-        database.insert(pair);
-        database.dump();
-
-        System.setOut(System.out);
-
-        String expectedOutput = "SkipList dump:\n"
-            + "Node has depth 0, Value null\n" + "SkipList size is: 0";
-
-        assertNotEquals(expectedOutput.trim().replace("\r", ""), outContent
-            .toString().trim().replace("\r", ""));
+    public void testInsertInvalidPoint() {
+        database.insert(new KVPair<>("r1", new PointInt(-10, -10)));
+        String expectedOutput = "Point rejected: (r1, -10, -10)\n";
+        assertEquals(expectedOutput.trim().replace("\r", "").trim().replace("\r", ""), outContent.toString().trim().replace("\r", "").trim().replace("\r", ""));
     }
 
-
-    /**
-     * Test remove rectangle by name.
-     */
     @Test
     public void testRemoveByName() {
-        Rectangle rectangle = new Rectangle(1, 1, 3, 4);
-        KVPair<String, Rectangle> pair = 
-            new KVPair<>("Rect3", rectangle);
-
-        database.insert(pair);
-
-        ByteArrayOutputStream outContent = 
-            new ByteArrayOutputStream();
-        System.setOut(new PrintStream(outContent));
-
-        database.remove("Rect3");
-
-        System.setOut(System.out);
-
-        String expectedOutput = "Rectangle removed: (Rect3, 1, 1, 3, 4)";
-
-        assertEquals(expectedOutput.trim().replace("\r", ""), outContent
-            .toString().trim().replace("\r", ""));
+        database.insert(new KVPair<>("r1", new PointInt(10, 10)));
+        database.remove("r1");
+        String expectedOutput = 
+            "Point inserted: (r1, 10, 10)\n" +
+            "Point removed: (r1, 10, 10)\n";
+        assertEquals(expectedOutput.trim().replace("\r", ""), outContent.toString().trim().replace("\r", ""));
     }
 
-
-    /**
-     * Test remove rectangle by coordinates.
-     */
     @Test
     public void testRemoveByCoordinates() {
-        Rectangle rectangle = new Rectangle(1, 1, 3, 4);
-        KVPair<String, Rectangle> pair = 
-            new KVPair<>("Rect4", rectangle);
-
-        database.insert(pair);
-
-        ByteArrayOutputStream outContent = 
-            new ByteArrayOutputStream();
-        System.setOut(new PrintStream(outContent));
-
-        database.remove(1, 1, 3, 4);
-
-        System.setOut(System.out);
-
-        String expectedOutput = "Rectangle removed: (Rect4, 1, 1, 3, 4)";
-
-        assertEquals(expectedOutput.trim().replace("\r", ""), outContent
-            .toString().trim().replace("\r", ""));
+        database.insert(new KVPair<>("r1", new PointInt(10, 10)));
+        database.insert(new KVPair<>("r2", new PointInt(5, 6)));
+        database.remove(10, 10);
+        String expectedOutput = 
+            "Point inserted: (r1, 10, 10)\n" +
+            "Point inserted: (r2, 5, 6)\n" +
+            "Point removed: (r1, 10, 10)\n";
+        assertEquals(expectedOutput.trim().replace("\r", ""), outContent.toString().trim().replace("\r", ""));
     }
 
-
-    /**
-     * Testing regionsearch with rectangles inside the specified region
-     */
     @Test
-    public void testRegionSearchInsideRegion() {
-        Database database1 = new Database();
-
-        // Insert rectangles inside the specified region
-        database1.insert(new KVPair<>("Rect1", 
-            new Rectangle(2, 2, 3, 3))); // Inside
-        database1.insert(new KVPair<>("Rect2", 
-            new Rectangle(5, 5, 2, 2))); // Inside
-
-        ByteArrayOutputStream outContent = new ByteArrayOutputStream();
-        System.setOut(new PrintStream(outContent));
-
-        // Perform region search
-        database1.regionsearch(1, 1, 6, 6);
-
-        String expectedOutput = "Rectangles intersecting region "
-            + "(1, 1, 6, 6):\n" + "(Rect1, 2, 2, 3, 3)\n"
-            + "(Rect2, 5, 5, 2, 2)\n";
-
-        assertEquals(expectedOutput.trim().replace("\r", ""), outContent
-            .toString().trim().replace("\r", ""));
+    public void testRegionSearch() {
+        database.insert(new KVPair<>("r1", new PointInt(10, 10)));
+        database.regionsearch(5, 5, 10, 10);
+        String expectedOutput = 
+            "Point inserted: (r1, 10, 10)\n" +
+            "Points intersecting region (5, 5, 10, 10):\n" +
+            "Point found: (r1, 10, 10)\n" +
+            "1 quadtree nodes visited\n";
+        assertEquals(expectedOutput.trim().replace("\r", ""), outContent.toString().trim().replace("\r", ""));
     }
 
-
-    /**
-     * Testing regionsearch with rectangles outside the specified region
-     */
     @Test
-    public void testRegionSearchOutsideRegion() {
-        Database database2 = new Database();
-
-        // Insert rectangles outside the specified region
-        database2.insert(new KVPair<>("Rect1", 
-            new Rectangle(8, 8, 3, 3))); // Outside
-        database2.insert(new KVPair<>("Rect2", 
-            new Rectangle(0, 0, 1, 1))); // Outside
-
-        ByteArrayOutputStream outContent = new ByteArrayOutputStream();
-        System.setOut(new PrintStream(outContent));
-
-        // Perform region search
-        database2.regionsearch(1, 1, 6, 6);
-
-        String expectedOutput = "Rectangles intersecting region "
-            + "(1, 1, 6, 6):\n";
-
-        assertEquals(expectedOutput.trim().replace("\r", ""), outContent
-            .toString().trim().replace("\r", ""));
+    public void testSearch() {
+        database.insert(new KVPair<>("r1", new PointInt(10, 10)));
+        database.search("r1");
+        String expectedOutput = 
+            "Point inserted: (r1, 10, 10)\n" +
+            "Found\n" +
+            "(r1, 10, 10)\n";
+        assertEquals(expectedOutput.trim().replace("\r", ""), outContent.toString().trim().replace("\r", ""));
     }
 
-
-    /**
-     * Testing valid intersection
-     */
     @Test
-    public void testIntersectionValid() {
-        Database database3 = new Database();
-
-        // Create rectangles that intersect
-        Rectangle rectangle1 = new Rectangle(0, 0, 5, 5);
-        Rectangle rectangle2 = new Rectangle(3, 3, 5, 5);
-
-        // Insert rectangles into the database
-        KVPair<String, Rectangle> pair1 = 
-            new KVPair<>("rect1", rectangle1);
-        KVPair<String, Rectangle> pair2 = 
-            new KVPair<>("rect2", rectangle2);
-
-        database3.insert(pair1);
-        database3.insert(pair2);
-
-        ByteArrayOutputStream outContent = 
-            new ByteArrayOutputStream();
-        System.setOut(new PrintStream(outContent));
-
-        database3.intersections();
-
-        System.setOut(System.out);
-
-        // Define the expected output
-        String expectedOutput = "Intersection pairs:\n"
-            + "(rect1, 0, 0, 5, 5 | rect2, 3, 3, 5, 5)\n"
-            + "(rect2, 3, 3, 5, 5 | rect1, 0, 0, 5, 5)\n";
-
-        assertEquals(expectedOutput.trim().replace("\r", ""), outContent
-            .toString().trim().replace("\r", ""));
+    public void testDuplicates() {
+        database.insert(new KVPair<>("r1", new PointInt(10, 10)));
+        database.insert(new KVPair<>("r2", new PointInt(10, 10)));
+        database.duplicates();
+        String expectedOutput = 
+            "Point inserted: (r1, 10, 10)\n" +
+            "Point inserted: (r2, 10, 10)\n" +
+            "Duplicate points:\n" +
+            "(10, 10)\n";
+        assertEquals(expectedOutput.trim().replace("\r", ""), outContent.toString().trim().replace("\r", ""));
     }
-
-
-    /**
-     * Testing invalid intersection
-     */
-    @Test
-    public void testIntersectionInvalid() {
-        Database database4 = new Database();
-
-        // Create rectangles that intersect
-        Rectangle rectangle1 = 
-            new Rectangle(0, 0, 5, 5);
-        Rectangle rectangle2 = 
-            new Rectangle(10, 10, 5, 5);
-
-        ByteArrayOutputStream outContent = 
-            new ByteArrayOutputStream();
-        System.setOut(new PrintStream(outContent));
-
-        // Insert rectangles into the database
-        KVPair<String, Rectangle> pair1 = 
-            new KVPair<>("rect1", rectangle1);
-        KVPair<String, Rectangle> pair2 = 
-            new KVPair<>("rect2", rectangle2);
-
-        database4.insert(pair1);
-        database4.insert(pair2);
-
-        database4.intersections();
-
-        System.setOut(System.out);
-
-        // Define the expected output
-        String expectedOutput = "Intersecting rectangles:\n"
-            + "(0, 0, 5, 5) intersects with (3, 3, 5, 5)\n"
-            + "(3, 3, 5, 5) intersects with (0, 0, 5, 5)\n";
-
-        assertNotEquals(expectedOutput.trim().replace("\r", ""), outContent
-            .toString().trim().replace("\r", ""));
-    }
-
-
-    /**
-     * Test for removing a non-existent rectangle by name.
-     */
-    @Test
-    public void testRemoveNonExistentByName() {
-        ByteArrayOutputStream outContent = 
-            new ByteArrayOutputStream();
-        System.setOut(new PrintStream(outContent));
-
-        database.remove("NonExistentRect");
-
-        System.setOut(System.out);
-
-        String expectedOutput = "Rectangle not removed: NonExistentRect";
-
-        assertEquals(expectedOutput.trim().replace("\r", ""), outContent
-            .toString().trim().replace("\r", ""));
-    }
-
-
-    /**
-     * Test for removing a non-existent rectangle by coordinates.
-     */
-    @Test
-    public void testRemoveNonExistentByCoordinates() {
-        ByteArrayOutputStream outContent = 
-            new ByteArrayOutputStream();
-        System.setOut(new PrintStream(outContent));
-
-        database.remove(1, 1, 3, 4);
-
-        System.setOut(System.out);
-
-        String expectedOutput = "Rectangle not found: (1, 1, 3, 4)";
-
-        assertEquals(expectedOutput.trim().replace("\r", ""), outContent
-            .toString().trim().replace("\r", ""));
-    }
-
-
-    /**
-     * Test for dumping an empty skip list.
-     */
-    @Test
-    public void testDumpEmptySkipList() {
-        ByteArrayOutputStream outContent = 
-            new ByteArrayOutputStream();
-        System.setOut(new PrintStream(outContent));
-
-        database.dump();
-
-        System.setOut(System.out);
-
-        String expectedOutput = "SkipList dump:\n"
-            + "Node has depth 1, Value null\n" + "SkipList size is: 0";
-
-        assertEquals(expectedOutput.trim().replace("\r", ""), outContent
-            .toString().trim().replace("\r", ""));
-    }
-
-
-    /**
-     * Test for dumping a skip list with multiple nodes.
-     */
-    @Test
-    public void testDumpSkipListWithNodes() {
-        Rectangle rectangle1 = 
-            new Rectangle(1, 1, 3, 4);
-        Rectangle rectangle2 = 
-            new Rectangle(5, 5, 2, 2);
-
-        KVPair<String, Rectangle> pair1 = 
-            new KVPair<>("Rect1", rectangle1);
-        KVPair<String, Rectangle> pair2 = 
-            new KVPair<>("Rect2", rectangle2);
-
-        ByteArrayOutputStream outContent = 
-            new ByteArrayOutputStream();
-        System.setOut(new PrintStream(outContent));
-
-        database.insert(pair1);
-        database.insert(pair2);
-
-        database.dump();
-
-        System.setOut(System.out);
-
-        assertNotEquals(null, outContent.toString());
-    }
-
-
-    /**
-     * Test for the case where two rectangles don't intersect.
-     */
-    @Test
-    public void testNonIntersectingRectangles() {
-        Database database5 = new Database();
-
-        // Create rectangles that don't intersect
-        Rectangle rectangle1 = 
-            new Rectangle(0, 0, 2, 2);
-        Rectangle rectangle2 = 
-            new Rectangle(3, 3, 2, 2);
-
-        // Insert rectangles into the database
-        KVPair<String, Rectangle> pair1 = 
-            new KVPair<>("rect1", rectangle1);
-        KVPair<String, Rectangle> pair2 = 
-            new KVPair<>("rect2", rectangle2);
-
-        database5.insert(pair1);
-        database5.insert(pair2);
-
-        ByteArrayOutputStream outContent = 
-            new ByteArrayOutputStream();
-        System.setOut(new PrintStream(outContent));
-
-        database5.intersections();
-
-        System.setOut(System.out);
-
-        // Define the expected output
-        String expectedOutput = "Intersection pairs:\n";
-
-        assertEquals(expectedOutput.trim().replace("\r", ""), outContent
-            .toString().trim().replace("\r", ""));
-    }
-
-
-    /**
-     * Tests the regionsearch method with a valid region.
-     * Ensures that the method processes the search when both width and height
-     * are greater than 0.
-     */
-    @Test
-    public void testRegionSearchWithValidRegion() {
-        // Setup necessary mocking or stubbing if the Database class depends on
-        // other components
-
-        // Assuming System.out.println is called within the method, we capture
-        // the output.
-        ByteArrayOutputStream outContent = 
-            new ByteArrayOutputStream();
-        System.setOut(new PrintStream(outContent));
-
-        // Execute the method with valid width and height
-        database.regionsearch(10, 10, 5, 5);
-
-        // Verify that the rejection message is not printed
-        assertFalse("Valid region should not be rejected.", outContent
-            .toString().contains("Rectangle rejected:"));
-
-        // Reset the System.out to its original stream
-        System.setOut(System.out);
-    }
-
-
-    /**
-     * Tests the regionsearch method with an invalid region where width and
-     * height are less than or equal to zero.
-     * Ensures that the method rejects the search region and prints an
-     * appropriate message.
-     */
-    @Test
-    public void testRegionSearchWithInvalidRegion() {
-        // Setup necessary mocking or stubbing if the Database class depends on
-        // other components
-        ByteArrayOutputStream outContent = new ByteArrayOutputStream();
-        System.setOut(new PrintStream(outContent));
-
-        // Execute the method with invalid width and height
-        database.regionsearch(10, 10, -1, -1);
-
-        // Verify that a rejection message is printed
-        assertTrue("Invalid region should be rejected.", outContent.toString()
-            .contains("Rectangle rejected:"));
-
-        // Reset the System.out to its original stream
-        System.setOut(System.out);
-    }
-
-
-    /**
-     * Tests the regionsearch method with an invalid region where width and
-     * height are less than or equal to zero.
-     * Ensures that the method rejects the search region and prints an
-     * appropriate message.
-     */
-    @Test
-    public void testRegionSearchWithInvalidRegion2() {
-        // Setup necessary mocking or stubbing if the Database class depends on
-        // other components
-
-        // Assuming System.out.println is called within the method, we capture
-        // the output.
-        ByteArrayOutputStream outContent = 
-            new ByteArrayOutputStream();
-        System.setOut(new PrintStream(outContent));
-
-        // Execute the method with invalid width and height
-        database.regionsearch(10, 10, -1, 2);
-
-        // Verify that a rejection message is printed
-        assertTrue("Invalid region should be rejected.", outContent.toString()
-            .contains("Rectangle rejected:"));
-
-        // Reset the System.out to its original stream
-        System.setOut(System.out);
-    }
-
-
-    /**
-     * Tests the regionsearch method with an invalid region where width and
-     * height are less than or equal to zero.
-     * Ensures that the method rejects the search region and prints an
-     * appropriate message.
-     */
-    @Test
-    public void testRegionSearchWithInvalidRegion3() {
-        // Setup necessary mocking or stubbing if the Database class depends on
-        // other components
-        ByteArrayOutputStream outContent = 
-            new ByteArrayOutputStream();
-        System.setOut(new PrintStream(outContent));
-
-        // Execute the method with invalid width and height
-        database.regionsearch(10, 10, 2, -1);
-
-        // Verify that a rejection message is printed
-        assertTrue("Invalid region should be rejected.", outContent.toString()
-            .contains("Rectangle rejected:"));
-
-        // Reset the System.out to its original stream
-        System.setOut(System.out);
-    }
-
-
-    /**
-     * Tests that the search method outputs the correct information when
-     * rectangles
-     * with the specified name exist within the database.
-     */
-    @Test
-    public void testSearchWithNameFound() {
-        // Insert rectangles into the database for testing
-        database.insert(new KVPair<>("TestRect1", 
-            new Rectangle(0, 0, 10, 10)));
-        database.insert(new KVPair<>("TestRect2", 
-            new Rectangle(10, 10, 20,
-            20)));
-        database.insert(new KVPair<>("TestRect1", 
-            new Rectangle(20, 20, 30,
-            30)));
-
-        ByteArrayOutputStream outContent = 
-            new ByteArrayOutputStream();
-        System.setOut(new PrintStream(outContent));
-        // Search for rectangles with a specific name
-        database.search("TestRect1");
-
-        // Check if the output contains the expected rectangles
-        String output = outContent.toString();
-        assertTrue("Expected to find rectangles with name 'TestRect1'", output
-            .contains("TestRect1"));
-    }
-
-
-    /**
-     * Tests that the search method outputs the correct message when no
-     * rectangles
-     * with the specified name exist within the database.
-     */
-    @Test
-    public void testSearchWithNameNotFound() {
-        // Insert a rectangle into the database for testing
-        database.insert(new KVPair<>("AnotherRect",
-            new Rectangle(0, 0, 10,
-            10)));
-
-        ByteArrayOutputStream outContent = 
-            new ByteArrayOutputStream();
-        System.setOut(new PrintStream(outContent));
-        // Search for a rectangle with a specific name that does not exist
-        database.search("NonexistentRect");
-
-        // Check if the output contains the expected message
-        String output = outContent.toString();
-        assertTrue(
-            "Expected to not find rectangles with name 'NonexistentRect'",
-            output.contains("Rectangle not found"));
-    }
-
-
-    /**
-     * Test remove by name that doesn't exist
-     */
-    @Test
-    public void testRemoveNameNot() {
-        database.insert(new KVPair<>("AnotherRect", 
-            new Rectangle(0, 0, 10,
-            10)));
-
-        ByteArrayOutputStream outContent = new ByteArrayOutputStream();
-        System.setOut(new PrintStream(outContent));
-
-        database.remove("NoRect");
-
-        String output = outContent.toString();
-        assertTrue("Expected not to remove rectangle with name 'NoRect'", output
-            .contains("Rectangle not removed:"));
-    }
-
-
-    /**
-     * Test remove invalid rectangle
-     */
-    @Test
-    public void testRemoveInvalid() {
-        database.insert(new KVPair<>("AnotherRect", 
-            new Rectangle(0, 0, 10,
-            10)));
-
-        ByteArrayOutputStream outContent = 
-            new ByteArrayOutputStream();
-        System.setOut(new PrintStream(outContent));
-
-        database.remove(0, 0, -5, 10);
-
-        String output = outContent.toString();
-        assertTrue("Expected not to fail removing invalid width", output
-            .contains("Rectangle rejected:"));
-    }
-
-
-    /**
-     * Test big remove by value
-     */
-    @Test
-    public void testBigRemoveVal() {
-        // Insert some rectangles
-        insertRectangles();
-        // Attempt to remove 25 rectangles successfully
-
-        for (int i = 1; i < 26; i++) {
-            database.remove(i, i, i, i);
-        }
-
-        // Attempt to remove 9 rectangles unsuccessfully
-        for (int i = 120; i < 129; i++) {
-            database.remove(i, i, i, i);
-        }
-
-        // Dump the SkipList and check if the size information is present
-        String dumpOutput = captureDumpOutput();
-        assertTrue(dumpOutput.contains("SkipList size is: 75"));
-    }
-
-
-    /**
-     * Test big remove by key
-     */
-    @Test
-    public void testBigRemoveKey() {
-        // Insert some rectangles
-        insertRectangles();
-        // Attempt to remove 25 rectangles successfully
-        for (int i = 1; i < 26; i++) {
-            String name = "Rectangle" + i;
-            database.remove(name);
-        }
-
-        // Attempt to remove 9 rectangles unsuccessfully
-        for (int i = 120; i < 129; i++) {
-            String name = "Rectangle" + i;
-            database.remove(name);
-        }
-
-        // Dump the SkipList and check if the size information is present
-        String dumpOutput = captureDumpOutput();
-        assertTrue(dumpOutput.contains("SkipList size is: 75"));
-    }
-
-
-    /*
-     * Helper method to insert rectangles
-     */
-    private void insertRectangles() {
-        for (int i = 1; i < 101; i++) {
-            String name = "Rectangle" + i;
-            Rectangle rectangle = 
-                new Rectangle(i, i, i, i);
-            database.insert(new KVPair<>(name, rectangle));
-        }
-    }
-
-
-    /*
-     * Helper method to create array list
-     * of rectangles for bigRemoveByValue()
-     */
-    private ArrayList<Rectangle> insertRectanglesArray() {
-        ArrayList<Rectangle> rectangles = 
-            new ArrayList<>();
-        for (int i = 1; i < 101; i++) {
-            String name = "Rectangle" + i;
-            Rectangle rectangle = 
-                new Rectangle(i, i, i, i);
-            rectangles.add(rectangle);
-            database.insert(new KVPair<>(name, rectangle));
-        }
-        return rectangles;
-    }
-
-
-    /*
-     * Helper method to capture output of dump()
-     */
-    private String captureDumpOutput() {
-        ByteArrayOutputStream outputStream = 
-            new ByteArrayOutputStream();
-        PrintStream printStream = 
-            new PrintStream(outputStream);
-        PrintStream oldOut = System.out;
-        System.setOut(printStream);
-
-        // Call dump() method
-        database.dump();
-
-        // Reset System.out
-        System.out.flush();
-        System.setOut(oldOut);
-
-        return outputStream.toString();
-    }
+    
+//    @Test
+//    public void testDump() {
+//        database.insert(new KVPair<>("r1", new PointInt(10, 10)));
+//        database.insert(new KVPair<>("r2", new PointInt(15, 15)));
+//        database.insert(new KVPair<>("r3", new PointInt(7, 7)));
+//        database.insert(new KVPair<>("r4", new PointInt(20, 25)));
+//        database.insert(new KVPair<>("r4", new PointInt(20, 12)));
+//        database.insert(new KVPair<>("r5", new PointInt(6, 7)));
+//        database.insert(new KVPair<>("r12", new PointInt(108, 136)));
+//        database.insert(new KVPair<>("r14", new PointInt(120, 117)));
+//        database.insert(new KVPair<>("r15", new PointInt(120, 117)));
+//        database.dump();
+//        String expectedOutput = 
+//            "Point inserted: (r1, 10, 10)\n" +
+//            "Point inserted: (r2, 15, 15)\n" +
+//            "Point inserted: (r3, 7, 7)\n" +
+//            "Point inserted: (r4, 20, 25)\n" +
+//            "Point inserted: (r4, 20, 12)\n" +
+//            "Point inserted: (r5, 6, 7)\n" +
+//            "Point inserted: (r12, 108, 136)\n" +
+//            "Point inserted: (r14, 120, 117)\n" +
+//            "Point inserted: (r15, 120, 117)\n" +
+//            "SkipList dump:\n" +
+//            "Node has depth 3, Value (null)\n" +
+//            "Node has depth 2, Value (r1, 10, 10)\n" +
+//            "Node has depth 3, Value (r12, 108, 136)\n" +
+//            "Node has depth 3, Value (r14, 120, 117)\n" +
+//            "Node has depth 1, Value (r15, 120, 117)\n" +
+//            "Node has depth 2, Value (r2, 15, 15)\n" +
+//            "Node has depth 2, Value (r3, 7, 7)\n" +
+//            "Node has depth 2, Value (r4, 20, 12)\n" +
+//            "Node has depth 3, Value (r4, 20, 25)\n" +
+//            "Node has depth 2, Value (r5, 6, 7)\n" +
+//            "SkipList size is: 9\n" +
+//            "QuadTree dump:\n" +
+//            "Node at 0, 0, 1024: Internal\n" +
+//            "  Node at 0, 0, 512: Internal\n" +
+//            "    Node at 0, 0, 256: Internal\n" +
+//            "      Node at 0, 0, 128: Internal\n" +
+//            "        Node at 0, 0, 64: Internal\n" +
+//            "          Node at 0, 0, 32: Internal\n" +
+//            "            Node at 0, 0, 16: Internal\n" +
+//            "              Node at 0, 0, 8:\n" +
+//            "              (r3, 7, 7)\n" +
+//            "              (r5, 6, 7)\n" +
+//            "              Node at 8, 0, 8: Empty\n" +
+//            "              Node at 0, 8, 8: Empty\n" +
+//            "              Node at 8, 8, 8:\n" +
+//            "              (r1, 10, 10)\n" +
+//            "              (r2, 15, 15)\n" +
+//            "            Node at 16, 0, 16:\n" +
+//            "            (r4, 20, 12)\n" +
+//            "            Node at 0, 16, 16: Empty\n" +
+//            "            Node at 16, 16, 16:\n" +
+//            "            (r4, 20, 25)\n" +
+//            "          Node at 32, 0, 32: Empty\n" +
+//            "          Node at 0, 32, 32: Empty\n" +
+//            "          Node at 32, 32, 32: Empty\n" +
+//            "        Node at 64, 0, 64: Empty\n" +
+//            "        Node at 0, 64, 64: Empty\n" +
+//            "        Node at 64, 64, 64:\n" +
+//            "        (r14, 120, 117)\n" +
+//            "        (r15, 120, 117)\n" +
+//            "      Node at 128, 0, 128: Empty\n" +
+//            "      Node at 0, 128, 128:\n" +
+//            "      (r12, 108, 136)\n" +
+//            "      Node at 128, 128, 128: Empty\n" +
+//            "    Node at 256, 0, 256: Empty\n" +
+//            "    Node at 0, 256, 256: Empty\n" +
+//            "    Node at 256, 256, 256: Empty\n" +
+//            "  Node at 512, 0, 512: Empty\n" +
+//            "  Node at 0, 512, 512: Empty\n" +
+//            "  Node at 512, 512, 512: Empty\n" +
+//            "29 quadtree nodes printed";
+//        assertEquals(expectedOutput.trim().replace("\r", ""), outContent.toString().trim().replace("\r", ""));
+//    }
 
 }

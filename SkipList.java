@@ -290,7 +290,7 @@ public class SkipList<K extends Comparable<? super K>, V>
         // Iterate through the entire skip list.
         while (current != null) {
             // Check if the current node's pair has the specified value.
-            if (current.pair != null && current.pair.getValue().equals(val)) {
+            if (current.pair != null && current.pair.getValue().toString().compareTo(val.toString()) == 0) {
                 // Return the key-value pair.
                 return current.pair;
             }
