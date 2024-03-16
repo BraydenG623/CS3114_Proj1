@@ -124,7 +124,8 @@ public interface QuadNode {
      * @param name The name of the point to search for.
      * @return The node containing the point, or null if not found.
      */
-    QuadNode search(String name);
+   // List<QuadNode> search(String name, int x, int y, int size);
+    //QuadNode search(String name, int x, int y, int size);
 
     /**
      * Checks if the current node is a leaf node.
@@ -133,12 +134,12 @@ public interface QuadNode {
      */
     boolean isLeaf();
 
-    /**
-     * Identifies and returns a list of duplicate points within the QuadTree.
-     * 
-     * @return A list of duplicate points.
-     */
-    List<Point> duplicates();
+//    /**
+//     * Identifies and returns a list of duplicate points within the QuadTree.
+//     * 
+//     * @return A list of duplicate points.
+//     */
+//    List<Point> duplicates(int x, int y);
 
     /**
      * Dumps the structure of the QuadTree starting from the current node.
@@ -147,4 +148,5 @@ public interface QuadNode {
      * @return The count of nodes processed during the dump.
      */
     int dump(int level, int x, int y, int size);
+    
 }

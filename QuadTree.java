@@ -95,6 +95,7 @@ import student.TestableRandom;
 @SuppressWarnings("unused")
 public class QuadTree {
     private QuadNode root;
+    private List<Point> pointList;
     // The dimension of the world space
     private static final int WORLD_SIZE = 1024; // Assuming a square world
     private static final int TOP_LEFT_X = 0;
@@ -108,6 +109,9 @@ public class QuadTree {
     public void insert(String name, int x, int y) {
         // The entire world space is represented in the root.
         // The size is passed to handle splits accurately.
+        if(x < 0 || y < 0 || x > 1024 || y > 1024) {
+            System.out.println("Point rejected: (" + name + ", " + x + ", " + y + ")");
+        }
         ArrayList<Integer> param = new ArrayList<>();
         param.add(TOP_LEFT_X);
         param.add(TOP_LEFT_Y);
@@ -119,6 +123,9 @@ public class QuadTree {
     public void remove(String name) {
         // Size is passed to properly find and remove the point by name.
         this.root = root.remove(name, WORLD_SIZE);
+        if(this.root == null) {
+            System.out.println("Point not removed: " + name);
+        }
     }
 
     public void remove(int x, int y) {
@@ -132,5 +139,9 @@ public class QuadTree {
         System.out.println(nodeCount + " quadtree nodes printed");
     }
 
-    // Other QuadTree methods (like regionSearch, search, duplicates) can be added here following a similar pattern.
+    public void regionsearch(int x, int y, int width, int height) {
+        // TODO Auto-generated method stub
+        System.out.println("Points intersecting region (" + x + ", " + y + ", " + width + ", " + height + ")");
+        this.pointList = root.regionsearch(x, y, width, height, WORLD_SIZE);
+    }
 }

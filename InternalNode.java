@@ -261,6 +261,8 @@
 
 import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -371,14 +373,93 @@ public class InternalNode implements QuadNode {
     @Override
     public QuadNode remove(String name, int size) {
         // TODO: Implement:
-        return this;
+        QuadNode result;
+        result = nw.remove(name, size);
+        if (result != null) {
+            return result; 
+        }
+
+        result = ne.remove(name, size);
+        if (result != null) {
+            return result; 
+        }
+
+        result = sw.remove(name, size);
+        if (result != null) {
+            return result; 
+        }
+
+        result = se.remove(name, size);
+        if (result != null) {
+            return result; 
+        }
+
+        // If we get here, the point was not found in any of the children
+        return null;
     }
 
 
     @Override
     public QuadNode remove(int x, int y, int size) {
+        int halfSize = this.size / 2;
+        int midX = this.x + halfSize;
+        int midY = this.y + halfSize;
 
+        // Determine in which quadrant the point lies and try to remove it
+        if (x < midX) {
+            if (y < midY) {
+                nw = nw.remove(x, y, halfSize);
+            } else {
+                sw = sw.remove(x, y, halfSize);
+            }
+        } else {
+            if (y < midY) {
+                ne = ne.remove(x, y, halfSize);
+            } else {
+                se = se.remove(x, y, halfSize);
+            }
+        }
+        
+        
+        // Check if we can merge nodes after removal
+        return checkAndMerge();
+    }
+    
+    private QuadNode checkAndMerge() {
+        List<Point> combinedPoints = new ArrayList<>();
+        
+        // Attempt to collect points from all child nodes if they are LeafNodes
+        for (QuadNode child : Arrays.asList(nw, ne, sw, se)) {
+            if (child instanceof LeafNode) {
+                combinedPoints.addAll(((LeafNode) child).getPoints());
+            } else {
+                // If any child is not a LeafNode, merging is not possible
+                return this;
+            }
+        }
+        
+        // Check if the combined points meet the conditions for merging
+        if (combinedPoints.size() <= 3 && pointsAreSameOrEmpty(combinedPoints)) {
+            // Create a new LeafNode with combined points
+            return new LeafNode(x, y, size, combinedPoints);
+        }
+        
+        // If cannot merge, return this internal node
         return this;
+    }
+    
+    private boolean pointsAreSameOrEmpty(List<Point> points) {
+        // Implement logic to check if all points have the same coordinates or if list is empty
+        if (points.isEmpty() || points.size() == 1) {
+            return true;
+        }
+        Point firstPoint = points.get(0);
+        for (Point point : points) {
+            if (!point.equals(firstPoint)) {
+                return false; // Found points with different coordinates
+            }
+        }
+        return true; // All points have the same coordinates or list is empty
     }
 
 
@@ -441,55 +522,9 @@ public class InternalNode implements QuadNode {
 
 
     @Override
-    public QuadNode search(String name) {
-        // Internal nodes don't contain points, so we need to search in the
-        // children.
-        // We'll search recursively in all non-empty children nodes.
-        // If any child node returns a non-null result, that's the node we're
-        // looking for.
-
-        QuadNode result;
-
-        // Recursively search the northwest child node
-        result = nw.search(name);
-        if (result != null) {
-            return result; // Found in the northwest quadrant
-        }
-
-        // Recursively search the northeast child node
-        result = ne.search(name);
-        if (result != null) {
-            return result; // Found in the northeast quadrant
-        }
-
-        // Recursively search the southwest child node
-        result = sw.search(name);
-        if (result != null) {
-            return result; // Found in the southwest quadrant
-        }
-
-        // Recursively search the southeast child node
-        result = se.search(name);
-        if (result != null) {
-            return result; // Found in the southeast quadrant
-        }
-
-        // If we get here, the point was not found in any of the children
-        return null;
-    }
-
-
-    @Override
     public boolean isLeaf() {
         // TODO: Implement:
         return false;
-    }
-
-
-    @Override
-    public List<Point> duplicates() {
-        // TODO: Implement:
-        return null;
     }
 
 

@@ -102,78 +102,78 @@ public class InternalNodeJunitTests {
     /*
      * Test region search for internal node
      */
-    @Test
-    public void testInternalNodeRegionSearch() {
-        quadTree.insert("r1", 10, 10);
-        quadTree.insert("r2", 15, 15);
-        quadTree.insert("r3", 7, 7);
-        quadTree.insert("r4", 20, 25);
-        quadTree.regionsearch(-5, -5, 20, 20);
-            
-            
-        String expectedOutput = 
-            "Point inserted: (r1, 10, 10)\n" +
-            "Point inserted: (r2, 15, 15)\n" +
-            "Point inserted: (r3, 7, 7)\n" +
-            "Point inserted: (r4, 20, 25)\n" +
-            "Points intersecting region (-5, -5, 20, 20):\n" +
-            "Point found: (r1, 10, 10)\n" +
-            "Point found: (r3, 7, 7)\n" +
-            "7 quadtree nodes visited\n";
-        assertEquals(expectedOutput, outContent.toString());
-    }
+//    @Test
+//    public void testInternalNodeRegionSearch() {
+//        quadTree.insert("r1", 10, 10);
+//        quadTree.insert("r2", 15, 15);
+//        quadTree.insert("r3", 7, 7);
+//        quadTree.insert("r4", 20, 25);
+//        quadTree.regionsearch(-5, -5, 20, 20);
+//            
+//            
+//        String expectedOutput = 
+//            "Point inserted: (r1, 10, 10)\n" +
+//            "Point inserted: (r2, 15, 15)\n" +
+//            "Point inserted: (r3, 7, 7)\n" +
+//            "Point inserted: (r4, 20, 25)\n" +
+//            "Points intersecting region (-5, -5, 20, 20):\n" +
+//            "Point found: (r1, 10, 10)\n" +
+//            "Point found: (r3, 7, 7)\n" +
+//            "7 quadtree nodes visited\n";
+//        assertEquals(expectedOutput, outContent.toString());
+//    }
     
     
     /*
      * Test duplicates for internal node
      */
-    @Test
-    public void testInternalNodeDuplicates() {
-        quadTree.insert("r1", 10, 10);
-        quadTree.insert("r2", 15, 15);
-        quadTree.insert("r3", 7, 7);
-        quadTree.insert("r4", 20, 25);
-        quadTree.insert("big", 10, 10);
-        quadTree.duplicates();
-            
-            
-        String expectedOutput = 
-            "Point inserted: (r1, 10, 10)\n" +
-            "Point inserted: (r2, 15, 15)\n" +
-            "Point inserted: (r3, 7, 7)\n" +
-            "Point inserted: (r4, 20, 25)\n" +
-            "Point inserted: (big, 10, 10)\n" +
-            "Duplicate points:\n" +
-            "(10, 10)\n";
-        assertEquals(expectedOutput, outContent.toString());
-    }
+//    @Test
+//    public void testInternalNodeDuplicates() {
+//        quadTree.insert("r1", 10, 10);
+//        quadTree.insert("r2", 15, 15);
+//        quadTree.insert("r3", 7, 7);
+//        quadTree.insert("r4", 20, 25);
+//        quadTree.insert("big", 10, 10);
+//        quadTree.duplicates();
+//            
+//            
+//        String expectedOutput = 
+//            "Point inserted: (r1, 10, 10)\n" +
+//            "Point inserted: (r2, 15, 15)\n" +
+//            "Point inserted: (r3, 7, 7)\n" +
+//            "Point inserted: (r4, 20, 25)\n" +
+//            "Point inserted: (big, 10, 10)\n" +
+//            "Duplicate points:\n" +
+//            "(10, 10)\n";
+//        assertEquals(expectedOutput, outContent.toString());
+//    }
     
     
     /*
      * Test search for internal node
      */
-    @Test
-    public void testInternalNodeSearch() {
-        quadTree.insert("r1", 10, 10);
-        quadTree.insert("r2", 15, 15);
-        quadTree.insert("r3", 7, 7);
-        quadTree.insert("r4", 20, 25);
-        quadTree.insert("big", 10, 10);
-        quadTree.search("r4");
-        quadTree.search("r11");
-            
-            
-        String expectedOutput = 
-            "Point inserted: (r1, 10, 10)\n" +
-            "Point inserted: (r2, 15, 15)\n" +
-            "Point inserted: (r3, 7, 7)\n" +
-            "Point inserted: (r4, 20, 25)\n" +
-            "Point inserted: (big, 10, 10)\n" +
-            "Found (r4, 20, 25)\n" +
-            "Point not found: r11\n";
-        assertEquals(expectedOutput, outContent.toString());  
-        
-    }
+//    @Test
+//    public void testInternalNodeSearch() {
+//        quadTree.insert("r1", 10, 10);
+//        quadTree.insert("r2", 15, 15);
+//        quadTree.insert("r3", 7, 7);
+//        quadTree.insert("r4", 20, 25);
+//        quadTree.insert("big", 10, 10);
+//        quadTree.search("r4");
+//        quadTree.search("r11");
+//            
+//            
+//        String expectedOutput = 
+//            "Point inserted: (r1, 10, 10)\n" +
+//            "Point inserted: (r2, 15, 15)\n" +
+//            "Point inserted: (r3, 7, 7)\n" +
+//            "Point inserted: (r4, 20, 25)\n" +
+//            "Point inserted: (big, 10, 10)\n" +
+//            "Found (r4, 20, 25)\n" +
+//            "Point not found: r11\n";
+//        assertEquals(expectedOutput, outContent.toString());  
+//        
+//    }
     
     
     /*

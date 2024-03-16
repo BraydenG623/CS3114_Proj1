@@ -245,21 +245,6 @@ public class LeafNode implements QuadNode {
         return parent;
     }
 
-//
-// // Check if all points in this node have the same coordinates
-// private boolean areAllPointsAtSameCoordinates() {
-// if (points.size() < 2) {
-// return true; // Zero or one point always satisfies the condition
-// // trivially
-// }
-// Point firstPoint = points.get(0);
-// for (Point point : points.subList(1, points.size())) {
-// if (!point.equals(firstPoint)) {
-// return false;
-// }
-// }
-// return true;
-// }
 
 
     @Override
@@ -271,47 +256,52 @@ public class LeafNode implements QuadNode {
             return splitAndRedistribute();
         }
         else {
-            //points.add(newPoint);
             return this; // No split needed
         }
     }
 
 
+    public List<Point> getPoints() {
+        return points;
+    }
+
+
     @Override
     public QuadNode remove(String name, int size) {
-        // TODO: Implement:
-        return this;
+        for (Point point : points) {
+            if (point.getName().equals(name)) {
+                remove(point.getX(),point.getY(),size);
+                return this;
+            }
+        }
+        return null;
     }
+
 
 
     @Override
     public QuadNode remove(int x, int y, int size) {
-
+        String name = getName(x,y);
+        boolean removed = points.removeIf(p -> p.getX() == x && p.getY() == y);
+        if(removed) {
+            System.out.println("Point removed: (" + name + ", " + x + ", " + y + ")");
+        }
+       
+        // After removal, this node itself is returned since the leaf node does not decide on merges.
+        // The decision to merge is up to the parent internal node after the removal operation.
         return this;
     }
-
-
-    @Override
-    public QuadNode search(String name) {
-        // LeafNode means we are at the point so we just need to check
-        // the 3 possiblw points in this node to see if the name
-        // matches what we are looking for
-
+    
+    
+    
+    public String getName(int x, int y) {
         for (Point point : points) {
-            // Check if the point matches
-            if (point.getName().equals(name)) {
-                // If it does, return this point
-
-                // First create a new leafNode
-                LeafNode resultNode = new LeafNode(x, y, size, points);
-
-                resultNode.points.add(point);
-                return resultNode;
+            if (point.getX()== x && point.getY() == y ) {
+                return point.getName();
             }
         }
-
-        // Return null if the point is not found
         return null;
+        
     }
 
 
@@ -327,6 +317,7 @@ public class LeafNode implements QuadNode {
             if (point.getX() >= searchX && point.getX() <= searchX + width
                 && point.getY() >= searchY && point.getY() <= searchY
                     + height) {
+                System.out.println("Point found: (" + point.getName() + ", " + point.getX() + ", " + point.getY() + ")");
                 foundPoints.add(point);
             }
         }
@@ -338,13 +329,6 @@ public class LeafNode implements QuadNode {
     public boolean isLeaf() {
         // TODO: Implement:
         return true;
-    }
-
-
-    @Override
-    public List<Point> duplicates() {
-        // TODO: Implement:
-        return null;
     }
 
 

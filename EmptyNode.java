@@ -163,18 +163,9 @@ public class EmptyNode implements QuadNode {
 
     @Override
     public QuadNode remove(int x, int y, int size) {
-
+        System.out.println("Point rejected: (" + x + ", " + y + ")");
         return this;
     }
-
-
-    @Override
-    public QuadNode search(String name) {
-        // Always return null for empty nodes
-
-        return null;
-    }
-
 
     @Override
     public List<Point> regionsearch(int x, int y, int width, int height, int size) {
@@ -187,13 +178,6 @@ public class EmptyNode implements QuadNode {
     public boolean isLeaf() {
         // Technically not a leaf but an empty node
         return false;
-    }
-
-
-    @Override
-    public List<Point> duplicates() {
-        // No duplicates in an empty node
-        return null;
     }
 
 
