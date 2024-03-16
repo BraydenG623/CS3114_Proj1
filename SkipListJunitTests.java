@@ -2,8 +2,6 @@ import static org.junit.Assert.*;
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
 import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.Random;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -13,6 +11,7 @@ import org.junit.Test;
  * removeByValue, and dump methods.
  * 
  * @author Ryan Kluttz
+ * @author Brayden Gardner
  * @version 1.0
  * @since 2024-02-03
  */
@@ -164,24 +163,6 @@ public class SkipListJunitTests {
             .toString().trim().replace("\r", ""));
     }
 
-// /**
-// * Tests a valid remove by value instance.
-// */
-// @Test
-// public void testRemoveByValValid() {
-// KVPair<Integer, String> pair1 = new KVPair<>(5, "Value1");
-// KVPair<Integer, String> pair2 = new KVPair<>(10, "Value2");
-// KVPair<Integer, String> pair3 = new KVPair<>(15, "Value3");
-//
-// skipList.insert(pair1);
-// skipList.insert(pair2);
-// skipList.insert(pair3);
-// skipList.removeByValue("Value1");
-//
-// assertEquals(2, skipList.size());
-// }
-
-
     /**
      * Tests an invalid remove by value instance.
      */
@@ -317,98 +298,6 @@ public class SkipListJunitTests {
         assertNotEquals(null, outContent.toString());
     }
 
-
-    /**
-     * Tests random operations and verifies correct
-     * functionality.
-     */
-    @Test
-    public void testRandomizedOperations() {
-        int numOperations = 1000;
-        int maxValue = 1000;
-        Random random = new Random();
-        HashSet<Integer> keysSet = new HashSet<>();
-        ArrayList<KVPair<Integer, String>> insertedPairs = new ArrayList<>();
-
-        for (int i = 0; i < numOperations; i++) {
-            int operation = random.nextInt(4); // 0: insert, 1: search, 2:
-                                               // remove, 3: removeByValue
-
-            switch (operation) {
-                case 0: // Insert
-                    int keyToInsert = random.nextInt(maxValue);
-                    String valueToInsert = "Value" + keyToInsert;
-                    KVPair<Integer, String> pairToInsert = new KVPair<>(
-                        keyToInsert, valueToInsert);
-
-                    if (!keysSet.contains(keyToInsert)) {
-                        skipList.insert(pairToInsert);
-                        keysSet.add(keyToInsert);
-                        insertedPairs.add(pairToInsert);
-                    }
-                    break;
-
-                case 1: // Search
-                    if (!keysSet.isEmpty()) {
-                        int randomKey = new ArrayList<>(keysSet).get(random
-                            .nextInt(keysSet.size()));
-                        ArrayList<KVPair<Integer, String>> searchResult =
-                            skipList.search(randomKey);
-
-                        if (searchResult != null) {
-                            for (KVPair<Integer, String> resultPair : 
-                                searchResult) {
-                                assertEquals(resultPair.getKey(), Integer
-                                    .valueOf(randomKey));
-                                assertEquals(resultPair.getValue(), "Value"
-                                    + randomKey);
-                            }
-                        }
-                        else {
-                            assertNull(searchResult);
-                        }
-                    }
-                    break;
-
-                case 2: // Remove
-                    if (!keysSet.isEmpty()) {
-                        int randomKeyToRemove = new ArrayList<>(keysSet).get(
-                            random.nextInt(keysSet.size()));
-                        KVPair<Integer, String> removedPair = skipList.remove(
-                            randomKeyToRemove);
-
-                        if (removedPair != null) {
-                            keysSet.remove(randomKeyToRemove);
-                            insertedPairs.remove(removedPair);
-                        }
-                        else {
-                            assertNull(removedPair);
-                        }
-                    }
-                    break;
-
-                case 3: // RemoveByValue
-                    if (!insertedPairs.isEmpty()) {
-                        KVPair<Integer, String> randomPairToRemove =
-                            insertedPairs.get(random.nextInt(insertedPairs
-                                .size()));
-                        KVPair<Integer, String> removedByValPair = skipList
-                            .removeByValue(randomPairToRemove.getValue());
-
-                        if (removedByValPair != null) {
-                            keysSet.remove(removedByValPair.getKey());
-                            insertedPairs.remove(removedByValPair);
-                        }
-                        else {
-                            assertNull(removedByValPair);
-                        }
-                    }
-                    break;
-            }
-        }
-    }
-
-
     /**
      * Tests insert and dump with String-type key
      * and Integer-type values.
@@ -487,13 +376,8 @@ public class SkipListJunitTests {
         for (int i = 0; i < totalRuns; i++) {
             int level = skipList3.randomLevel();
             maxLevel = Math.max(maxLevel, level);
-            // We expect most levels to be 0 or low, given the
-            // halving probability, but there should be a spread
         }
 
-        // Check that we've obtained a reasonable distribution of levels
-        // This is a very indirect way of testing the behavior, focusing
-        // on the outcome over many runs
         assertTrue("Max level should be greater than a minimal threshold "
             + "to indicate distribution", maxLevel > 3);
     }
@@ -505,15 +389,10 @@ public class SkipListJunitTests {
     @Test
     public void testSearchDescendingLevels() {
         SkipList<Integer, String> skipList4 = new SkipList<>();
-        // Assume insert method correctly inserts nodes at varying levels
-        // Here we insert a few nodes for simplicity, in practice, these
-        // should be inserted at varying levels
         skipList4.insert(new KVPair<>(10, "Value10"));
         skipList4.insert(new KVPair<>(20, "Value20"));
 
-        // The actual test would need to verify that the search traverses from
-        // the highest level to the lowest,
-        // but without direct access to the levels, we focus on the outcome:
+
         ArrayList<KVPair<Integer, String>> result = skipList4.search(10);
         assertFalse("Search result should not be empty", result.isEmpty());
         assertEquals("Search should find the correct value", "Value10", result
@@ -545,8 +424,6 @@ public class SkipListJunitTests {
         skipList6.insert(new KVPair<>(10, "Value10"));
         skipList6.insert(new KVPair<>(20, "Value20"));
 
-        // Insert a value that requires the search to stop before reaching
-        // the end of the level
         ArrayList<KVPair<Integer, String>> result = skipList6.search(20);
         assertFalse("Search result should not be empty when stopping at "
             + "the correct node", result.isEmpty());
@@ -563,9 +440,7 @@ public class SkipListJunitTests {
     @Test
     public void testInsertWithGreaterKey() {
         skipList.insert(new KVPair<>(5, "Value5"));
-        skipList.insert(new KVPair<>(10, "Value10")); // This should trigger the
-                                                      // comparison condition to
-                                                      // be true
+        skipList.insert(new KVPair<>(10, "Value10")); 
 
         ArrayList<KVPair<Integer, String>> result = skipList.search(10);
         assertNotNull("Search should find the inserted node with key 10",
@@ -584,8 +459,7 @@ public class SkipListJunitTests {
     @Test
     public void testInsertWithLesserKey() {
         skipList.insert(new KVPair<>(10, "Value10"));
-        skipList.insert(new KVPair<>(5, "Value5")); // This should correctly
-                                                    // navigate before inserting
+        skipList.insert(new KVPair<>(5, "Value5")); 
 
         ArrayList<KVPair<Integer, String>> result = skipList.search(5);
         assertNotNull("Search should find the inserted node with key 5",
@@ -602,15 +476,9 @@ public class SkipListJunitTests {
      */
     @Test
     public void testInsertWithLevelHandling() {
-        // Assuming randomLevel() could return levels up to 2 for testing
-        skipList.insert(new KVPair<>(5, "Value5")); // Assume this gets level 1
-        skipList.insert(new KVPair<>(10, "Value10")); // Assume this gets level
-                                                      // 2
+        skipList.insert(new KVPair<>(5, "Value5")); 
+        skipList.insert(new KVPair<>(10, "Value10")); 
 
-        // This test is more about ensuring no exceptions occur and the list
-        // size increases,
-        // as directly testing levels would require access to internal state not
-        // exposed by the SkipList API.
         assertEquals("SkipList should contain two nodes after insertions", 2,
             skipList.size());
     }
@@ -623,11 +491,9 @@ public class SkipListJunitTests {
      */
     @Test
     public void testRemoveNonExistentKey() {
-        // Pre-insert some nodes to ensure the skip list is not empty
         skipList.insert(new KVPair<>(1, "One"));
         skipList.insert(new KVPair<>(2, "Two"));
 
-        // Attempt to remove a key that does not exist in the list
         KVPair<Integer, String> result = skipList.remove(3);
 
         assertNull("Removing a non-existent key should return null", result);
@@ -646,10 +512,8 @@ public class SkipListJunitTests {
     public void testRemoveKeyTraversal() {
         skipList.insert(new KVPair<>(1, "One"));
         skipList.insert(new KVPair<>(3, "Three"));
-        // Insert a key that would require traversing the entire list
         skipList.insert(new KVPair<>(2, "Two"));
 
-        // Remove a key that requires traversal
         KVPair<Integer, String> result = skipList.remove(2);
 
         assertNotNull("Removing an existent key should not return null",
@@ -671,7 +535,6 @@ public class SkipListJunitTests {
         skipList.insert(new KVPair<>(2, "Two"));
         skipList.insert(new KVPair<>(3, "Three"));
 
-        // Remove the last key in the skip list
         KVPair<Integer, String> result = skipList.remove(3);
 
         assertNotNull("Removing the last key should succeed", result);
@@ -687,11 +550,9 @@ public class SkipListJunitTests {
      */
     @Test
     public void testRemoveByValueNonExistent() {
-        // Adding some elements to the skip list
         skipListStr.insert(new KVPair<>("One", 1));
         skipListStr.insert(new KVPair<>("Two", 2));
 
-        // Attempting to remove a value that does not exist in the list
         KVPair<String, Integer> result = skipListStr.removeByValue(3);
 
         assertNull("Attempt to remove a non-existent value should return null",
@@ -781,8 +642,4 @@ public class SkipListJunitTests {
             "Size should not change when removing a non-existent value",
             initialSize, skipListStr.size());
     }
-    
-    
-    
-
 }

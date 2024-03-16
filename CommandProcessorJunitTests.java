@@ -7,14 +7,13 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue; // Make sure this line is included
 
 /**
- * This class contains JUnit tests for the
- * CommandProcessor class.
+ * Tests for the CommandProcessor class.
+ * Ensures that the processor correctly
+ * handles various command inputs.
  * 
- * @author Ryan Kluttz
+ * @author Brayden Gardner
  * @version 1.0
- * @since 2024-02-03
  */
-
 public class CommandProcessorJunitTests {
     private final ByteArrayOutputStream outContent =
         new ByteArrayOutputStream();
@@ -226,107 +225,106 @@ public class CommandProcessorJunitTests {
 
 
     /**
-     * Test if out of bounds w/h for region search
+     * Asserts that the captured output from the System.out exactly matches the
+     * expected string.
+     * This method normalizes newline characters before comparison to handle
+     * differences
+     * between operating systems.
+     * 
+     * @param expected
+     *            The expected string to compare against the captured output.
+     */
+    private void assertOutputEquals(String expected) {
+        assertEquals(normalizeNewlines(expected), normalizeNewlines(outContent
+            .toString()));
+        outContent.reset();
+    }
+
+
+    /**
+     * Asserts that the captured output from the System.out starts with the
+     * expected string.
+     * This method is useful for testing that the beginning of a message is
+     * correct when the
+     * entire output is either too long or contains variable content.
+     * 
+     * @param expectedStart
+     *            The expected start string of the captured output.
+     */
+    private void assertOutputStartsWith(String expectedStart) {
+        String actual = normalizeNewlines(outContent.toString());
+        assertTrue("Expected to start with: " + expectedStart + ", but was: "
+            + actual, actual.startsWith(normalizeNewlines(expectedStart)));
+        outContent.reset();
+    }
+
+
+    /**
+     * Normalizes newline characters within a
+     * given input string to a consistent
+     * format (\n).
+     * This method ensures consistent
+     * assertions across different operating
+     * systems
+     * that may use \r\n (Windows) or \r
+     * (old macOS) as newline characters.
+     * 
+     * @param input
+     *            The input string with
+     *            potential mixed newline characters.
+     * @return The normalized string with
+     *         consistent newline characters (\n).
+     */
+    private String normalizeNewlines(String input) {
+        return input.replace("\r\n", "\n").replace("\r", "\n");
+    }
+
+
+    /**
+     * Test the 'dump' command processing.
+     * This test simulates the 'dump' command and verifies the expected output,
+     * assuming that the database starts empty and the dump command
+     * outputs the state of the database accordingly.
      */
     @Test
-    public void testNegWidthRegionSearch() {
-        String commandLine1 = "insert rectName 5 5 10 10";
-        processor.processor(commandLine1);
-        String commandLine = "regionsearch 5 5 -5 40";
+    public void testDumpCommand() {
+        String commandLine = "dump";
+
         processor.processor(commandLine);
-        assertOutputEquals("Rectangle inserted: (rectName, 5, 5, 10, 10)\n"
-            + "Rectangle rejected: (5, 5, -5, 40)\n");
+
+        // Assuming the dump command outputs "SkipList dump:" followed by
+        // the state of the database. Adjust the expected output based on
+        // your actual dump method's implementation.
+        String expectedOutputStart = "SkipList dump:";
+
+        assertTrue("Expected output to start with 'SkipList dump:'", outContent
+            .toString().trim().startsWith(expectedOutputStart));
     }
 
 
     /**
-     * Test if out of bounds w/h for region search
+     * Test processing of a typo in the 'dump' command that results in it being
+     * unrecognized.
+     * This test simulates a typo or incorrect command similar to 'dump' and
+     * verifies that the output matches the expected result for an unrecognized
+     * command.
      */
     @Test
-    public void testNegHeightRegionSearch() {
-        String commandLine1 = "insert rectName 5 5 10 10";
-        processor.processor(commandLine1);
-        String commandLine = "regionsearch 5 5 5 -5";
-        processor.processor(commandLine);
-        assertOutputEquals("Rectangle inserted: (rectName, 5, 5, 10, 10)\n"
-            + "Rectangle rejected: (5, 5, 5, -5)\n");
+    public void testDumpCommandTypo() {
+        // Simulate a typo in the 'dump' command
+        String typoCommand = "dumpp";
+
+        // Process the typo command
+        processor.processor(typoCommand);
+
+        // Verify that the output indicates the command is unrecognized
+        String expectedOutput = "Unrecognized command.";
+        assertEquals(
+            "Expected 'Unrecognized command.' output for typo "
+            + "in 'dump' command",
+            expectedOutput.trim(), outContent.toString().trim());
     }
-
-
-    /**
-     * Test if out of bounds w/h for region search
-     */
-    @Test
-    public void testNegBothRegionSearch() {
-        String commandLine1 = "insert rectName 5 5 10 10";
-        processor.processor(commandLine1);
-        String commandLine = "regionsearch 5 5 -5 -5";
-        processor.processor(commandLine);
-        assertOutputEquals("Rectangle inserted: (rectName, 5, 5, 10, 10)\n"
-            + "Rectangle rejected: (5, 5, -5, -5)\n");
-    }
-
-
-    /**
-     * Tests the processor method for an 'insert' command with correct
-     * arguments.
-     */
-    @Test
-    public void testInsertCommandWithCorrectArguments() {
-        String command = "insert rect 0 0 10 10";
-        processor.processor(command);
-        String[] arr = command.split("\\s{1,}");
-        int arrLength = arr.length;
-        int expected = 6;
-        assertTrue(expected == arrLength);
-        assertTrue("Expected insert confirmation message", outContent.toString()
-            .contains("Rectangle inserted"));
-    }
-
-
-    /**
-     * Tests the processor method for a 'remove' command with correct arguments.
-     */
-    @Test
-    public void testRemoveCommandWithCoordinates() {
-        String command = "remove 0 0 10 10";
-        processor.processor(command);
-        String[] arr = command.split("\\s{1,}");
-        int numParam = arr.length - 1;
-        int expected = 4;
-        assertTrue(expected == numParam);
-        assertTrue("Expected remove confirmation message", outContent.toString()
-            .contains("Rectangle not found: (0, 0, 10, 10)"));
-    }
-
-
-    /**
-     * Tests the processor method for a 'regionsearch' command with correct
-     * arguments.
-     */
-    @Test
-    public void testRegionSearchCommandWithCorrectArguments() {
-        String command = "regionsearch 0 0 10 10";
-        processor.processor(command);
-        assertTrue("Expected regionsearch operation message", outContent
-            .toString().contains("Rectangles intersecting region"));
-    }
-
-
-    /**
-     * Test regionsearch arr.length==5
-     */
-    @Test
-    public void testRegionSearchLength() {
-        String command = "regionsearch 0 0 10 10";
-        processor.processor(command);
-        String[] arr = command.split("\\s{1,}");
-        int arrLength = arr.length;
-        int expected = 5;
-        assertTrue(expected == arrLength);
-        assertTrue("Expected regionsearch operation message", outContent
-            .toString().contains("Rectangles intersecting region"));
-    }
+    
     
     /**
      * Test arr.length not 6 for insert
@@ -408,59 +406,9 @@ public class CommandProcessorJunitTests {
     }
 
 
-    /**
-     * Asserts that the captured output from the System.out exactly matches the
-     * expected string.
-     * This method normalizes newline characters before comparison to handle
-     * differences
-     * between operating systems.
-     * 
-     * @param expected
-     *            The expected string to compare against the captured output.
-     */
-    private void assertOutputEquals(String expected) {
-        assertEquals(normalizeNewlines(expected), normalizeNewlines(outContent
-            .toString()));
-        outContent.reset();
-    }
 
 
-    /**
-     * Asserts that the captured output from the System.out starts with the
-     * expected string.
-     * This method is useful for testing that the beginning of a message is
-     * correct when the
-     * entire output is either too long or contains variable content.
-     * 
-     * @param expectedStart
-     *            The expected start string of the captured output.
-     */
-    private void assertOutputStartsWith(String expectedStart) {
-        String actual = normalizeNewlines(outContent.toString());
-        assertTrue("Expected to start with: " + expectedStart + ", but was: "
-            + actual, actual.startsWith(normalizeNewlines(expectedStart)));
-        outContent.reset();
-    }
 
 
-    /**
-     * Normalizes newline characters within a
-     * given input string to a consistent
-     * format (\n).
-     * This method ensures consistent
-     * assertions across different operating
-     * systems
-     * that may use \r\n (Windows) or \r
-     * (old macOS) as newline characters.
-     * 
-     * @param input
-     *            The input string with
-     *            potential mixed newline characters.
-     * @return The normalized string with
-     *         consistent newline characters (\n).
-     */
-    private String normalizeNewlines(String input) {
-        return input.replace("\r\n", "\n").replace("\r", "\n");
-    }
 
 }

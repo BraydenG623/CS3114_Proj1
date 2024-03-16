@@ -9,6 +9,7 @@ import static org.junit.Assert.*;
  * project class.
  * 
  * @author Ryan Kluttz
+ * @author Brayden Gardner
  * @version 1.0
  * @since 2024-02-03
  */
@@ -23,11 +24,9 @@ public class SkipListProjectJunitTests {
      */
     @Test
     public void testWithEmptyInput() {
-        // SkipListProject.main(new
-        // String[]{"C:\\Users\\rjklu\\eclipse-workspace\\Project1\\file.txt"});
         ByteArrayOutputStream outContent = new ByteArrayOutputStream();
         System.setOut(new PrintStream(outContent));
-        SkipListProject.main(new String[] { "file.txt" });
+        PointsDatabase.main(new String[] { "file.txt" });
         String output = outContent.toString();
         assertEquals("", output.trim()); // Expecting no output
     }
@@ -46,7 +45,7 @@ public class SkipListProjectJunitTests {
     public void testWithValidCommandsAndEmptyLines() {
         ByteArrayOutputStream outContent = new ByteArrayOutputStream();
         System.setOut(new PrintStream(outContent));
-        SkipListProject.main(new String[] { "file1.txt" });
+        PointsDatabase.main(new String[] { "file1.txt" });
         String output = outContent.toString();
         assertTrue("Expected 'Rectangle inserted' message", output.contains(
             "Rectangle inserted: (a, 1, 0, 2, 4)"));
@@ -71,7 +70,7 @@ public class SkipListProjectJunitTests {
         InputStream inputStream = new ByteArrayInputStream(input.getBytes());
         System.setIn(inputStream);
 
-        SkipListProject.main(new String[] { "file.txt" });
+        PointsDatabase.main(new String[] { "file.txt" });
         String output = outContent.toString();
 
         assertFalse("No output expected for an empty line", output.contains(
@@ -85,7 +84,7 @@ public class SkipListProjectJunitTests {
     public void testInvalid() {
         ByteArrayOutputStream outContent = new ByteArrayOutputStream();
         System.setOut(new PrintStream(outContent));
-        SkipListProject.main(new String[] { "" });
+        PointsDatabase.main(new String[] { "" });
         String output = outContent.toString();
         assertEquals("Invalid file", output.trim()); // Expecting no output
     }

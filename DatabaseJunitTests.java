@@ -37,9 +37,12 @@ public class DatabaseJunitTests {
     public void testInsertValidRectangle() {
         Rectangle rectangle = new Rectangle(1, 1, 3, 4);
         Rectangle rectangle2 = new Rectangle(5, 2, 6, 6);
-        KVPair<String, Rectangle> pair = new KVPair<>("Rect1", rectangle);
-        KVPair<String, Rectangle> pair2 = new KVPair<>("Rect2", rectangle2);
-        ByteArrayOutputStream outContent = new ByteArrayOutputStream();
+        KVPair<String, Rectangle> pair = 
+            new KVPair<>("Rect1", rectangle);
+        KVPair<String, Rectangle> pair2 = 
+            new KVPair<>("Rect2", rectangle2);
+        ByteArrayOutputStream outContent = 
+            new ByteArrayOutputStream();
         System.setOut(new PrintStream(outContent));
 
         database.insert(pair);
@@ -66,7 +69,8 @@ public class DatabaseJunitTests {
         // Insert five rejected rectangles
         for (int i = 0; i < 5; i++) {
             Rectangle rejectedRectangle = new Rectangle(i, i, -60, -50);
-            KVPair<String, Rectangle> rejectedPair = new KVPair<>("RejectedRect"
+            KVPair<String, Rectangle> rejectedPair = 
+                new KVPair<>("RejectedRect"
                 + i, rejectedRectangle);
             database1.insert(rejectedPair);
         }
@@ -74,12 +78,14 @@ public class DatabaseJunitTests {
         // Insert 100 rectangles
         for (int i = 0; i < 100; i++) {
             Rectangle rectangle = new Rectangle(i, i, i + 2, i + 4);
-            KVPair<String, Rectangle> pair = new KVPair<>("Rect" + i,
+            KVPair<String, Rectangle> pair = 
+                new KVPair<>("Rect" + i,
                 rectangle);
             database1.insert(pair);
         }
 
-        ByteArrayOutputStream outContent = new ByteArrayOutputStream();
+        ByteArrayOutputStream outContent = 
+            new ByteArrayOutputStream();
         System.setOut(new PrintStream(outContent));
 
         database1.dump();
@@ -96,9 +102,11 @@ public class DatabaseJunitTests {
     @Test
     public void testInsertNegCordRectangle() {
         Rectangle rectangle = new Rectangle(-1, 1, 3, 4);
-        KVPair<String, Rectangle> pair = new KVPair<>("Rect2", rectangle);
+        KVPair<String, Rectangle> pair = 
+            new KVPair<>("Rect2", rectangle);
 
-        ByteArrayOutputStream outContent = new ByteArrayOutputStream();
+        ByteArrayOutputStream outContent = 
+            new ByteArrayOutputStream();
         System.setOut(new PrintStream(outContent));
 
         database.insert(pair);
@@ -120,11 +128,13 @@ public class DatabaseJunitTests {
     @Test
     public void testRemoveByName() {
         Rectangle rectangle = new Rectangle(1, 1, 3, 4);
-        KVPair<String, Rectangle> pair = new KVPair<>("Rect3", rectangle);
+        KVPair<String, Rectangle> pair = 
+            new KVPair<>("Rect3", rectangle);
 
         database.insert(pair);
 
-        ByteArrayOutputStream outContent = new ByteArrayOutputStream();
+        ByteArrayOutputStream outContent = 
+            new ByteArrayOutputStream();
         System.setOut(new PrintStream(outContent));
 
         database.remove("Rect3");
@@ -144,11 +154,13 @@ public class DatabaseJunitTests {
     @Test
     public void testRemoveByCoordinates() {
         Rectangle rectangle = new Rectangle(1, 1, 3, 4);
-        KVPair<String, Rectangle> pair = new KVPair<>("Rect4", rectangle);
+        KVPair<String, Rectangle> pair = 
+            new KVPair<>("Rect4", rectangle);
 
         database.insert(pair);
 
-        ByteArrayOutputStream outContent = new ByteArrayOutputStream();
+        ByteArrayOutputStream outContent = 
+            new ByteArrayOutputStream();
         System.setOut(new PrintStream(outContent));
 
         database.remove(1, 1, 3, 4);
@@ -229,13 +241,16 @@ public class DatabaseJunitTests {
         Rectangle rectangle2 = new Rectangle(3, 3, 5, 5);
 
         // Insert rectangles into the database
-        KVPair<String, Rectangle> pair1 = new KVPair<>("rect1", rectangle1);
-        KVPair<String, Rectangle> pair2 = new KVPair<>("rect2", rectangle2);
+        KVPair<String, Rectangle> pair1 = 
+            new KVPair<>("rect1", rectangle1);
+        KVPair<String, Rectangle> pair2 = 
+            new KVPair<>("rect2", rectangle2);
 
         database3.insert(pair1);
         database3.insert(pair2);
 
-        ByteArrayOutputStream outContent = new ByteArrayOutputStream();
+        ByteArrayOutputStream outContent = 
+            new ByteArrayOutputStream();
         System.setOut(new PrintStream(outContent));
 
         database3.intersections();
@@ -260,15 +275,20 @@ public class DatabaseJunitTests {
         Database database4 = new Database();
 
         // Create rectangles that intersect
-        Rectangle rectangle1 = new Rectangle(0, 0, 5, 5);
-        Rectangle rectangle2 = new Rectangle(10, 10, 5, 5);
+        Rectangle rectangle1 = 
+            new Rectangle(0, 0, 5, 5);
+        Rectangle rectangle2 = 
+            new Rectangle(10, 10, 5, 5);
 
-        ByteArrayOutputStream outContent = new ByteArrayOutputStream();
+        ByteArrayOutputStream outContent = 
+            new ByteArrayOutputStream();
         System.setOut(new PrintStream(outContent));
 
         // Insert rectangles into the database
-        KVPair<String, Rectangle> pair1 = new KVPair<>("rect1", rectangle1);
-        KVPair<String, Rectangle> pair2 = new KVPair<>("rect2", rectangle2);
+        KVPair<String, Rectangle> pair1 = 
+            new KVPair<>("rect1", rectangle1);
+        KVPair<String, Rectangle> pair2 = 
+            new KVPair<>("rect2", rectangle2);
 
         database4.insert(pair1);
         database4.insert(pair2);
@@ -292,7 +312,8 @@ public class DatabaseJunitTests {
      */
     @Test
     public void testRemoveNonExistentByName() {
-        ByteArrayOutputStream outContent = new ByteArrayOutputStream();
+        ByteArrayOutputStream outContent = 
+            new ByteArrayOutputStream();
         System.setOut(new PrintStream(outContent));
 
         database.remove("NonExistentRect");
@@ -311,7 +332,8 @@ public class DatabaseJunitTests {
      */
     @Test
     public void testRemoveNonExistentByCoordinates() {
-        ByteArrayOutputStream outContent = new ByteArrayOutputStream();
+        ByteArrayOutputStream outContent = 
+            new ByteArrayOutputStream();
         System.setOut(new PrintStream(outContent));
 
         database.remove(1, 1, 3, 4);
@@ -330,7 +352,8 @@ public class DatabaseJunitTests {
      */
     @Test
     public void testDumpEmptySkipList() {
-        ByteArrayOutputStream outContent = new ByteArrayOutputStream();
+        ByteArrayOutputStream outContent = 
+            new ByteArrayOutputStream();
         System.setOut(new PrintStream(outContent));
 
         database.dump();
@@ -350,13 +373,18 @@ public class DatabaseJunitTests {
      */
     @Test
     public void testDumpSkipListWithNodes() {
-        Rectangle rectangle1 = new Rectangle(1, 1, 3, 4);
-        Rectangle rectangle2 = new Rectangle(5, 5, 2, 2);
+        Rectangle rectangle1 = 
+            new Rectangle(1, 1, 3, 4);
+        Rectangle rectangle2 = 
+            new Rectangle(5, 5, 2, 2);
 
-        KVPair<String, Rectangle> pair1 = new KVPair<>("Rect1", rectangle1);
-        KVPair<String, Rectangle> pair2 = new KVPair<>("Rect2", rectangle2);
+        KVPair<String, Rectangle> pair1 = 
+            new KVPair<>("Rect1", rectangle1);
+        KVPair<String, Rectangle> pair2 = 
+            new KVPair<>("Rect2", rectangle2);
 
-        ByteArrayOutputStream outContent = new ByteArrayOutputStream();
+        ByteArrayOutputStream outContent = 
+            new ByteArrayOutputStream();
         System.setOut(new PrintStream(outContent));
 
         database.insert(pair1);
@@ -378,17 +406,22 @@ public class DatabaseJunitTests {
         Database database5 = new Database();
 
         // Create rectangles that don't intersect
-        Rectangle rectangle1 = new Rectangle(0, 0, 2, 2);
-        Rectangle rectangle2 = new Rectangle(3, 3, 2, 2);
+        Rectangle rectangle1 = 
+            new Rectangle(0, 0, 2, 2);
+        Rectangle rectangle2 = 
+            new Rectangle(3, 3, 2, 2);
 
         // Insert rectangles into the database
-        KVPair<String, Rectangle> pair1 = new KVPair<>("rect1", rectangle1);
-        KVPair<String, Rectangle> pair2 = new KVPair<>("rect2", rectangle2);
+        KVPair<String, Rectangle> pair1 = 
+            new KVPair<>("rect1", rectangle1);
+        KVPair<String, Rectangle> pair2 = 
+            new KVPair<>("rect2", rectangle2);
 
         database5.insert(pair1);
         database5.insert(pair2);
 
-        ByteArrayOutputStream outContent = new ByteArrayOutputStream();
+        ByteArrayOutputStream outContent = 
+            new ByteArrayOutputStream();
         System.setOut(new PrintStream(outContent));
 
         database5.intersections();
@@ -415,7 +448,8 @@ public class DatabaseJunitTests {
 
         // Assuming System.out.println is called within the method, we capture
         // the output.
-        ByteArrayOutputStream outContent = new ByteArrayOutputStream();
+        ByteArrayOutputStream outContent = 
+            new ByteArrayOutputStream();
         System.setOut(new PrintStream(outContent));
 
         // Execute the method with valid width and height
@@ -440,9 +474,6 @@ public class DatabaseJunitTests {
     public void testRegionSearchWithInvalidRegion() {
         // Setup necessary mocking or stubbing if the Database class depends on
         // other components
-
-        // Assuming System.out.println is called within the method, we capture
-        // the output.
         ByteArrayOutputStream outContent = new ByteArrayOutputStream();
         System.setOut(new PrintStream(outContent));
 
@@ -471,7 +502,8 @@ public class DatabaseJunitTests {
 
         // Assuming System.out.println is called within the method, we capture
         // the output.
-        ByteArrayOutputStream outContent = new ByteArrayOutputStream();
+        ByteArrayOutputStream outContent = 
+            new ByteArrayOutputStream();
         System.setOut(new PrintStream(outContent));
 
         // Execute the method with invalid width and height
@@ -496,10 +528,8 @@ public class DatabaseJunitTests {
     public void testRegionSearchWithInvalidRegion3() {
         // Setup necessary mocking or stubbing if the Database class depends on
         // other components
-
-        // Assuming System.out.println is called within the method, we capture
-        // the output.
-        ByteArrayOutputStream outContent = new ByteArrayOutputStream();
+        ByteArrayOutputStream outContent = 
+            new ByteArrayOutputStream();
         System.setOut(new PrintStream(outContent));
 
         // Execute the method with invalid width and height
@@ -522,13 +552,17 @@ public class DatabaseJunitTests {
     @Test
     public void testSearchWithNameFound() {
         // Insert rectangles into the database for testing
-        database.insert(new KVPair<>("TestRect1", new Rectangle(0, 0, 10, 10)));
-        database.insert(new KVPair<>("TestRect2", new Rectangle(10, 10, 20,
+        database.insert(new KVPair<>("TestRect1", 
+            new Rectangle(0, 0, 10, 10)));
+        database.insert(new KVPair<>("TestRect2", 
+            new Rectangle(10, 10, 20,
             20)));
-        database.insert(new KVPair<>("TestRect1", new Rectangle(20, 20, 30,
+        database.insert(new KVPair<>("TestRect1", 
+            new Rectangle(20, 20, 30,
             30)));
 
-        ByteArrayOutputStream outContent = new ByteArrayOutputStream();
+        ByteArrayOutputStream outContent = 
+            new ByteArrayOutputStream();
         System.setOut(new PrintStream(outContent));
         // Search for rectangles with a specific name
         database.search("TestRect1");
@@ -548,10 +582,12 @@ public class DatabaseJunitTests {
     @Test
     public void testSearchWithNameNotFound() {
         // Insert a rectangle into the database for testing
-        database.insert(new KVPair<>("AnotherRect", new Rectangle(0, 0, 10,
+        database.insert(new KVPair<>("AnotherRect",
+            new Rectangle(0, 0, 10,
             10)));
 
-        ByteArrayOutputStream outContent = new ByteArrayOutputStream();
+        ByteArrayOutputStream outContent = 
+            new ByteArrayOutputStream();
         System.setOut(new PrintStream(outContent));
         // Search for a rectangle with a specific name that does not exist
         database.search("NonexistentRect");
@@ -569,7 +605,8 @@ public class DatabaseJunitTests {
      */
     @Test
     public void testRemoveNameNot() {
-        database.insert(new KVPair<>("AnotherRect", new Rectangle(0, 0, 10,
+        database.insert(new KVPair<>("AnotherRect", 
+            new Rectangle(0, 0, 10,
             10)));
 
         ByteArrayOutputStream outContent = new ByteArrayOutputStream();
@@ -588,10 +625,12 @@ public class DatabaseJunitTests {
      */
     @Test
     public void testRemoveInvalid() {
-        database.insert(new KVPair<>("AnotherRect", new Rectangle(0, 0, 10,
+        database.insert(new KVPair<>("AnotherRect", 
+            new Rectangle(0, 0, 10,
             10)));
 
-        ByteArrayOutputStream outContent = new ByteArrayOutputStream();
+        ByteArrayOutputStream outContent = 
+            new ByteArrayOutputStream();
         System.setOut(new PrintStream(outContent));
 
         database.remove(0, 0, -5, 10);
@@ -610,7 +649,7 @@ public class DatabaseJunitTests {
         // Insert some rectangles
         insertRectangles();
         // Attempt to remove 25 rectangles successfully
-        
+
         for (int i = 1; i < 26; i++) {
             database.remove(i, i, i, i);
         }
@@ -657,7 +696,8 @@ public class DatabaseJunitTests {
     private void insertRectangles() {
         for (int i = 1; i < 101; i++) {
             String name = "Rectangle" + i;
-            Rectangle rectangle = new Rectangle(i, i, i, i);
+            Rectangle rectangle = 
+                new Rectangle(i, i, i, i);
             database.insert(new KVPair<>(name, rectangle));
         }
     }
@@ -668,22 +708,27 @@ public class DatabaseJunitTests {
      * of rectangles for bigRemoveByValue()
      */
     private ArrayList<Rectangle> insertRectanglesArray() {
-        ArrayList<Rectangle> rectangles = new ArrayList<>();
+        ArrayList<Rectangle> rectangles = 
+            new ArrayList<>();
         for (int i = 1; i < 101; i++) {
             String name = "Rectangle" + i;
-            Rectangle rectangle = new Rectangle(i, i, i, i);
+            Rectangle rectangle = 
+                new Rectangle(i, i, i, i);
             rectangles.add(rectangle);
             database.insert(new KVPair<>(name, rectangle));
         }
         return rectangles;
     }
-    
+
+
     /*
      * Helper method to capture output of dump()
      */
     private String captureDumpOutput() {
-        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-        PrintStream printStream = new PrintStream(outputStream);
+        ByteArrayOutputStream outputStream = 
+            new ByteArrayOutputStream();
+        PrintStream printStream = 
+            new PrintStream(outputStream);
         PrintStream oldOut = System.out;
         System.setOut(printStream);
 
