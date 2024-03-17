@@ -97,7 +97,7 @@ public class DatabaseJunitTests {
     public void testSearch() {
         database.insert(new KVPair<>("r1", new PointInt(10, 10)));
         database.search("r1");
-        String expectedOutput = "Point inserted: (r1, 10, 10)\n" + "Found\n"
+        String expectedOutput = "Point inserted: (r1, 10, 10)\n" + "Found "
             + "(r1, 10, 10)\n";
         assertEquals(expectedOutput.trim().replace("\r", ""), outContent
             .toString().trim().replace("\r", ""));

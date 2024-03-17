@@ -200,10 +200,10 @@ public class EmptyNode implements QuadNode {
 
 
     @Override
-    public int dump(int level, int x, int y, int size) {
+    public int dump(int level, int x_empty, int y_empty, int size_empty) {
         // Indentation based on the level
         String indentation = "  ".repeat(level);
-        System.out.println(indentation + "Node at " + x + ", " + y + ", " + size
+        System.out.println(indentation + "Node at " + x_empty + ", " + y_empty + ", " + size_empty
             + ": Empty");
 
         // Returns 1 since it's counting the current node
@@ -214,6 +214,32 @@ public class EmptyNode implements QuadNode {
     @Override
     public List<Point> collectPoints() {
         return new ArrayList<>();
+    }
+    
+    @Override
+    public QuadNode search(String name, int size) {
+        return null;
+    }
+
+
+    @Override
+    public boolean isInternal() {
+        // TODO Auto-generated method stub
+        return false;
+    }
+
+
+    @Override
+    public List<Integer> pointForRemoval(String name) {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+
+    @Override
+    public String nameForRemoval(int x, int y, int worldSize) {
+        // TODO Auto-generated method stub
+        return null;
     }
 
 }

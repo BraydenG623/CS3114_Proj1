@@ -186,7 +186,6 @@ public class SkipList<K extends Comparable<? super K>, V>
         head = newHead;
     }
 
-
     /**
      * Removes the KVPair that is passed in as a parameter and returns true if
      * the pair was valid and false if not.
@@ -251,7 +250,96 @@ public class SkipList<K extends Comparable<? super K>, V>
         return null;
     }
 
+//    /**
+//     * Removes the KVPair that is passed in as a parameter and returns true if
+//     * the pair was valid and false if not.
+//     * 
+//     * @param key
+//     *            the KVPair to be removed
+//     * @return returns the removed pair if the pair was valid and null if not
+//     */
+//    @SuppressWarnings("unchecked")
+//    public KVPair<K, V> removePair(K key, V val) {
+//        // Create an array to hold the update path, which will be the nodes that
+//        // need
+//        // their pointers updated after removal.
+//        SkipNode[] update = (SkipNode[])Array.newInstance(SkipNode.class,
+//            head.level + 1);
+//
+//        SkipNode current = head; // Start from the head of the skip list.
+//
+//        // Traverse the list from top level down to the bottom level to find the
+//        // highest-level node for each level that precedes the node to be
+//        // removed.
+//        for (int i = head.level; i >= 0; i--) {
+//            // Continue moving forward at the current level while the next node
+//            // exists
+//            // and its key is less than the key to be removed.
+//            while (current.forward[i] != null && current.forward[i].pair
+//                .getKey().compareTo(key) < 0) {
+//                current = current.forward[i]; // Move to the next node at the
+//                                              // current level.
+//            }
+//            // Store the node in the update path for the current level.
+//            update[i] = current;
+//        }
+//
+//        // Move to the next node which is the candidate for removal.
+//        current = current.forward[0];
+//
+//        // Check if the current node is the node to be removed.
+//        if (current != null && current.pair.getKey().compareTo(key) == 0 
+//            && current.pair.getValue().toString().compareTo(val.toString()) == 0) {
+//            // For each level where the current node is in the update path,
+//            // update the forward pointers to skip over the current node.
+//            for (int i = 0; i <= head.level; i++) {
+//                // If the current level's forward pointer in the update path
+//                // doesn't point
+//                // to the current node, we've finished updating all relevant
+//                // levels.
+//                if (update[i].forward[i] != current)
+//                    break;
+//
+//                // Update the forward pointer to skip the current node.
+//                update[i].forward[i] = current.forward[i];
+//            }
+//            // Decrease the size of the skip list because a node has been
+//            // removed.
+//            size--;
+//
+//            // Return the pair held by the removed node.
+//            return current.pair;
+//        }
+//
+//        // If no node with the given key was found, return null.
+//        return null;
+//    }
 
+
+//    /**
+//     * * Removes a KVPair with the specified value.
+//     * 
+//     * @param val
+//     *            the value of the KVPair to be removed
+//     * @return returns true if the removal was successful
+//     */
+//    public KVPair<K, V> removeByValue(K key, V val ) {
+//        KVPair<K, V> found = findFirstPairByValueAndKey(key, val);
+//        // Check if the current node is the node to be removed.
+//        if (found != null) {
+//            // Retrieve the key associated with the specified value.
+//            K keyR = found.getKey();
+//            V valR = found.getValue();
+//
+//            // Call the remove function with the retrieved key.
+//            return removePair(keyR, valR);
+//        }
+//        else {
+//            // If no node with the given value was found, return null.
+//            return null;
+//        }
+//    }
+    
     /**
      * * Removes a KVPair with the specified value.
      * 
@@ -259,15 +347,16 @@ public class SkipList<K extends Comparable<? super K>, V>
      *            the value of the KVPair to be removed
      * @return returns true if the removal was successful
      */
-    public KVPair<K, V> removeByValue(V val) {
+    public KVPair<K, V> removeByValue(V val ) {
         KVPair<K, V> found = findFirstPairByValue(val);
         // Check if the current node is the node to be removed.
         if (found != null) {
             // Retrieve the key associated with the specified value.
-            K key = found.getKey();
+            K keyR = found.getKey();
+           
 
             // Call the remove function with the retrieved key.
-            return remove(key);
+            return remove(keyR);
         }
         else {
             // If no node with the given value was found, return null.
@@ -283,6 +372,33 @@ public class SkipList<K extends Comparable<? super K>, V>
      *            the value of the KVPair to be removed
      * @return null if not found and pair if found
      */
+//    public KVPair<K, V> findFirstPairByValueAndKey(K key, V val) {
+//        // Start from the head of the skip list.
+//        SkipNode current = head;
+//
+//        // Iterate through the entire skip list.
+//        while (current != null) {
+//            // Check if the current node's pair has the specified value.
+//            if (current.pair != null && current.pair.getValue().toString().compareTo(val.toString()) == 0
+//                && current.pair.getKey().compareTo(key)==0) {
+//                // Return the key-value pair.
+//                return current.pair;
+//            }
+//            // Move to the next node.
+//            current = current.forward[0];
+//        }
+//
+//        // If no node with the given value was found, return null.
+//        return null;
+//    }
+    
+    /**
+     * * Finds the first key where V val is found
+     * 
+     * @param val
+     *            the value of the KVPair to be removed
+     * @return null if not found and pair if found
+     */
     public KVPair<K, V> findFirstPairByValue(V val) {
         // Start from the head of the skip list.
         SkipNode current = head;
@@ -290,7 +406,8 @@ public class SkipList<K extends Comparable<? super K>, V>
         // Iterate through the entire skip list.
         while (current != null) {
             // Check if the current node's pair has the specified value.
-            if (current.pair != null && current.pair.getValue().toString().compareTo(val.toString()) == 0) {
+            if (current.pair != null && current.pair.getValue().toString().compareTo(val.toString()) == 0
+                ) {
                 // Return the key-value pair.
                 return current.pair;
             }

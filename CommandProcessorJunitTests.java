@@ -78,7 +78,7 @@ public class CommandProcessorJunitTests {
     @Test
     public void testRemoveByNameInvalid() {
         processor.processor("remove unknownPoint");
-        String expectedOutput = "Point not removed: unknownPoint\n";
+        String expectedOutput = "Point rejected: unknownPoint\n";
         assertEquals(expectedOutput.trim().replace("\r", ""), outContent.toString().trim().replace("\r", ""));
     }
 
@@ -112,7 +112,7 @@ public class CommandProcessorJunitTests {
     public void testSearchValid() {
         processor.processor("insert point1 10 20");
         processor.processor("search point1");
-        String expectedOutput = "Point inserted: (point1, 10, 20)\nFound\n(point1, 10, 20)\n";
+        String expectedOutput = "Point inserted: (point1, 10, 20)\nFound (point1, 10, 20)\n";
         assertEquals(expectedOutput.trim().replace("\r", ""), outContent.toString().trim().replace("\r", ""));
     }
 

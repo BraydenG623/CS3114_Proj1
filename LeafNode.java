@@ -217,28 +217,41 @@ public class LeafNode implements QuadNode {
     }
 
 
-    // Helper function to check if all points in the leaf node are the same
-    private boolean areAllPointsSame() {
-        if (points.isEmpty() || points.size() == 1) {
-            return true; // An empty node or a node with a single point
-                         // implicitly satisfies the condition
-        }
-        Point first = points.get(0);
+//    // Helper function to check if all points in the leaf node are the same
+//    private boolean areAllPointsSame() {
+//        if (points.isEmpty() || points.size() == 1) {
+//            return true; // An empty node or a node with a single point
+//                         // implicitly satisfies the condition
+//        }
+//        Point first = points.get(0);
+//        for (Point point : points) {
+//            if (!point.equals(first)) {
+//                return false; // Found points with different coordinates
+//            }
+//        }
+//        return true; // All points have the same coordinates
+//    }
+    
+    private boolean allSame() {
+        Point start = points.get(0);
         for (Point point : points) {
-            if (!point.equals(first)) {
-                return false; // Found points with different coordinates
+            if((point.getX() != start.getX()) || (point.getY() != start.getY())) {
+                return false;
             }
         }
-        return true; // All points have the same coordinates
+        return true;
     }
 
 
-    private QuadNode splitAndRedistribute() {
+    private QuadNode splitAndRedistribute(int topX, int topY, int sizeN) {
         InternalNode parent = new InternalNode(x, y, size);
         ArrayList<Integer> param = new ArrayList<>();
-        param.add(x);
-        param.add(y);
-        param.add(size);
+//        param.add(x);
+//        param.add(y);
+//        param.add(size);
+        param.add(topX);
+        param.add(topY);
+        param.add(sizeN);
         for (Point point : points) {
             parent.insert(point.getName(), point.getX(), point.getY(), param);
         }
@@ -246,14 +259,13 @@ public class LeafNode implements QuadNode {
     }
 
 
-
     @Override
     public QuadNode insert(String name, int pointX, int pointY, ArrayList<Integer> param) {
         Point newPoint = new Point(name, pointX, pointY);
         points.add(newPoint);
         // Check the conditions for splitting
-        if (points.size() > 3 && !areAllPointsSame()) {
-            return splitAndRedistribute();
+        if (points.size() > 3 && !allSame()) {
+            return splitAndRedistribute(param.get(0),param.get(1),param.get(2));
         }
         else {
             return this; // No split needed
@@ -270,8 +282,7 @@ public class LeafNode implements QuadNode {
     public QuadNode remove(String name, int size) {
         for (Point point : points) {
             if (point.getName().equals(name)) {
-                remove(point.getX(),point.getY(),size);
-                return this;
+                return remove(point.getX(),point.getY(),size);
             }
         }
         return null;
@@ -282,9 +293,20 @@ public class LeafNode implements QuadNode {
     @Override
     public QuadNode remove(int x, int y, int size) {
         String name = getName(x,y);
-        boolean removed = points.removeIf(p -> p.getX() == x && p.getY() == y);
-        if(removed) {
-            System.out.println("Point removed: (" + name + ", " + x + ", " + y + ")");
+        if(name == null) {
+           return this;
+        }
+        else {
+            for (int i=0 ; i < points.size() ; i++) {
+                if(points.get(i).getX() == x &&
+                    points.get(i).getY() == y) {
+                    
+                    points.remove(i);
+                    
+                }
+            }
+       // boolean removed = points.removeIf(p -> p.getX() == x && p.getY() == y);
+
         }
        
         // After removal, this node itself is returned since the leaf node does not decide on merges.
@@ -339,10 +361,26 @@ public class LeafNode implements QuadNode {
         // TODO: Implement:
         return true;
     }
+    
+    @Override
+    public QuadNode search(String name,int size) {
+        // LeafNode means we are at the point so we just need to check
+        // the 3 possiblw points in this node to see if the name
+        // matches what we are looking for
+        
+        for (Point point : points) {
+            if (point.getName().equals(name)) {
+                //remove(point.getX(),point.getY(),size);
+                return this;
+            }
+        }
+       // return this;
+        return null;
+    }
 
 
     @Override
-    public int dump(int level, int x, int y, int size) {
+    public int dump(int level, int x_empty, int y_empty, int size_empty) {
         // This node itself counts as one
         int nodeCount = 1;
         printWithIndentation("Node at " + x + ", " + y + ", " + size + ":",
@@ -354,6 +392,20 @@ public class LeafNode implements QuadNode {
         }
         return nodeCount; // Return count of this node
     }
+    
+//    @Override
+//    public int dump(int level) {
+//        // This node itself counts as one
+//        int nodeCount = 1;
+//        printWithIndentation("Node at " + x + ", " + y + ", " + size + ":",
+//            level);
+//        for (Point point : points) {
+//            // Points are printed at the same level as the node description
+//            printWithIndentation("(" + point.getName() + ", " + point.getX()
+//                + ", " + point.getY() + ")", level);
+//        }
+//        return nodeCount; // Return count of this node
+//    }
     
 //    @Override
 //    public List<Point> duplicates(int size){
@@ -381,5 +433,49 @@ public class LeafNode implements QuadNode {
     }
 
 
+    @Override
+    public boolean isInternal() {
+        // TODO Auto-generated method stub
+        return false;
+    }
 
+
+    @Override
+    public List<Integer> pointForRemoval(String name) {
+        // TODO Auto-generated method stub
+        List<Integer> coord = new ArrayList<>();
+        for (Point point : points) {
+            if (point.getName().equals(name)) {
+                coord.add(point.getX());
+                coord.add(point.getY());
+                return coord;
+            }
+        }
+        return null;
+    }
+
+
+    @Override
+    public String nameForRemoval(int x, int y, int worldSize) {
+        String name = getName(x,y);
+        if(name == null) {
+           return null;
+        }
+        else {
+            for (int i=0 ; i < points.size() ; i++) {
+                if(points.get(i).getX() == x &&
+                    points.get(i).getY() == y) {
+                    
+                    return points.get(i).getName();
+                    
+                }
+            }
+       // boolean removed = points.removeIf(p -> p.getX() == x && p.getY() == y);
+
+        }
+       
+        // After removal, this node itself is returned since the leaf node does not decide on merges.
+        // The decision to merge is up to the parent internal node after the removal operation.
+        return null;
+    }
 }

@@ -130,15 +130,18 @@ public class QuadTree {
 
     public void remove(String name) {
         // Size is passed to properly find and remove the point by name.
+        //List<Integer> Removed = root.pointForRemoval(name);
         this.root = root.remove(name, WORLD_SIZE);
-        if(this.root == null) {
-            System.out.println("Point not removed: " + name);
-        }
+        //return Removed;
     }
 
     public void remove(int x, int y) {
         // Size is passed to accurately locate and remove the point by coordinates.
+        //String Removed = root.nameForRemoval(x, y, WORLD_SIZE);
+        
         this.root = root.remove(x, y, WORLD_SIZE);
+        
+        //return Removed;
     }
     
     public void dump() {
@@ -178,6 +181,10 @@ public class QuadTree {
         for (Point duplicate : duplicates) {
             System.out.println("(" + duplicate.getX() + ", " + duplicate.getY() + ")");
         }
+    }
+    
+    public void search(String name) {
+        this.root = root.search(name, WORLD_SIZE);
     }
 
 

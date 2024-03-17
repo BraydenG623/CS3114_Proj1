@@ -298,77 +298,76 @@ public class InternalNode implements QuadNode {
     @Override
     public QuadNode insert(String name, int pointX, int pointY, ArrayList<Integer> param) {
         // Determine the quadrant for the new point
-        List<Point> points = new ArrayList<>();
-        int halfSize = size / 2;
-        int midX = x + halfSize;
-        int midY = y + halfSize;
-        ArrayList<Integer> param2 = new ArrayList<>();
+        if (pointX < x || pointX >= x + size || pointY < y || pointY >= y + size) {
+            return this; // Point is outside the bounds, so no insertion is performed
+        }
         
+        List<Point> points = new ArrayList<>();
+//        int halfSize = size / 2;
+//        int midX = x + halfSize;
+//        int midY = y + halfSize;
+        int halfSize = param.get(2) / 2;
+        int midX = param.get(0) + halfSize;
+        int midY = param.get(1) + halfSize;
+        ArrayList<Integer> nwParam = new ArrayList<>(Arrays.asList(param.get(0), param.get(1), halfSize));
+        ArrayList<Integer> neParam = new ArrayList<>(Arrays.asList(midX, param.get(1), halfSize));
+        ArrayList<Integer> swParam = new ArrayList<>(Arrays.asList(param.get(0), midY, halfSize));
+        ArrayList<Integer> seParam = new ArrayList<>(Arrays.asList(midX, midY, halfSize));
 
-        // Determine in which quadrant (child) the point belongs
+        // Determine in which quadrant (child) the point belongs and insert recursively
         if (pointX < midX) {
             if (pointY < midY) {
-                // Point belongs to the NW quadrant
-                if (nw instanceof EmptyNode) {
-                    Point point= new Point(name, pointX, pointY);
-                    points.add(point);
-                    nw = new LeafNode(x, y, halfSize, points);
-                }
-                else {
-                param.add(x);
-                param.add(y);
-                param.add(halfSize);
-                nw = nw.insert(name, pointX, pointY, param2);
-                }
+                nw = nw.insert(name, pointX, pointY, nwParam);
+            } else {
+                sw = sw.insert(name, pointX, pointY, swParam);
             }
-            else {
-                // Point belongs to the SW quadrant
-                if (sw instanceof EmptyNode) {
-                    Point point= new Point(name, pointX, pointY);
-                    points.add(point);
-                    sw = new LeafNode(x, midY, halfSize, points);
-                }
-                else {
-                param.add(x);
-                param.add(midY);
-                param.add(halfSize);
-                sw = sw.insert(name, pointX, pointY, param2);
-                }
-            }
-        }
-        else {
+        } else {
             if (pointY < midY) {
-                // Point belongs to the NE quadrant
-                if (ne instanceof EmptyNode) {
-                    Point point= new Point(name, pointX, pointY);
-                    points.add(point);
-                    ne = new LeafNode(midX, y, halfSize, points);
-                }
-                else {
-                param.add(midX);
-                param.add(y);
-                param.add(halfSize);
-                ne = ne.insert(name, pointX, pointY, param2);
-                }
-            }
-            else {
-                // Point belongs to the SE quadrant
-                if (se instanceof EmptyNode) {
-                    Point point= new Point(name, pointX, pointY);
-                    points.add(point);
-                    se = new LeafNode(midX, midY, halfSize, points);
-                }
-                else {
-                param.add(midX);
-                param.add(midY);
-                param.add(halfSize);
-                se = se.insert(name, pointX, pointY, param2);
-                }
+                ne = ne.insert(name, pointX, pointY, neParam);
+            } else {
+                se = se.insert(name, pointX, pointY, seParam);
             }
         }
         return this; // Return the current internal node after insertion
     }
 
+    @Override
+    public QuadNode search(String name, int size) {
+        // Internal nodes don't contain points, so we need to search in the
+        // children.
+        // We'll search recursively in all non-empty children nodes.
+        // If any child node returns a non-null result, that's the node we're
+        // looking for.
+
+        QuadNode result;
+
+        // Recursively search the northwest child node
+        result = nw.search(name,size);
+        if (result != null) {
+            return result; // Found in the northwest quadrant
+        }
+
+        // Recursively search the northeast child node
+        result = ne.search(name,size);
+        if (result != null) {
+            return result; // Found in the northeast quadrant
+        }
+
+        // Recursively search the southwest child node
+        result = sw.search(name,size);
+        if (result != null) {
+            return result; // Found in the southwest quadrant
+        }
+
+        // Recursively search the southeast child node
+        result = se.search(name,size);
+        if (result != null) {
+            return result; // Found in the southeast quadrant
+        }
+
+        // If we get here, the point was not found in any of the children
+        return null;
+    }
 
     @Override
     public QuadNode remove(String name, int size) {
@@ -395,7 +394,8 @@ public class InternalNode implements QuadNode {
         }
 
         // If we get here, the point was not found in any of the children
-        return null;
+        return this;
+        //return this;
     }
 
 
@@ -409,43 +409,58 @@ public class InternalNode implements QuadNode {
         if (x < midX) {
             if (y < midY) {
                 nw = nw.remove(x, y, halfSize);
+                return checkAndMerge(this);
             } else {
                 sw = sw.remove(x, y, halfSize);
+                return checkAndMerge(this);
             }
         } else {
             if (y < midY) {
                 ne = ne.remove(x, y, halfSize);
+                return checkAndMerge(this);
             } else {
                 se = se.remove(x, y, halfSize);
+                return checkAndMerge(this);
             }
         }
         
         
         // Check if we can merge nodes after removal
-        return checkAndMerge();
+       // return this;
     }
     
-    private QuadNode checkAndMerge() {
+    public boolean isInternal() {
+        return true;
+    }
+    
+    private QuadNode checkAndMerge(InternalNode node) {
         List<Point> combinedPoints = new ArrayList<>();
         
-        // Attempt to collect points from all child nodes if they are LeafNodes
-        for (QuadNode child : Arrays.asList(nw, ne, sw, se)) {
-            if (child instanceof LeafNode) {
-                combinedPoints.addAll(((LeafNode) child).getPoints());
-            } else {
-                // If any child is not a LeafNode, merging is not possible
-                return this;
-            }
+        //first check if all children are either empty 
+        //or leaf nodes, we cannot merge an internal node
+        if(node.nw.isInternal() || node.nw.isInternal() || node.se.isInternal() || node.sw.isInternal()) {
+            //return this, we cannot merge when an internal node has an internal
+            //node as a child
+            return this;
         }
         
+        // Collect the points of all Leaf/Empty Nodes
+        combinedPoints.addAll(node.nw.collectPoints());
+        combinedPoints.addAll(node.ne.collectPoints());
+        combinedPoints.addAll(node.sw.collectPoints());
+        combinedPoints.addAll(node.se.collectPoints());
+        
         // Check if the combined points meet the conditions for merging
-        if (combinedPoints.size() <= 3 && pointsAreSameOrEmpty(combinedPoints)) {
+        if (combinedPoints.size() <= 3 || pointsAreSameOrEmpty(combinedPoints)) {
             // Create a new LeafNode with combined points
+            // this (internal node) should become a leaf node with 
+            // same x,y,size as current internal node
+            // all of its 4 children should be cleared
             return new LeafNode(x, y, size, combinedPoints);
         }
         
         // If cannot merge, return this internal node
-        return this;
+        return node;
     }
     
     private boolean pointsAreSameOrEmpty(List<Point> points) {
@@ -543,20 +558,29 @@ public class InternalNode implements QuadNode {
 
 
     @Override
-    public int dump(int level, int x, int y, int size) {
+    public int dump(int level, int x_empty, int y_empty, int size_empty) {
         int nodeCount = 1; // Start with 1 for the current node
         printWithIndentation("Node at " + x + ", " + y + ", " + size
             + ": Internal", level);
 
         // Recursively dump children, if they are not empty, and accumulate
         // their counts
-        nodeCount += nw.dump(level + 1, x, y, size/2);
-        nodeCount += ne.dump(level + 1, (x+size)/2, y, size/2);
-        nodeCount += sw.dump(level + 1, x, (y+size)/2, size/2);
-        nodeCount += se.dump(level + 1, (x+size)/2, (y+size)/2, size/2);
-
+        int x_nw=x;
+        int y_nw=y;
+        int x_ne=x+(size/2);
+        int y_ne=y;
+        int x_sw=x;
+        int y_sw=y+(size/2);
+        int x_se=x+(size/2);
+        int y_se=y+(size/2);
+        int size_val=size/2;
+        nodeCount += nw.dump(level + 1, x_nw, y_nw, size_val);      
+        nodeCount += ne.dump(level + 1, x_ne, y_ne, size_val);    
+        nodeCount += sw.dump(level + 1, x_sw, y_sw, size_val);          
+        nodeCount += se.dump(level + 1, x_se, y_se, size_val); 
         return nodeCount;
     }
+    
 
 
     private void printWithIndentation(String text, int level) {
@@ -565,19 +589,7 @@ public class InternalNode implements QuadNode {
         System.out.println(indentation + text);
     }
     
-//    @Override
-//    public List<Point> duplicates(int size){
-//        
-//        return null;
-//    }
-//    
-//    @Override
-//    public void collectPoints(Map<Point, Integer> pointFrequency) {
-//        nw.collectPoints(pointFrequency);
-//        ne.collectPoints(pointFrequency);
-//        sw.collectPoints(pointFrequency);
-//        se.collectPoints(pointFrequency);
-//    }
+
     @Override
     public List<Point> collectPoints() {
         List<Point> points = new ArrayList<>();
@@ -586,6 +598,63 @@ public class InternalNode implements QuadNode {
         points.addAll(sw.collectPoints());
         points.addAll(se.collectPoints());
         return points;
+    }
+
+
+    @Override
+    public List<Integer> pointForRemoval(String name) {
+        // TODO Auto-generated method stub
+        List<Integer> result = new ArrayList<>();
+        result.addAll(nw.pointForRemoval(name));
+        if (result != null) {
+            return result; 
+        }
+
+        result.addAll(ne.pointForRemoval(name));
+        if (result != null) {
+            return result; 
+        }
+
+        result.addAll(sw.pointForRemoval(name));
+        if (result != null) {
+            return result; 
+        }
+
+        result.addAll(se.pointForRemoval(name));
+        if (result != null) {
+            return result; 
+        }
+
+        // If we get here, the point was not found in any of the children
+        return null;
+    }
+
+
+    @Override
+    public String nameForRemoval(int x, int y, int worldSize) {
+        // TODO Auto-generated method stub
+        int halfSize = this.size / 2;
+        int midX = this.x + halfSize;
+        int midY = this.y + halfSize;
+        String result;
+        // Determine in which quadrant the point lies and try to remove it
+        if (x < midX) {
+            if (y < midY) {
+                result = nw.nameForRemoval(x, y, halfSize);
+                return result;
+            } else {
+                result = sw.nameForRemoval(x, y, halfSize);
+                return result;
+            }
+        } else {
+            if (y < midY) {
+                result = ne.nameForRemoval(x, y, halfSize);
+                return result;
+            } else {
+                result = se.nameForRemoval(x, y, halfSize);
+                return result;
+            }
+        }
     }
 
 

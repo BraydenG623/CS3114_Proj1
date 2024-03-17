@@ -1,5 +1,6 @@
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 
 /**
  * This class is responsible for interfacing between the command processor and
@@ -64,8 +65,9 @@ public class Database {
                 + ", " + point.getY() + ")");
         }
         else {
-            quadTree.insert(name, point.getX(), point.getY());
             list.insert(pair);
+            quadTree.insert(name, point.getX(), point.getY());
+            //list.insert(pair);
         }
     }
 
@@ -78,13 +80,26 @@ public class Database {
      *            the name of the rectangle to be removed
      */
     public void remove(String name) {
-        KVPair<String, PointInt> found = list.remove(name);
+        ArrayList<KVPair<String, PointInt>> found = list.search(name);
         if (found == null) {
-            System.out.println("Point not removed: " + name);
+            System.out.println("Point rejected: " + name);
+            return;
+        }
+//        
+//        List<Integer> coord = quadTree.remove(name);
+//        int x = coord.get(0);
+//        int y = coord.get(1);
+//        
+//        PointInt removePoint = new PointInt(x,y);
+        
+        KVPair<String, PointInt> removed = list.remove(name);
+        if (removed == null) {
+            System.out.println("Point rejected: " + name);
             return;
         }
         else {
             quadTree.remove(name);
+            System.out.println("Point removed: (" + name + ", " + removed.getValue().getX() + ", " + removed.getValue().getY() + ")");
         }
     }
 
@@ -100,12 +115,20 @@ public class Database {
      */
     public void remove(int x, int y) {
         PointInt point = new PointInt(x, y);
+        if(x < 0 || y < 0 || x > 1024 || y > 1024) {
+            System.out.println("Point rejected: (" + x + ", " + y + ")");
+            return;
+        }
+        
+        //String key = quadTree.remove(x, y);
+        
         KVPair<String, PointInt> removed = list.removeByValue(point);
         if (removed != null) {
+            System.out.println("Point removed: (" + removed.getKey() + ", " + removed.getValue().getX() + ", " + removed.getValue().getY() + ")");
             quadTree.remove(x, y);
         }
         else if (removed == null) {
-            System.out.println("Point not found: (" + x + ", " + y + ")");
+            System.out.println("Point rejected: (" + x + ", " + y + ")");
             return;
         }
     }
@@ -151,14 +174,13 @@ public class Database {
 
         if (found != null && !found.isEmpty()) {
             // Rectangles with the specified name are found, print them.
-            System.out.println("Found");
             for (KVPair<String, PointInt> pair : found) {
                 PointInt point = new PointInt(pair.getValue().getX(), pair
                     .getValue().getY());
                 // Print the rectangle's name and its details using the getter
                 // methods.
-                System.out.println("(" + pair.getKey() + ", " + (int)point
-                    .getX() + ", " + (int)point.getY() + ")");
+                System.out.println("Found (" + pair.getKey() + ", " + point
+                    .getX() + ", " + point.getY() + ")");
             }
         }
         else {
