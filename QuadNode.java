@@ -119,20 +119,6 @@ public interface QuadNode {
      */
     List<Point> regionsearch(int x, int y, int width, int height, int size);
 
-    /**
-     * Searches for a point by name within the QuadTree.
-     * 
-     * @param name The name of the point to search for.
-     * @return The node containing the point, or null if not found.
-     */
-    QuadNode search(String name,int size);
-
-    /**
-     * Checks if the current node is a leaf node.
-     * 
-     * @return true if the node is a leaf, false otherwise.
-     */
-    boolean isLeaf();
 
     /**
      * Identifies and returns a list of duplicate points within the QuadTree.
@@ -140,7 +126,6 @@ public interface QuadNode {
      * @return A list of duplicate points.
      */
     List<Point> collectPoints();
-   // List<Point> duplicates(int size);
 
     /**
      * Dumps the structure of the QuadTree starting from the current node.
@@ -153,20 +138,4 @@ public interface QuadNode {
     boolean isInternal();
 
     RemovedObject remove(String name, int x, int y, ArrayList<Integer> param);
-
-    
-    
-
-//    List<Integer> pointForRemoval(String name);
-//
-//    String nameForRemoval(int x, int y, int worldSize);
-
-    
-    
-    /**
-     * 
-     */
-    //void collectPoints(Map<Point, Integer> pointFrequency);
-
-    
 }

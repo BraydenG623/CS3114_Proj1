@@ -44,12 +44,6 @@ public class CommandProcessor {
      */
     public void processor(String line) {
         // Check if the line is empty or consists only of whitespace
-// if (line.trim().isEmpty()) {
-// // If the line is empty or whitespace,
-// //return early without processing
-// //System.out.println("Invalid line");
-// return;
-// }
 
         // converts the string of the line into an
         // array of its space (" ") delimited elements
@@ -71,8 +65,6 @@ public class CommandProcessor {
                 // Extract the rest of the parameters
                 int x = Integer.parseInt(arr[2].trim());
                 int y = Integer.parseInt(arr[3].trim());
-// int w = Integer.parseInt(arr[4].trim());
-// int h = Integer.parseInt(arr[5].trim());
 
                 // Check the rectangle to make sure it has valid w and h
 
@@ -138,8 +130,8 @@ public class CommandProcessor {
                     else {
                         // If width or height are not valid, print an error
                         // message
-                        System.out.println("Region rejected: (" + x + ", " + y
-                            + ", " + w + ", " + h + ")");
+                        System.out.println("Rectangle rejected: (" + x + ", "
+                            + y + ", " + w + ", " + h + ")");
                     }
                 }
                 catch (NumberFormatException e) {

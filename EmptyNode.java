@@ -1,113 +1,3 @@
-// import java.lang.reflect.Array;
-// import java.util.ArrayList;
-// import java.util.Collections;
-// import java.util.Iterator;
-// import java.util.List;
-// import java.util.Map;
-// import java.util.Random;
-// import student.TestableRandom;
-//
-//
-//
-/// **
-// * Implements the Flyweight pattern for empty nodes
-// * in a QuadTree structure.
-// * Uses a singleton instance to represent all empty nodes.
-// *
-// * @author Brayden Gardner, Ryan Kluttz
-// * @version 1.0
-// * @since 2024-02-25
-// */
-// @SuppressWarnings("unused")
-// public class EmptyNode implements QuadNode {
-//
-// private int x1, y1, x2, y2; // Spatial bounds
-//
-//
-// @Override
-// public int[] getBounds() {
-// return new int[]{x1, y1, x2, y2};
-// }
-// private static EmptyNode flyweight = null;
-//
-// private EmptyNode() {
-// // Private constructor to prevent outside instantiation
-// }
-//
-// public static EmptyNode getInstance() {
-// if (flyweight == null) {
-// flyweight = new EmptyNode();
-// }
-// return flyweight;
-// }
-//
-// @Override
-// public QuadNode insert(String name, int x, int y, int x1, int x2, int y1, int
-// y2) {
-// // Transform into a LeafNode and insert the point
-// LeafNode newLeaf = new LeafNode(x1, x2, y1, y2);
-// return newLeaf.insert(name, x, y, x1, x2, y1, y2);
-// }
-//
-//
-//
-// @Override
-// public QuadNode remove(String name, int x1, int x2, int y1, int y2) {
-// //TODO: Implement:
-// return this;
-// }
-//
-// @Override
-// public QuadNode remove(int x, int y, int x1, int x2, int y1, int y2) {
-//
-// return this;
-// }
-//
-// @Override
-// public QuadNode search(String name) {
-// //Always return null for empty nodes
-//
-// return null;
-// }
-//
-//
-// @Override
-// public List<Point> regionsearch(int x, int y, int width, int height, int x1,
-// int x2, int y1, int y2) {
-// // No points in an empty node
-//
-// return Collections.emptyList();
-// }
-//
-// @Override
-// public boolean isLeaf() {
-// // Technically not a leaf but an empty node
-// return false;
-// }
-//
-// @Override
-// public List<Point> duplicates() {
-// // No duplicates in an empty node
-// return null;
-// }
-//
-// @Override
-// public void dump(int level) {
-// QuadTree.incrementNodeCount(); // Increment for the empty node.
-// printWithIndentation("Node at " + x1 + ", " + y1 + ", " + (x2 - x1) + ":
-// Empty", level);
-// }
-//
-// private void printWithIndentation(String text, int level) {
-// for (int i = 0; i < level; i++) {
-// System.out.print(" ");
-// }
-// System.out.println(text);
-// }
-//
-// }
-//
-
 import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -131,11 +21,18 @@ public class EmptyNode implements QuadNode {
 
     private static EmptyNode flyweight = null;
 
+    /**
+     * 
+     */
     private EmptyNode() {
         // Private constructor to prevent outside instantiation
     }
 
 
+    /**
+     * 
+     * @return
+     */
     public static EmptyNode getInstance() {
         if (flyweight == null) {
             flyweight = new EmptyNode();
@@ -144,6 +41,13 @@ public class EmptyNode implements QuadNode {
     }
 
 
+    /**
+     * 
+     * @param name
+     * @param x
+     * @param y
+     * @param param
+     */
     @Override
     public QuadNode insert(
         String name,
@@ -158,20 +62,14 @@ public class EmptyNode implements QuadNode {
     }
 
 
-//    @Override
-//    public QuadNode remove(String name, int size) {
-//        // TODO: Implement:
-//        return this;
-//    }
-//
-//
-//    @Override
-//    public QuadNode remove(int x, int y, int size) {
-//        System.out.println("Point rejected: (" + x + ", " + y + ")");
-//        return this;
-//    }
-
-
+    /**
+     * 
+     * @param x
+     * @param y
+     * @param width
+     * @param height
+     * @param size
+     */
     @Override
     public List<Point> regionsearch(
         int x,
@@ -184,13 +82,11 @@ public class EmptyNode implements QuadNode {
     }
 
 
-    @Override
-    public boolean isLeaf() {
-        // Technically not a leaf but an empty node
-        return false;
-    }
-
-
+    /**
+     * 
+     * @param text
+     * @param level
+     */
     private void printWithIndentation(String text, int level) {
         for (int i = 0; i < level; i++) {
             System.out.print("  ");
@@ -199,29 +95,39 @@ public class EmptyNode implements QuadNode {
     }
 
 
+    /**
+     * 
+     * @param level
+     * @param x_empty
+     * @param y_empty
+     * @param size_empty
+     */
     @Override
     public int dump(int level, int x_empty, int y_empty, int size_empty) {
         // Indentation based on the level
         String indentation = "  ".repeat(level);
-        System.out.println(indentation + "Node at " + x_empty + ", " + y_empty + ", " + size_empty
-            + ": Empty");
+        System.out.println(indentation + "Node at " + x_empty + ", " + y_empty
+            + ", " + size_empty + ": Empty");
 
         // Returns 1 since it's counting the current node
         return 1;
     }
 
 
+    /**
+     * 
+     * @return
+     */
     @Override
     public List<Point> collectPoints() {
         return new ArrayList<>();
     }
-    
-    @Override
-    public QuadNode search(String name, int size) {
-        return null;
-    }
 
 
+    /**
+     * 
+     * @return
+     */
     @Override
     public boolean isInternal() {
         // TODO Auto-generated method stub
@@ -229,32 +135,22 @@ public class EmptyNode implements QuadNode {
     }
 
 
+    /**
+     * 
+     * @param name
+     * @param pointX
+     * @param pointY
+     * @param param
+     */
     @Override
     public RemovedObject remove(
         String name,
         int pointX,
         int pointY,
         ArrayList<Integer> param) {
-        
+
         RemovedObject result = new RemovedObject(this, "1");
         return result;
     }
-
-
-
-
-
-//    @Override
-//    public List<Integer> pointForRemoval(String name) {
-//        // TODO Auto-generated method stub
-//        return null;
-//    }
-//
-//
-//    @Override
-//    public String nameForRemoval(int x, int y, int worldSize) {
-//        // TODO Auto-generated method stub
-//        return null;
-//    }
 
 }

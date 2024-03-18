@@ -67,7 +67,6 @@ public class Database {
         else {
             list.insert(pair);
             quadTree.insert(name, point.getX(), point.getY());
-            //list.insert(pair);
         }
     }
 
@@ -80,20 +79,16 @@ public class Database {
      *            the name of the rectangle to be removed
      */
     public void remove(String name) {
-//        ArrayList<KVPair<String, PointInt>> found = list.search(name);
-//        if (found == null) {
-//            System.out.println("Point rejected: " + name);
-//            return;
-//        }
-//        
         KVPair<String, PointInt> removed = list.remove(name);
         if (removed == null) {
             System.out.println("Point not removed: " + name);
             return;
         }
         else {
-            quadTree.remove(removed.getKey(),removed.getValue().getX(), removed.getValue().getY());
-            System.out.println("Point removed: (" + name + ", " + removed.getValue().getX() + ", " + removed.getValue().getY() + ")");
+            quadTree.remove(removed.getKey(), removed.getValue().getX(), removed
+                .getValue().getY());
+            System.out.println("Point removed: (" + name + ", " + removed
+                .getValue().getX() + ", " + removed.getValue().getY() + ")");
         }
     }
 
@@ -108,8 +103,8 @@ public class Database {
      *            x-coordinate of the rectangle to be removed
      */
     public void remove(int x, int y) {
-        //quadtree first
-        if(x < 0 || y < 0 || x > 1024 || y > 1024) {
+        // quadtree first
+        if (x < 0 || y < 0 || x > 1024 || y > 1024) {
             System.out.println("Point rejected: (" + x + ", " + y + ")");
             return;
         }
@@ -120,9 +115,10 @@ public class Database {
         }
         else {
             PointInt point = new PointInt(x, y);
-            list.removeByValue(point,name);
-            System.out.println("Point removed: (" + name + ", " + x + ", " + y + ")");
-        }  
+            list.removeByValue(point, name);
+            System.out.println("Point removed: (" + name + ", " + x + ", " + y
+                + ")");
+        }
     }
 
 
@@ -143,7 +139,7 @@ public class Database {
      */
     public void regionsearch(int x, int y, int w, int h) {
         // Create a query rectangle with the given region.
-        if (w < 0 || h < 0) {
+        if (w <= 0 || h <= 0) {
             System.out.println("Rectangle rejected: (" + x + ", " + y + ", " + w
                 + ", " + h + ")");
             return;
@@ -194,7 +190,7 @@ public class Database {
 
 
     /*
-     * 
+     * Duplicates function
      */
     public void duplicates() {
         quadTree.duplicates();

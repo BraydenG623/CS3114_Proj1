@@ -16,8 +16,8 @@ import student.TestableRandom;
  */
 @SuppressWarnings("unused")
 public class Point {
-    String name;
-    int x, y;
+    private String name;
+    private int x, y;
 
     public Point(String name, int x, int y) {
         this.name = name;
@@ -25,16 +25,6 @@ public class Point {
         this.y = y;
     }
     
-    
-
-    
-//    public void get(Object other) {
-//        Point point = (Point)other;
-//        this.x = point.getX();
-//        this.y = point.getY();
-//        this.name = point.getName();
-//    }
-   //TODO: Implement the getters/setters later
     public String getName() {
         return name;
     }
@@ -62,21 +52,6 @@ public class Point {
     @Override
     public boolean equals(Object other) {
         Point point = (Point)other; 
-        if((this.x == point.getX()) && (this.y == point.getY())) {
-            return true;
-        }
-        return false;
+        return ((this.x == point.getX()) && (this.y == point.getY()));
     }
-    
-//    @Override
-//    public boolean equals(Object obj) {
-//        if (this == obj) {
-//            return true;
-//        }
-//        if (obj == null || getClass() != obj.getClass()) {
-//            return false;
-//        }
-//        Point other = (Point) obj;
-//        return this.x == other.x && this.y == other.y;
-//    }
 }

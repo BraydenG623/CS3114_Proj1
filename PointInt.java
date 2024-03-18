@@ -6,7 +6,6 @@ import java.util.Map;
 import java.util.Random;
 import student.TestableRandom;
 
-
 /**
  * Represents a point in a two-dimensional space with a name.
  * 
@@ -14,45 +13,72 @@ import student.TestableRandom;
  * @version 1.0
  * @since 2024-02-25
  */
+
 @SuppressWarnings("unused")
 public class PointInt {
-    int x, y;
+    private int x, y;
 
-    public PointInt( int x, int y) {
+    /**
+     * 
+     * @param x
+     * @param y
+     */
+    public PointInt(int x, int y) {
         this.x = x;
         this.y = y;
     }
-    
-    
 
-   //TODO: Implement the getters/setters later
 
+    /**
+     * 
+     * @return
+     */
     public int getX() {
         return x;
     }
 
+
+    /**
+     * 
+     * @param x
+     */
     public void setX(int x) {
         this.x = x;
     }
 
+
+    /**
+     * 
+     * @return
+     */
     public int getY() {
         return y;
     }
 
+
+    /**
+     * 
+     * @param y
+     */
     public void setY(int y) {
         this.y = y;
     }
-    
+
+
+    /**
+     * @return
+     */
     public String toString() {
         return (this.x + ", " + this.y);
     }
-    
+
+
+    /**
+     * @param Object
+     */
     @Override
     public boolean equals(Object other) {
-        PointInt point = (PointInt)other; 
-        if((this.x == point.getX()) && (this.y == point.getY())) {
-            return true;
-        }
-        return false;
+        PointInt point = (PointInt)other;
+        return ((this.x == point.getX()) && (this.y == point.getY()));
     }
 }
