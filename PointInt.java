@@ -46,4 +46,13 @@ public class PointInt {
     public String toString() {
         return (this.x + ", " + this.y);
     }
+    
+    @Override
+    public boolean equals(Object other) {
+        PointInt point = (PointInt)other; 
+        if((this.x == point.getX()) && (this.y == point.getY())) {
+            return true;
+        }
+        return false;
+    }
 }

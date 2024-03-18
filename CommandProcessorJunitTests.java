@@ -78,7 +78,7 @@ public class CommandProcessorJunitTests {
     @Test
     public void testRemoveByNameInvalid() {
         processor.processor("remove unknownPoint");
-        String expectedOutput = "Point rejected: unknownPoint\n";
+        String expectedOutput = "Point not removed: unknownPoint\n";
         assertEquals(expectedOutput.trim().replace("\r", ""), outContent.toString().trim().replace("\r", ""));
     }
 

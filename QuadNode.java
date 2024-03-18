@@ -88,24 +88,24 @@ public interface QuadNode {
      */
     QuadNode insert(String name, int x, int y, ArrayList<Integer> param);
 
-    /**
-     * Removes a point by name from the QuadTree.
-     * 
-     * @param name The name of the point to remove.
-     * @param size The size of the current node's region.
-     * @return The node after removal.
-     */
-    QuadNode remove(String name, int size);
-
-    /**
-     * Removes a point by coordinates from the QuadTree.
-     * 
-     * @param x The x-coordinate of the point.
-     * @param y The y-coordinate of the point.
-     * @param size The size of the current node's region.
-     * @return The node after removal.
-     */
-    QuadNode remove(int x, int y, int size);
+//    /**
+//     * Removes a point by name from the QuadTree.
+//     * 
+//     * @param name The name of the point to remove.
+//     * @param size The size of the current node's region.
+//     * @return The node after removal.
+//     */
+//    QuadNode remove(String name, int size);
+//
+//    /**
+//     * Removes a point by coordinates from the QuadTree.
+//     * 
+//     * @param x The x-coordinate of the point.
+//     * @param y The y-coordinate of the point.
+//     * @param size The size of the current node's region.
+//     * @return The node after removal.
+//     */
+//    QuadNode remove(int x, int y, int size);
 
     /**
      * Performs a region search within the QuadTree.
@@ -152,9 +152,14 @@ public interface QuadNode {
 
     boolean isInternal();
 
-    List<Integer> pointForRemoval(String name);
+    RemovedObject remove(String name, int x, int y, ArrayList<Integer> param);
 
-    String nameForRemoval(int x, int y, int worldSize);
+    
+    
+
+//    List<Integer> pointForRemoval(String name);
+//
+//    String nameForRemoval(int x, int y, int worldSize);
 
     
     

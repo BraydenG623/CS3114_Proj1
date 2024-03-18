@@ -128,21 +128,13 @@ public class QuadTree {
         this.root = root.insert(name, x, y, param);
     }
 
-    public void remove(String name) {
-        // Size is passed to properly find and remove the point by name.
-        //List<Integer> Removed = root.pointForRemoval(name);
-        this.root = root.remove(name, WORLD_SIZE);
-        //return Removed;
-    }
-
-    public void remove(int x, int y) {
-        // Size is passed to accurately locate and remove the point by coordinates.
-        //String Removed = root.nameForRemoval(x, y, WORLD_SIZE);
-        
-        this.root = root.remove(x, y, WORLD_SIZE);
-        
-        //return Removed;
-    }
+//    public void remove(String name) {
+//        this.root = root.remove(name, WORLD_SIZE);
+//    }
+//
+//    public void remove(int x, int y) {
+//        this.root = root.remove(x, y, WORLD_SIZE);
+//    }
     
     public void dump() {
         System.out.println("QuadTree dump:");
@@ -186,6 +178,19 @@ public class QuadTree {
     public void search(String name) {
         this.root = root.search(name, WORLD_SIZE);
     }
+    
+    public String remove(String name, int x, int y) {
+        ArrayList<Integer> param = new ArrayList<>();
+        param.add(TOP_LEFT_X);
+        param.add(TOP_LEFT_Y);
+        param.add(WORLD_SIZE);
+        RemovedObject removed = root.remove(name, x, y, param);
+        root = removed.getChangedNode();
+        String removedPoint = removed.getRemovedName();
+        return removedPoint;
+    }
+    
+    
 
 
 

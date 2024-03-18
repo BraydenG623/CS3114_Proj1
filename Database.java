@@ -80,25 +80,19 @@ public class Database {
      *            the name of the rectangle to be removed
      */
     public void remove(String name) {
-        ArrayList<KVPair<String, PointInt>> found = list.search(name);
-        if (found == null) {
-            System.out.println("Point rejected: " + name);
-            return;
-        }
+//        ArrayList<KVPair<String, PointInt>> found = list.search(name);
+//        if (found == null) {
+//            System.out.println("Point rejected: " + name);
+//            return;
+//        }
 //        
-//        List<Integer> coord = quadTree.remove(name);
-//        int x = coord.get(0);
-//        int y = coord.get(1);
-//        
-//        PointInt removePoint = new PointInt(x,y);
-        
         KVPair<String, PointInt> removed = list.remove(name);
         if (removed == null) {
-            System.out.println("Point rejected: " + name);
+            System.out.println("Point not removed: " + name);
             return;
         }
         else {
-            quadTree.remove(name);
+            quadTree.remove(removed.getKey(),removed.getValue().getX(), removed.getValue().getY());
             System.out.println("Point removed: (" + name + ", " + removed.getValue().getX() + ", " + removed.getValue().getY() + ")");
         }
     }
@@ -114,23 +108,21 @@ public class Database {
      *            x-coordinate of the rectangle to be removed
      */
     public void remove(int x, int y) {
-        PointInt point = new PointInt(x, y);
+        //quadtree first
         if(x < 0 || y < 0 || x > 1024 || y > 1024) {
             System.out.println("Point rejected: (" + x + ", " + y + ")");
             return;
         }
-        
-        //String key = quadTree.remove(x, y);
-        
-        KVPair<String, PointInt> removed = list.removeByValue(point);
-        if (removed != null) {
-            System.out.println("Point removed: (" + removed.getKey() + ", " + removed.getValue().getX() + ", " + removed.getValue().getY() + ")");
-            quadTree.remove(x, y);
-        }
-        else if (removed == null) {
-            System.out.println("Point rejected: (" + x + ", " + y + ")");
+        String name = quadTree.remove("1", x, y);
+        if (name.equals("1")) {
+            System.out.println("Point not found: (" + x + ", " + y + ")");
             return;
         }
+        else {
+            PointInt point = new PointInt(x, y);
+            list.removeByValue(point,name);
+            System.out.println("Point removed: (" + name + ", " + x + ", " + y + ")");
+        }  
     }
 
 
@@ -152,7 +144,7 @@ public class Database {
     public void regionsearch(int x, int y, int w, int h) {
         // Create a query rectangle with the given region.
         if (w < 0 || h < 0) {
-            System.out.println("Region invalid: (" + x + ", " + y + ", " + w
+            System.out.println("Rectangle rejected: (" + x + ", " + y + ", " + w
                 + ", " + h + ")");
             return;
         }

@@ -158,18 +158,18 @@ public class EmptyNode implements QuadNode {
     }
 
 
-    @Override
-    public QuadNode remove(String name, int size) {
-        // TODO: Implement:
-        return this;
-    }
-
-
-    @Override
-    public QuadNode remove(int x, int y, int size) {
-        System.out.println("Point rejected: (" + x + ", " + y + ")");
-        return this;
-    }
+//    @Override
+//    public QuadNode remove(String name, int size) {
+//        // TODO: Implement:
+//        return this;
+//    }
+//
+//
+//    @Override
+//    public QuadNode remove(int x, int y, int size) {
+//        System.out.println("Point rejected: (" + x + ", " + y + ")");
+//        return this;
+//    }
 
 
     @Override
@@ -230,16 +230,31 @@ public class EmptyNode implements QuadNode {
 
 
     @Override
-    public List<Integer> pointForRemoval(String name) {
-        // TODO Auto-generated method stub
-        return null;
+    public RemovedObject remove(
+        String name,
+        int pointX,
+        int pointY,
+        ArrayList<Integer> param) {
+        
+        RemovedObject result = new RemovedObject(this, "1");
+        return result;
     }
 
 
-    @Override
-    public String nameForRemoval(int x, int y, int worldSize) {
-        // TODO Auto-generated method stub
-        return null;
-    }
+
+
+
+//    @Override
+//    public List<Integer> pointForRemoval(String name) {
+//        // TODO Auto-generated method stub
+//        return null;
+//    }
+//
+//
+//    @Override
+//    public String nameForRemoval(int x, int y, int worldSize) {
+//        // TODO Auto-generated method stub
+//        return null;
+//    }
 
 }

@@ -363,6 +363,74 @@ public class SkipList<K extends Comparable<? super K>, V>
             return null;
         }
     }
+    
+    /**
+     * * Removes a KVPair with the specified value.
+     * 
+     * @param val
+     *            the value of the KVPair to be removed
+     * @return returns true if the removal was successful
+     */
+    public KVPair<K, V> removeByValue(V val, K key) {
+     // Create an array to hold the update path, which will be the nodes that
+        // need
+        // their pointers updated after removal.
+        SkipNode[] update = (SkipNode[])Array.newInstance(SkipNode.class,
+            head.level + 1);
+
+        SkipNode current = head; // Start from the head of the skip list.
+
+        // Traverse the list from top level down to the bottom level to find the
+        // highest-level node for each level that precedes the node to be
+        // removed.
+        for (int i = head.level; i >= 0; i--) {
+            // Continue moving forward at the current level while the next node
+            // exists
+            // and its key is less than the key to be removed.
+            while ((current.forward[i] != null) && (current.forward[i].element()
+                .getKey().compareTo(key) < 0 || (current.forward[i].element()
+                .getKey().equals(key) && !current.forward[i].element().getValue().equals(val)))) {
+                
+                current = current.forward[i]; // Move to the next node at the
+                                              // current level.
+            }
+            // Store the node in the update path for the current level.
+            update[i] = current;
+        }
+
+        // Move to the next node which is the candidate for removal.
+        current = current.forward[0];
+
+        // Check if the current node is the node to be removed.
+        if (current != null && current.element().getKey().equals(key) &&
+            current.pair.getValue().equals(val)) {
+            // For each level where the current node is in the update path,
+            // update the forward pointers to skip over the current node.
+            for (int i = 0; i <= head.level; i++) {
+                // If the current level's forward pointer in the update path
+                // doesn't point
+                // to the current node, we've finished updating all relevant
+                // levels.
+                if (update[i].forward[i] != null &&
+                    update[i].forward[i] == current) {
+                    
+                    update[i].forward[i] = current.forward[i];
+                   // break;
+                }
+                // Update the forward pointer to skip the current node.
+                //update[i].forward[i] = current.forward[i];
+            }
+            // Decrease the size of the skip list because a node has been
+            // removed.
+            size--;
+
+            // Return the pair held by the removed node.
+            return current.element();
+        }
+
+        // If no node with the given key was found, return null.
+        return null;
+    }
 
 
     /**

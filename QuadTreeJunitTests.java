@@ -55,54 +55,54 @@ public class QuadTreeJunitTests {
 //    /*
 //     * Test remove by name for quad tree
 //     */
-    @Test
-    public void testQuadTreeRemoveName() {
-        quadTree.insert("r1", 10, 10);
-        quadTree.insert("r2", 15, 15);
-        quadTree.insert("r3", 7, 7);
-        quadTree.insert("r4", 20, 25);
-        quadTree.remove("r1");
-        quadTree.remove("r5");
-        
-        String expectedOutput = 
-            "Point inserted: (r1, 10, 10)\n" +
-            "Point inserted: (r2, 15, 15)\n" +
-            "Point inserted: (r3, 7, 7)\n" +
-            "Point inserted: (r4, 20, 25)\n";
-        assertEquals(expectedOutput.trim().replace("\r", ""), outContent.toString().trim().replace("\r", ""));
-        
-    }
+//    @Test
+//    public void testQuadTreeRemoveName() {
+//        quadTree.insert("r1", 10, 10);
+//        quadTree.insert("r2", 15, 15);
+//        quadTree.insert("r3", 7, 7);
+//        quadTree.insert("r4", 20, 25);
+//        quadTree.remove("r1");
+//        quadTree.remove("r5");
+//        
+//        String expectedOutput = 
+//            "Point inserted: (r1, 10, 10)\n" +
+//            "Point inserted: (r2, 15, 15)\n" +
+//            "Point inserted: (r3, 7, 7)\n" +
+//            "Point inserted: (r4, 20, 25)\n";
+//        assertEquals(expectedOutput.trim().replace("\r", ""), outContent.toString().trim().replace("\r", ""));
+//        
+//    }
 //    
 //    
 //    /*
 //     * Test remove by name for quad tree
 //     */
-    @Test
-    public void testQuadTreeRemoveValue() {
-        quadTree.insert("r1", 10, 10);
-        quadTree.insert("r2", 15, 15);
-        quadTree.insert("r3", 7, 7);
-        quadTree.insert("r4", 20, 25);
-        //quadTree.remove(10,10);
-        quadTree.remove(20,25);
-        quadTree.remove(20,50);
-        quadTree.dump();
-        
-        String expectedOutput = 
-            "Point inserted: (r1, 10, 10)\n" +
-            "Point inserted: (r2, 15, 15)\n" +
-            "Point inserted: (r3, 7, 7)\n" +
-            "Point inserted: (r4, 20, 25)\n" +
-//            "Point removed: (r4, 20, 25)\n" +
-//            "Point rejected: (20, 50)\n" +
-            "QuadTree dump:\n" +
-            "Node at 0, 0, 1024:\n" +
-            "(r1, 10, 10)\n" +
-            "(r2, 15, 15)\n" +
-            "(r3, 7, 7)\n" +
-            "1 quadtree nodes printed";
-        assertEquals(expectedOutput.trim().replace("\r", ""), outContent.toString().trim().replace("\r", ""));
-    }
+//    @Test
+//    public void testQuadTreeRemoveValue() {
+//        quadTree.insert("r1", 10, 10);
+//        quadTree.insert("r2", 15, 15);
+//        quadTree.insert("r3", 7, 7);
+//        quadTree.insert("r4", 20, 25);
+//        //quadTree.remove(10,10);
+//        quadTree.remove(20,25);
+//        quadTree.remove(20,50);
+//        quadTree.dump();
+//        
+//        String expectedOutput = 
+//            "Point inserted: (r1, 10, 10)\n" +
+//            "Point inserted: (r2, 15, 15)\n" +
+//            "Point inserted: (r3, 7, 7)\n" +
+//            "Point inserted: (r4, 20, 25)\n" +
+////            "Point removed: (r4, 20, 25)\n" +
+////            "Point rejected: (20, 50)\n" +
+//            "QuadTree dump:\n" +
+//            "Node at 0, 0, 1024:\n" +
+//            "(r1, 10, 10)\n" +
+//            "(r2, 15, 15)\n" +
+//            "(r3, 7, 7)\n" +
+//            "1 quadtree nodes printed";
+//        assertEquals(expectedOutput.trim().replace("\r", ""), outContent.toString().trim().replace("\r", ""));
+//    }
     
     
     /*

@@ -215,6 +215,10 @@ public class LeafNode implements QuadNode {
         this.size = size;
         this.points = points;
     }
+    
+    public LeafNode() {
+        
+    }
 
 
 //    // Helper function to check if all points in the leaf node are the same
@@ -278,41 +282,41 @@ public class LeafNode implements QuadNode {
     }
 
 
-    @Override
-    public QuadNode remove(String name, int size) {
-        for (Point point : points) {
-            if (point.getName().equals(name)) {
-                return remove(point.getX(),point.getY(),size);
-            }
-        }
-        return null;
-    }
-
-
-
-    @Override
-    public QuadNode remove(int x, int y, int size) {
-        String name = getName(x,y);
-        if(name == null) {
-           return this;
-        }
-        else {
-            for (int i=0 ; i < points.size() ; i++) {
-                if(points.get(i).getX() == x &&
-                    points.get(i).getY() == y) {
-                    
-                    points.remove(i);
-                    
-                }
-            }
-       // boolean removed = points.removeIf(p -> p.getX() == x && p.getY() == y);
-
-        }
-       
-        // After removal, this node itself is returned since the leaf node does not decide on merges.
-        // The decision to merge is up to the parent internal node after the removal operation.
-        return this;
-    }
+//    @Override
+//    public QuadNode remove(String name, int size) {
+//        for (Point point : points) {
+//            if (point.getName().equals(name)) {
+//                return remove(point.getX(),point.getY(),size);
+//            }
+//        }
+//        return null;
+//    }
+//
+//
+//
+//    @Override
+//    public QuadNode remove(int x, int y, int size) {
+//        String name = getName(x,y);
+//        if(name == null) {
+//           return this;
+//        }
+//        else {
+//            for (int i=0 ; i < points.size() ; i++) {
+//                if(points.get(i).getX() == x &&
+//                    points.get(i).getY() == y) {
+//                    
+//                    points.remove(i);
+//                    
+//                }
+//            }
+//       // boolean removed = points.removeIf(p -> p.getX() == x && p.getY() == y);
+//
+//        }
+//       
+//        // After removal, this node itself is returned since the leaf node does not decide on merges.
+//        // The decision to merge is up to the parent internal node after the removal operation.
+//        return this;
+//    }
     
     
     
@@ -430,6 +434,7 @@ public class LeafNode implements QuadNode {
     @Override
     public List<Point> collectPoints() {
         return new ArrayList<>(points);
+        //return points;
     }
 
 
@@ -441,41 +446,87 @@ public class LeafNode implements QuadNode {
 
 
     @Override
-    public List<Integer> pointForRemoval(String name) {
-        // TODO Auto-generated method stub
-        List<Integer> coord = new ArrayList<>();
-        for (Point point : points) {
-            if (point.getName().equals(name)) {
-                coord.add(point.getX());
-                coord.add(point.getY());
-                return coord;
-            }
-        }
-        return null;
-    }
-
-
-    @Override
-    public String nameForRemoval(int x, int y, int worldSize) {
-        String name = getName(x,y);
-        if(name == null) {
-           return null;
-        }
-        else {
-            for (int i=0 ; i < points.size() ; i++) {
-                if(points.get(i).getX() == x &&
-                    points.get(i).getY() == y) {
-                    
-                    return points.get(i).getName();
-                    
+    public RemovedObject remove(
+        String name,
+        int pointX,
+        int pointY,
+        ArrayList<Integer> param) {
+        
+        
+        String pointName = "1";
+        if(!(name.compareTo("1") == 0)) {
+            for(Point point : points) {
+                //Check if you have found the exact point
+                //by name, x, and y
+                if(point.getX() == pointX && point.getY() == pointY
+                    && point.getName() == name) {
+                    points.remove(point);
+                    break;
                 }
             }
-       // boolean removed = points.removeIf(p -> p.getX() == x && p.getY() == y);
-
         }
-       
-        // After removal, this node itself is returned since the leaf node does not decide on merges.
-        // The decision to merge is up to the parent internal node after the removal operation.
-        return null;
+        else {
+            for(Point point : points) {
+                //Check if you have found the exact point
+                //by name, x, and y
+                if(point.getX() == pointX && point.getY() == pointY) {
+                    pointName = point.getName();
+                    points.remove(point);
+                    break;
+                }
+            }
+        }
+        if (points.isEmpty()) {
+            QuadNode newEmpty = EmptyNode.getInstance();
+            RemovedObject result = new RemovedObject(newEmpty, pointName);
+            return result;
+        }
+        
+        RemovedObject result = new RemovedObject(this, pointName);
+        return result;
+        
     }
+
+
+ 
+
+
+//    @Override
+//    public List<Integer> pointForRemoval(String name) {
+//        // TODO Auto-generated method stub
+//        List<Integer> coord = new ArrayList<>();
+//        for (Point point : points) {
+//            if (point.getName().equals(name)) {
+//                coord.add(point.getX());
+//                coord.add(point.getY());
+//                return coord;
+//            }
+//        }
+//        return null;
+//    }
+//
+//
+//    @Override
+//    public String nameForRemoval(int x, int y, int worldSize) {
+//        String name = getName(x,y);
+//        if(name == null) {
+//           return null;
+//        }
+//        else {
+//            for (int i=0 ; i < points.size() ; i++) {
+//                if(points.get(i).getX() == x &&
+//                    points.get(i).getY() == y) {
+//                    
+//                    return points.get(i).getName();
+//                    
+//                }
+//            }
+//       // boolean removed = points.removeIf(p -> p.getX() == x && p.getY() == y);
+//
+//        }
+//       
+//        // After removal, this node itself is returned since the leaf node does not decide on merges.
+//        // The decision to merge is up to the parent internal node after the removal operation.
+//        return null;
+//    }
 }
